@@ -4,7 +4,6 @@ import { Clients, getClient } from "./client";
 
 // Ignition
 import { ignition } from "hardhat";
-import tokenModule from "../../../ignition/foobar";
 import entryPointMockModule from "../../../ignition/entryPointMock";
 import buildWakeUpPaymasterModule from "../../../ignition/wakeUpPaymaster";
 import { WakeUpPaymasterService } from "../../wakeUpPaymaster/service";
@@ -15,24 +14,6 @@ import { WakeUpPaymasterService } from "../../wakeUpPaymaster/service";
 interface DeployResult {
   address: Address;
 }
-
-/**
- * Deploys token contract using the Ignition deployment framework.
- *
- * @returns A promise that resolves with the address of the deployed token.
- * @throws If the deployment fails.
- */
-export const deployToken = async (): Promise<Address> => {
-  try {
-    const { foobar } = await ignition.deploy(tokenModule);
-    if (!foobar) throw new Error("Token deployment failed.");
-    return (foobar as DeployResult).address;
-  } catch (error) {
-    console.error("Error deploying token:", error);
-    throw error;
-  }
-};
-
 
 /**
  * Deploys EntryPointMock contract using the Ignition deployment framework.

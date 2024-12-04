@@ -8,10 +8,6 @@ export const getClient = async () => {
   const [owner, investorOne, investorTwo] = await hre.viem.getWalletClients();
   const publicClient = await hre.viem.getPublicClient();
 
-  const ownerBalance = await publicClient.getBalance({
-    address: owner.account.address,
-  });
-
   return {
     publicClient,
     owner,
