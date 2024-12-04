@@ -14,7 +14,12 @@ const networkMainnet = getNetwork(NETWORK_MAINNET, false);
 
 const config: HardhatUserConfig = {
   solidity: {
-    compilers: [{ version: "0.8.24" }],
+    compilers: [{ version: "0.8.24", settings: {
+      optimizer: {
+        enabled: true,
+        runs: 100,
+      },
+    }}],
   },
   networks: {
     testnet: networkTestnet ? networkTestnet.network : undefined,
