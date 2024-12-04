@@ -40,13 +40,13 @@ export class WakeUpPaymasterService {
     });
   }
 
-  async addAccount(accountAddress: Address, executor?: WalletClient): Promise<void> {
+  async allowAccount(accountAddress: Address, executor?: WalletClient): Promise<void> {
     const walletClient = executor ? executor : this.ownerClient;
 
     const { request } = await this.publicClient.simulateContract({
       address: this.address,
       abi: this.abi,
-      functionName: "addAccount",
+      functionName: "allowAccount",
       args: [accountAddress],
       account: walletClient.account,
     });

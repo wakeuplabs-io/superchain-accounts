@@ -746,19 +746,19 @@ export const wakeupPaymasterAbi = [
   },
   {
     type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'addAccount',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
     inputs: [
       { name: 'unstakeDelaySec', internalType: 'uint32', type: 'uint32' },
     ],
     name: 'addStake',
     outputs: [],
     stateMutability: 'payable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'allowAccount',
+    outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',

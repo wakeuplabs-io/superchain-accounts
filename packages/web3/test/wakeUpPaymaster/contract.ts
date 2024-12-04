@@ -24,14 +24,14 @@ describe("WakeUpPaymaster", () => {
   describe("Account Management", () => {
     it("should allow the owner to add an account", async () => {
       // Add account
-      await testEnv.paymasterService.addAccount(testEnv.clients.investorOne.account.address);
+      await testEnv.paymasterService.allowAccount(testEnv.clients.investorOne.account.address);
       // Check if account was added by asking the contract if the account is allowed
       const isAccountAdded = await testEnv.paymasterService.isAccountAllowed(testEnv.clients.investorOne.account.address);
       expect(isAccountAdded).to.be.true;
     });
 
     it("should revert when an not ownerAddress tries to add an account", async () => {
-      await expect(testEnv.paymasterService.addAccount(testEnv.clients.investorOne.account.address, testEnv.clients.investorOne)).to.be.rejectedWith(/OwnableUnauthorizedAccount/);
+      await expect(testEnv.paymasterService.allowAccount(testEnv.clients.investorOne.account.address, testEnv.clients.investorOne)).to.be.rejectedWith(/OwnableUnauthorizedAccount/);
     });
 
     it("should revert when an not ownerAddress tries to check if account is allowed", async () => {
@@ -40,7 +40,7 @@ describe("WakeUpPaymaster", () => {
 
     it("should allow the owner to remove an account", async () => {
       // Add an account
-      await testEnv.paymasterService.addAccount(testEnv.clients.investorOne.account.address);
+      await testEnv.paymasterService.allowAccount(testEnv.clients.investorOne.account.address);
 
       //validate account was added
       const isAccountAdded = await testEnv.paymasterService.isAccountAllowed(testEnv.clients.investorOne.account.address);
@@ -82,7 +82,7 @@ describe("WakeUpPaymaster", () => {
       });
 
       //allow the account
-      await testEnv.paymasterService.addAccount(testEnv.clients.investorOne.account.address);
+      await testEnv.paymasterService.allowAccount(testEnv.clients.investorOne.account.address);
 
       //run validation
       const result = await testEnv.paymasterService.validatePaymasterUserOp(userOp);
@@ -95,7 +95,7 @@ describe("WakeUpPaymaster", () => {
       });
 
       //allow the account
-      await testEnv.paymasterService.addAccount(testEnv.clients.investorOne.account.address);
+      await testEnv.paymasterService.allowAccount(testEnv.clients.investorOne.account.address);
 
       //run validation
       const result = await testEnv.paymasterService.validatePaymasterUserOp(userOp);

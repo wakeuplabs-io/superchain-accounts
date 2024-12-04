@@ -3,12 +3,12 @@ pragma solidity ^0.8.24;
 
 interface IWakeUpPaymaster {
     /**
-     * @notice Adds a new account to the paymaster allowed accounts.
+     * @notice Allows an account to be gas sponsored.
      * @notice Only the owner can call this function.
      * @param account The address of the account to add.
      * @dev This function is used to add new accounts to the paymaster allowed accounts.
      **/
-    function addAccount(address account) external;
+    function allowAccount(address account) external;
 
     /**
      * @notice Removes an account from the paymaster allowed accounts.

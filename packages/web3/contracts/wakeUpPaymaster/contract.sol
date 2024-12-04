@@ -57,7 +57,7 @@ contract WakeUpPaymaster is
     }
 
     /// @inheritdoc IWakeUpPaymaster
-    function addAccount(address account) external onlyOwner {
+    function allowAccount(address account) external onlyOwner {
         allowedAccounts[account] = true;
     }
 
