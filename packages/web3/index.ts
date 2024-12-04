@@ -1,2 +1,2 @@
 // export * from {moduleNames}
-export * from "./shared";
+export * from "./test/shared";
