@@ -7,7 +7,7 @@
     "compile": "npx hardhat compile && npm run types",
     "build": "npm run compile",
     "types": "wagmi generate",
-    "deploy": "npx hardhat ignition deploy ./ignition/modules/all.ts",
+    "deploy": "npx hardhat ignition deploy ./ignition/modules/wakeUpERC4337.ts",
     "deploy:testnet": "npm run deploy -- --network testnet --verify",
     "deploy:mainnet": "npm run deploy -- --network mainnet --verify",
     "test": "npx hardhat test"

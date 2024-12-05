@@ -1,6 +1,6 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const wakeUpEntryPointModule = buildModule("WakeUpEntrypointModule", (m) => {
+const wakeUpEntryPointModule = buildModule("WakeUpEntryPointModule", (m) => {
   const wakeUpEntryPoint = m.contract("EntryPoint", [], { id: "wakeup_entrypoint" });
 
   return { wakeUpEntryPoint };

@@ -4,8 +4,8 @@ import { Clients, getClient } from "./client";
 
 // Ignition
 import { ignition } from "hardhat";
-import entryPointMockModule from "../../../ignition/entryPointMock";
-import buildWakeUpPaymasterModule from "../../../ignition/wakeUpPaymaster";
+import entryPointMockModule from "../../../ignition/modules/entryPointMock";
+import buildWakeUpPaymasterModule from "../../../ignition/modules/wakeUpPaymaster";
 import { WakeUpPaymasterService } from "../../wakeUpPaymaster/service";
 
 /**
