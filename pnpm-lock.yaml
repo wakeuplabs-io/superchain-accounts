@@ -94,9 +94,6 @@ importers:
 
   packages/bundler:
     dependencies:
-      express:
-        specifier: 4.19.2
-        version: 4.19.2
       sst:
         specifier: ^3.3.52
         version: 3.3.52

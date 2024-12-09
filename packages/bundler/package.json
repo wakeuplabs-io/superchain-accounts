@@ -4,14 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy:staging": "sst deploy --stage staging --print-logs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "4.19.2",
     "sst": "^3.3.52"
   },
   "devDependencies": {
