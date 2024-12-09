@@ -38,14 +38,15 @@ In addition, the project will implement a reward program that grants users diffe
 The following wireframes have been designed to illustrate the structure and user flow for the implementation of Smart Accounts and Superchain Accounts, highlighting key interactions and functionalities:
 
 
-1. Login and connect wallet. 
+1. Login and connect wallet. <br />
+
 ![Login wireframe](./assets/wireframe-login.png)
 
 **Description:**
 - A simple login screen allowing users to connect their wallet.
 - Highlights a secure and user-friendly interface to onboard users into the ecosystem.
 
-2. Account with activity splitted by chain.
+2. Account with activity splitted by chain. <br />
 ![Account wireframe](./assets/wireframe-accounts.png)
 
 **Description:**
@@ -53,7 +54,7 @@ The following wireframes have been designed to illustrate the structure and user
 Features include token balances, recent transactions, and activity logs for each chain.
 - Users can navigate to specific chains to explore detailed activity or manage tokens.
 
-3. Summarize of points and achievements.
+3. Summarize of points and achievements. <br />
 ![alt text](./assets/wireframe-profile.png)
 
 **Description:**
