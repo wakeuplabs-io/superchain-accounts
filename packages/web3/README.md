@@ -30,3 +30,74 @@ Contract in charge of creating account abstractions. It's address is provided in
 Contract in charge of sponsor for the gas of the operations on behalf of the account abstractions. It's address is provided in the `paymasterAndData` property of the `User Operation`, which then the `WakeUp Entrypoint` contract uses to pay for the gas of the operations.
 In order to sponsor for the gas of the operations, the paymaster needs to have a deposit in the `WakeUp Entrypoint` contract. The deposit is done by calling the `depositFor` function of the `WakeUp Entrypoint` contract.
 Accounts must be allowed by the Paymaster Owner so its transactions could be sponsored. This is done by calling the `allowAccount` function of the `WakeUp Paymaster` contract.
+
+## Environment Variables
+
+The following environment variables are used by the project:
+
+- **NETWORK_TESTNET**: Specifies the testnet network to be used.
+- **NETWORK_MAINNET**: Specifies the mainnet network to be used.
+- **TESTNET_PRIVATE_KEY**: Private key for the testnet account.
+- **MAINNET_PRIVATE_KEY**: Private key for the mainnet account.
+- **ETHERSCAN_API_KEY**: API key for Etherscan.
+- **LOCAL_CHAIN_ID**: Chain ID for the local development environment.
+- **LOCAL_CHAIN_NAME**: Name of the local development chain.
+- **LOCAL_RPC_URL**: RPC URL for the local development environment.
+- **LOCAL_PRIVATE_KEY**: Private key for the local development account.
+
+## Compiling the Contracts
+
+To compile the contracts, run the following command:
+```bash
+pnpm build
+```
+It will create the proper artifacts in the `artifacts` folder and generate typed abis definitions using [Wagmi](https://wagmi.sh/)
+
+## Testing the Contracts
+
+To test the contracts, run the following command:
+
+```bash
+pnpm test
+```
+
+## Deploying the Contracts
+
+### Mainnet
+
+1. Set the following environment variables:
+    - `NETWORK_MAINNET`
+    - `MAINNET_PRIVATE_KEY`
+    - `ETHERSCAN_API_KEY`
+
+make sure to use a private key with enough balance to deploy the contracts.
+
+2. Run the following command:
+```bash
+pnpm deploy:mainnet
+```
+
+### Testnet
+
+1. Set the following environment variables:
+    - `NETWORK_TESTNET`
+    - `TESTNET_PRIVATE_KEY`
+    - `ETHERSCAN_API_KEY`
+
+make sure to use a private key with enough balance to deploy the contracts.
+
+2. Run the following command:
+```bash
+pnpm deploy:testnet
+```
+
+## Set up the paymaster
+
+Once the deployment is finished, you will need to deposit funds to the `WakeUp Paymaster` in order for it to be able to sponsor the user operations. 
+
+To do this, grab the paymaster contract address from the deployment output and run the following command:
+
+``` bash
+pnpm setup-paymaster:<testnet | mainnet> -- --paymaster <PAYMASTER_CONTRACT_ADDRESS>
+```
+make sure to use a private key with enough balance to deposit funds.
