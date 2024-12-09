@@ -24,6 +24,9 @@ RUN pnpm build
 
 FROM node:lts-alpine as runner
 
+# install curl
+RUN apk add curl
+
 # install pnpm
 RUN npm add -g pnpm
 
