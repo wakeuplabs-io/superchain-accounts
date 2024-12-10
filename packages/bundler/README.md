@@ -75,3 +75,9 @@ The bundler will be containerize using the [Dockerfile](./Dockerfile) in the roo
     - `PORT`: The port the bandler will be listening too (By default the Load Balancer will be listening to port 80 and redirect the request to the provided port) (default: `4337`)
 
 3. Run `pnpm deploy:staging` to deploy the stack.
+
+## Glossary
+
+### Executor
+
+Executors work closely with bundlers, taking the aggregated UserOperations and performing the actual on-chain execution, ensuring that each operation meets its predefined requirements and is processed correctly within the blockchain's execution environment.
