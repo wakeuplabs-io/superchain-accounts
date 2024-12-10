@@ -18,6 +18,14 @@ In addition, the project will implement a reward program that grants users diffe
 - **Smart Accounts (SA):** Accounts designed with smart contract logic that provide functionalities such as programmable transaction validation, batch processing, and abstraction of gas fees.
 - **Superchain Account (SCA):** A dynamic user account within the Optimism ecosystem(multi-chain).
 - **Externally Owned Accounts (EOA):** EOAs serve as the gateway to the Ethereum network, facilitating the basic but vital functions of sending, receiving, and managing digital assets. While they offer simplicity and control, users must take precautions to safeguard their private keys. EOAs are user-friendly and offer complete control to users through private keys.
+- **UserOperation**: Encapsulates user actions and transactions.
+- **Bundler**: Aggregates multiple UserOperations into a single transaction.
+- **EntryPoint Contract**: A smart contract that validates and executes UserOperations.
+- **Account Factory Contract**: Deploys Account Contracts on behalf of users.
+- **Paymaster Contract**: Handles transaction fees, allowing users to pay fees in tokens other than ETH.
+
+### ERC-4337 implementation based on eth-infinitism
+
 
 ## Purpose
 
@@ -82,15 +90,6 @@ ERC-4337 introduces several key components that work together to enable account 
 ![ERC-4337 Architecture](./assets/architecture-erc-4337.png)
 [Learn more about ERC-4337](https://www.erc4337.io/docs)
 
-- **UserOperation**: Encapsulates user actions and transactions.
-- **Bundler**: Aggregates multiple UserOperations into a single transaction.
-- **EntryPoint Contract**: A smart contract that validates and executes UserOperations.
-- **Account Contract**: Represents user accounts and implements the logic for executing transactions.
-- **Account Factory Contract**: Deploys Account Contracts on behalf of users.
-- **Paymaster Contract**: Handles transaction fees, allowing users to pay fees in tokens other than ETH.
-
-### ERC-4337 implementation based on eth-infinitism
-
 After conducting research and some PoCs, we identified an implementation of the [ERC-4337 Standard](https://eips.ethereum.org/EIPS/eip-4337) by **eth-infinitism**. 
 
 Our goal is to create custom contracts that comply with this standard by leveraging the contracts and interfaces provided by the [account-abstraction project](https://github.com/eth-infinitism/account-abstraction). 
@@ -110,18 +109,108 @@ sequenceDiagram
     participant Account
     participant Paymaster
 
-    User ->> Bundler: create, sign UserOp
-    Bundler ->> User: eth_sendUserOp
-    Bundler ->> EntryPoint: traceCall: simulateValidation
-    EntryPoint ->> Factory: create (initCode)
-    Factory ->> Account: create
-    EntryPoint ->> Account: account
-    Account ->> EntryPoint: validateUserOp
-    EntryPoint ->> Bundler: send fee (if no paymaster)
-    EntryPoint ->> Paymaster: validatePaymasterUserOp
-    Bundler ->> EntryPoint: validate storage access
-    EntryPoint ->> Bundler: add to mempool
+    User-->>Bundler: create and sign userOp
+    Bundler-->>EntryPoint: handleOps(userOps[])
+    
+    Note over EntryPoint: Validations
+    EntryPoint->>Factory: create (initCode)
+    EntryPoint->>Account: validateUserOp
+    EntryPoint->>Paymaster: validatePaymasterUserOp
+    EntryPoint->>EntryPoint: deduct paymaster deposit  
+    
+
+    Note over EntryPoint: Executions
+    EntryPoint->>Account: exec
+    Account-->>EntryPoint: execution result
+    EntryPoint->>Paymaster: postOp
+    EntryPoint-->>Bundler: Transaction receipt
 ```
+
+#### User Operation
+
+A User Operation is a pseudo-transaction object that describes a transaction to be executed. Unlike traditional network transactions, User Operations are processed through a dedicated entrypoint contract and can be bundled together by "bundlers" who submit them to the network.
+
+##### Implementation
+
+The User Operation is implemented using the `UserOperation` and `PackedUserOperation` classes from the Viem library. These classes provide a standardized structure for defining and processing account abstraction operations in compliance with the ERC-4337 standard. For comprehensive details on implementation specifics, consult the [Viem Account Abstraction Documentation](https://viem.sh/account-abstraction).
+
+
+#### Account Abstraction
+
+Account Abstractions or Smart Accounts are wallets hosted as smart contracts on the EVM-compatible blockchain. Basically, programmable smart contracts control these accounts instead of the commonly used private keys.
+
+Account Abstractions also have the potential to provide more complex functionalities, which are not limited to interacting or sending and receiving transactions. Instead, these smart wallets can perform high-level programmed functions by deploying them on their smart contracts.
+
+##### Implementation
+
+The Account Abstraction contract used in our project is an implementation of eth-infinitism [Simple Account](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/samples/SimpleAccount.sol). This approach provides a robust and standard-compliant solution for ERC-4337 account abstraction.
+
+#### Account Abstraction Factory
+
+It's Contract in charge of creating Smart Accounts. It's address is provided in the `initCode`property of the `User Operation`, which then the entrypoint contract uses to create Smart Accounts when needed. It uses the `CREATE2` opcode to calculate the account address in a deterministic way.
+
+##### Implementation
+
+Our SimpleAccount Factory is Directly adapted from the eth-infinitism [SimpleAccountFactory](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/samples/SimpleAccountFactory.sol) contract, ensuring standard-compliant account creation.
+
+#### Entrypoint
+
+The EntryPoint is a singleton contract that is a central entity for all ERC-4337 Smart Accounts and Paymasters. It coordinates the verification and execution of a User Operation. For this reason, all implementations of an EntryPoint need to be audited and immutable. These are some of the essential features of this component:
+1. Creating Smart Accounts if they do not exist.
+2. Verify User Operations against its destination Smart Account.
+3. Execute operations.
+4. Manage Smart Account and Paymaster deposits used for gas payment.
+5. Manage Paymaster Staking
+6. Manage Smart Account Nonces.
+
+##### Implementation
+
+For the Entrypoint we will use the eth-infinitism [EntryPoint](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/core/EntryPoint.sol) without any modifications.
+
+#### Bundler
+
+The bundler acts as a transaction aggregator and economic coordinator, enabling gas abstraction and improving user experience in blockchain interactions by handling complex transaction logistics behind the scenes. Its key responsibilities are:
+
+1. Receives individual UserOperations from different accounts
+2. Validate each operation's signature and paymaster details
+3. Aggregates operations into a single batch transaction
+4. Pays Ethereum gas fees, then gets reimbursed through the operations' built-in fee mechanism
+5. Sends the bundled transaction to the EntryPoint smart contract for processing
+
+##### Implementation
+
+For the bundler component of our implementation, we have chosen [Pimlico's Alto bundler](https://docs.pimlico.io/infra/bundler), an open-source and highly performant implementation of the ERC-4337 standard. Alto is a TypeScript-based, type-safe bundler designed for reliability and efficiency in production environments.  
+
+Alto stands out as a proven solution, being listed in the [ERC-4337 Bundlers Directory](https://www.erc4337.io/bundlers) and successfully passing the comprehensive [ETH-Infinitism Bundler Test Suite](https://github.com/eth-infinitism/bundler-spec-tests). This endorsement confirms its robustness, security, and readiness for production use. 
+
+Our decision to adopt Alto is driven by several key factors: 
+
+- **Deployment Simplicity:** Alto offers an intuitive setup process, making it straightforward to integrate into our infrastructure. 
+- **Compatibility:** Its seamless support for Optimism ecosystem chains aligns perfectly with our operational requirements. 
+- **Proven Reliability:** As a trusted and secure implementation, Alto ensures compliance with the ERC-4337 standard and minimizes risks. 
+
+In our deployment strategy, we will self-host the Alto bundler and integrate it with our tailored services, including a custom Paymaster client. However, we will not utilize auxiliary services provided by Pimlico, such as Gas Sponsorship, as they fall outside our current requirements. 
+
+This approach allows us to maintain full control over the bundler’s operation while leveraging a reliable and well-documented implementation.
+
+#### Paymaster
+
+Paymasters are smart contracts that enable flexible gas policies like allowing decentralized applications to sponsor operations for their users (i.e.pay gas fees in the blockchain's native currency), or accept gas fee payments in an ERC-20 token (e.g. USDC) in place of the blockchain's native currency.
+
+##### Implementation
+
+Our Paymaster contract extends the eth-infinitism [BasePaymaster](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/core/BasePaymaster.sol) contract, introducing custom functionality for controlled gas sponsorship within our application ecosystem.
+The paymaster includes a validation process that ensures gas sponsorship is limited to whitelisted accounts.
+
+### Considerations
+
+While leveraging an existing base implementation to avoid duplicating efforts, we will maintain a fork of this open-source implementation. This fork will serve multiple purposes, including but not limited to:
+
+- **Customization:** Tailoring the implementation to meet the specific needs of our project.
+- **Reusability:** Building upon a well-established, tested solution to maximize efficiency.
+- **Innovation:** Experimenting with new features or integrations to align with our project's goals.
+
+This approach ensures alignment with our objectives while fostering collaboration within the open-source community and preserving the integrity of the original work.
 
 ## Authentication
 
