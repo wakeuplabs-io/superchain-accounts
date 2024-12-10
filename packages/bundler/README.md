@@ -50,7 +50,12 @@ The bundler will be containerize using the [Dockerfile](./Dockerfile) in the roo
 ### Requirements
 
 - [Docker](https://www.docker.com/)
-- AWS Credentials configured in your machine, check the [AWS account set up](https://sst.dev/docs/aws-accounts) documentation of SST.
+- AWS Credentials configured in your machine, check the [AWS account set up](https://sst.dev/docs/aws-accounts) documentation of SST. The account must have permission to create, update and remove the following AWS resources:
+  - ECS Cluster
+  - ECS Service
+  - ECS Task Definition
+  - Application Load Balancer
+  - VPC
 - The following network contracts and wallets:
   - Entrypoint
   - 2 Executor wallets private keys
@@ -70,39 +75,3 @@ The bundler will be containerize using the [Dockerfile](./Dockerfile) in the roo
     - `PORT`: The port the bandler will be listening too (By default the Load Balancer will be listening to port 80 and redirect the request to the provided port) (default: `4337`)
 
 3. Run `pnpm deploy:staging` to deploy the stack.
-
-## Glossary
-
-### Bundler
-
-In the Ethereum Account Abstraction (ERC-4337) standard, the bundler plays a critical role in the transaction lifecycle:
-
-Key Responsibilities:
-
-- Collects UserOperations from users' wallets
-- Bundles multiple UserOperations into a single transaction
-- Pays network gas fees on behalf of users
-- Submits bundled transactions to the EntryPoint contract
-- Ensures economic viability by verifying each UserOperation's validity and potential profitability
-
-Technical Process:
-
-1. Receives individual UserOperations from different accounts
-2. Validates each operation's signature and paymaster details
-3. Aggregates operations into a single batch transaction
-4. Pays Ethereum gas fees, then gets reimbursed through the operations' built-in fee mechanism
-5. Sends the bundled transaction to the EntryPoint smart contract for processing
-
-The bundler essentially acts as a transaction aggregator and economic coordinator, enabling gas abstraction and improving user experience in blockchain interactions by handling complex transaction logistics behind the scenes.
-
-### Executor
-
-In the Ethereum Account Abstraction (ERC-4337) context, executors are specialized nodes responsible for:
-
-1. Processing bundled UserOperations
-2. Calling the EntryPoint contract's `handleOps()` method
-3. Executing the actual blockchain transactions
-4. Verifying and validating each operation's execution conditions
-5. Handling complex transaction logic defined in user wallets
-
-Executors work closely with bundlers, taking the aggregated UserOperations and performing the actual on-chain execution, ensuring that each operation meets its predefined requirements and is processed correctly within the blockchain's execution environment.
