@@ -42,3 +42,10 @@ packages/ui/src/routeTree.gen.ts
 
 .serverless
 package-lock.json
+
+#SST
+.sst
+sst-env.d.ts
+
+#OS
+.DS_Store

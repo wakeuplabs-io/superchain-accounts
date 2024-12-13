@@ -92,6 +92,16 @@ importers:
         specifier: 3.4.7
         version: 3.4.7(typescript@5.4.4)
 
+  packages/bundler:
+    dependencies:
+      sst:
+        specifier: ^3.3.52
+        version: 3.3.52
+    devDependencies:
+      '@types/aws-lambda':
+        specifier: 8.10.146
+        version: 8.10.146
+
   packages/ui:
     dependencies:
       '@tanstack/react-query':
@@ -1740,6 +1750,9 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
+  '@types/aws-lambda@8.10.146':
+    resolution: {integrity: sha512-3BaDXYTh0e6UCJYL/jwV/3+GRslSc08toAiZSmleYtkAUyV5rtvdPYxrG/88uqvTuT6sb27WE9OS90ZNTIuQ0g==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -2229,6 +2242,9 @@ packages:
   aws-sdk@2.1692.0:
     resolution: {integrity: sha512-x511uiJ/57FIsbgUe5csJ13k3uzu25uWQE+XqfBis/sB0SFoiElJWXRkgEAUh0U6n40eT3ay5Ue4oPkRMu1LYw==}
     engines: {node: '>= 10.0.0'}
+
+  aws4fetch@1.0.20:
+    resolution: {integrity: sha512-/djoAN709iY65ETD6LKCtyyEI04XIBP5xVvfmNxsEP0uJB5tyaGBztSryRr4HqMStr9R06PisQE7m9zDTXKu6g==}
 
   axios@1.7.8:
     resolution: {integrity: sha512-Uu0wb7KNqK2t5K+YQyVCLM76prD5sRFjKHbJYCP1J7JFGEQ6nN7HWn9+04LAeiJ3ji54lgS/gZCH1oxyrf1SPw==}
@@ -3904,6 +3920,12 @@ packages:
     resolution: {integrity: sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==}
     engines: {node: '>= 0.6.0'}
 
+  jose@4.15.9:
+    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
+
+  jose@5.2.3:
+    resolution: {integrity: sha512-KUXdbctm1uHVL8BYhnyHkgp3zDX5KW8ZhAKVFEfUbU2P8Alpzjb+48hHvjOdQIyPshoblhzsuqOwEEAbtHVirA==}
+
   js-sha3@0.8.0:
     resolution: {integrity: sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==}
 
@@ -4111,6 +4133,10 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  lru-cache@6.0.0:
+    resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
+    engines: {node: '>=10'}
 
   lru-queue@0.1.0:
     resolution: {integrity: sha512-BpdYkt9EvGl8OfWHDQPISVpcl5xZthb+XPsbELj5AQXxIC8IriDZIQYjBJPEm5rS420sjZ0TLEzRcq5KdBhYrQ==}
@@ -4384,6 +4410,10 @@ packages:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
+  object-hash@2.2.0:
+    resolution: {integrity: sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==}
+    engines: {node: '>= 6'}
+
   object-hash@3.0.0:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
     engines: {node: '>= 6'}
@@ -4419,6 +4449,10 @@ packages:
   obliterator@2.0.4:
     resolution: {integrity: sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==}
 
+  oidc-token-hash@5.0.3:
+    resolution: {integrity: sha512-IF4PcGgzAr6XXSff26Sk/+P4KZFJVuHAJZj3wgO3vX2bMdNVp/QXTP3P7CEm9V1IdG8lDLY3HhiqpsE/nOwpPw==}
+    engines: {node: ^10.13.0 || >=12.0.0}
+
   on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
@@ -4449,6 +4483,9 @@ packages:
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
+
+  openid-client@5.6.4:
+    resolution: {integrity: sha512-T1h3B10BRPKfcObdBklX639tVz+xh34O7GjofqrqiAQdm7eHsQ00ih18x6wuJ/E6FxdtS2u3FmUGPDeEcMwzNA==}
 
   optionator@0.8.3:
     resolution: {integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==}
@@ -5174,6 +5211,43 @@ packages:
   sprintf-kit@2.0.2:
     resolution: {integrity: sha512-lnapdj6W4LflHZGKvl9eVkz5YF0xaTrqpRWVA4cNVOTedwqifIP8ooGImldzT/4IAN5KXFQAyXTdLidYVQdyag==}
     engines: {node: '>=0.12'}
+
+  sst-darwin-arm64@3.3.52:
+    resolution: {integrity: sha512-3+sIPCC6PO6pZQY73GTtX5ei3WZdN+dGwccmO/Lduyj/O6KrQ1zjgeHTIUT4VEz2j7ukVKGCmAhHuCgDxzMpZw==}
+    cpu: [arm64]
+    os: [darwin]
+
+  sst-darwin-x64@3.3.52:
+    resolution: {integrity: sha512-xsviWuKbWrpBX3aPAKsaWq0ohfyr3ceGpcLVMrqrwuxxLreq6fyICunNfi7+HrDUHur5jj/qL48tm1BMKGzk8g==}
+    cpu: [x64]
+    os: [darwin]
+
+  sst-linux-arm64@3.3.52:
+    resolution: {integrity: sha512-0VYTc6nb+FTNtxAuL/p4fpR9FCuJytu0FMIUwXzOf/tZlVjDXYYCqcsbo4Cp7CllQTGB9jl1xzX83TkxHhi1xg==}
+    cpu: [arm64]
+    os: [linux]
+
+  sst-linux-x64@3.3.52:
+    resolution: {integrity: sha512-1Xq3PYHwwehT7tuafWqtGQtEaRj4b7tlocto5pxAmQYajRe7g64TNAEExQ2fKO5eSz6F4ncQdbxwPkqxxTgvhg==}
+    cpu: [x64]
+    os: [linux]
+
+  sst-linux-x86@3.3.52:
+    resolution: {integrity: sha512-/TaMXhHmLSDw1kLzlLDbc/tpxI2FU2gr3urOdRR1v1iDzejeoLXsJoRzRxblgWFw40/TZx3suOkJ0tkJAv1fXw==}
+    cpu: [x86]
+    os: [linux]
+
+  sst@3.3.52:
+    resolution: {integrity: sha512-QciEbgVWR0kJDgOQsMmu6CojkFtDiZUnYd+PP84gNQOT4F7f8HD5zKTiKOHx1M4hMPs9KGtHqLF5TLNA4iVGcA==}
+    hasBin: true
+    peerDependencies:
+      hono: 4.x
+      valibot: 0.30.x
+    peerDependenciesMeta:
+      hono:
+        optional: true
+      valibot:
+        optional: true
 
   stacktrace-parser@0.1.10:
     resolution: {integrity: sha512-KJP1OCML99+8fhOHxwwzyWrlUuVX5GQ0ZpJTd1DFXhdkrvg1szxfHhawXUZ3g9TkXORQd4/WG68jMlQZ2p8wlg==}
@@ -7918,6 +7992,8 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
+  '@types/aws-lambda@8.10.146': {}
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.26.2
@@ -8510,6 +8586,8 @@ snapshots:
       util: 0.12.5
       uuid: 8.0.0
       xml2js: 0.6.2
+
+  aws4fetch@1.0.20: {}
 
   axios@1.7.8:
     dependencies:
@@ -10663,6 +10741,10 @@ snapshots:
 
   jmespath@0.16.0: {}
 
+  jose@4.15.9: {}
+
+  jose@5.2.3: {}
+
   js-sha3@0.8.0: {}
 
   js-tokens@4.0.0: {}
@@ -10867,6 +10949,10 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  lru-cache@6.0.0:
+    dependencies:
+      yallist: 4.0.0
 
   lru-queue@0.1.0:
     dependencies:
@@ -11132,6 +11218,8 @@ snapshots:
 
   object-assign@4.1.1: {}
 
+  object-hash@2.2.0: {}
+
   object-hash@3.0.0: {}
 
   object-inspect@1.13.3: {}
@@ -11172,6 +11260,8 @@ snapshots:
 
   obliterator@2.0.4: {}
 
+  oidc-token-hash@5.0.3: {}
+
   on-finished@2.3.0:
     dependencies:
       ee-first: 1.1.1
@@ -11204,6 +11294,13 @@ snapshots:
       define-lazy-prop: 2.0.0
       is-docker: 2.2.1
       is-wsl: 2.2.0
+
+  openid-client@5.6.4:
+    dependencies:
+      jose: 4.15.9
+      lru-cache: 6.0.0
+      object-hash: 2.2.0
+      oidc-token-hash: 5.0.3
 
   optionator@0.8.3:
     dependencies:
@@ -12081,6 +12178,33 @@ snapshots:
   sprintf-kit@2.0.2:
     dependencies:
       es5-ext: 0.10.64
+
+  sst-darwin-arm64@3.3.52:
+    optional: true
+
+  sst-darwin-x64@3.3.52:
+    optional: true
+
+  sst-linux-arm64@3.3.52:
+    optional: true
+
+  sst-linux-x64@3.3.52:
+    optional: true
+
+  sst-linux-x86@3.3.52:
+    optional: true
+
+  sst@3.3.52:
+    dependencies:
+      aws4fetch: 1.0.20
+      jose: 5.2.3
+      openid-client: 5.6.4
+    optionalDependencies:
+      sst-darwin-arm64: 3.3.52
+      sst-darwin-x64: 3.3.52
+      sst-linux-arm64: 3.3.52
+      sst-linux-x64: 3.3.52
+      sst-linux-x86: 3.3.52
 
   stacktrace-parser@0.1.10:
     dependencies:
