@@ -1,6 +1,6 @@
 Type: AWS::DynamoDB::Table
 Properties:
-  TableName: milestones-def-${self:custom.stage}
+  TableName: milestones-def-${self:custom.stage}-table
   AttributeDefinitions:
     - AttributeName: PK
       AttributeType: S

@@ -1,6 +1,6 @@
 Type: AWS::DynamoDB::Table
 Properties:
-  TableName: rewards-def-${self:custom.stage}
+  TableName: rewards-def-${self:custom.stage}-table
   AttributeDefinitions:
     - AttributeName: PK
       AttributeType: S
