@@ -18,7 +18,6 @@ function Login() {
     strict: false,
   });
 
-  // console.log(search["redirect"]);
   const doLogin = () => {
     login();
     router.history.push(search.redirect ?? "/");
@@ -37,7 +36,7 @@ function Login() {
           <CardDescription className="text-2xl text-inherit font-light !mt-4">Connect to create your Smart Accounts.</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center pt-7">
-          <Button className="w-full max-w-xs py-10 text-2xl font-bold" size="lg">
+          <Button className="w-full max-w-xs py-10 text-2xl font-bold" size="lg" onClick={doLogin}>
           Connect Wallet
           </Button>
         </CardContent>

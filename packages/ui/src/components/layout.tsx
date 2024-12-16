@@ -1,9 +1,7 @@
-import { createFileRoute, Outlet, redirect} from "@tanstack/react-router";
-import { z } from "zod";
+import * as React from 'react'
+import { LogOut, Home, Settings, Menu } from 'lucide-react'
 
-import { LogOut, Home, Settings, Menu } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -15,34 +13,12 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar'
 
-const authenticatedSearchSchema = z.object({
-  redirect: z.string().optional(),
-});
-
-export const Route = createFileRoute("/_authenticated")({
-  validateSearch: authenticatedSearchSchema,
-  // beforeLoad: async ({ context,location }) => {
-  //   if (!context.isLoggedIn) {
-  //     throw redirect({
-  //       to: "/login",
-  //       search: {
-  //       // Use the current location to power a redirect after login
-  //       // (Do not use `router.state.resolvedLocation` as it can
-  //       // potentially lag behind the actual current location)
-  //         redirect: location.href,
-  //       },
-  //     });
-  //   }
-  // },
-  component: AuthenticatedLayout
-});
-
-function AuthenticatedLayout() {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="flex w-full h-screen">
+      <div className="flex h-screen">
         <Sidebar>
           <SidebarHeader>
             <SidebarMenu>
@@ -85,13 +61,14 @@ function AuthenticatedLayout() {
             </div>
           </SidebarFooter>
         </Sidebar>
-        <SidebarInset className="flex-1 bg-inherit">
+        <SidebarInset className="flex-1">
           <header className="flex h-14 items-center border-b px-4">
             <SidebarTrigger />
           </header>
-          <main className="overflow-auto p-4"><Outlet /></main>
+          <main className="flex-1 overflow-auto p-4">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>
-  );
+  )
 }
+
