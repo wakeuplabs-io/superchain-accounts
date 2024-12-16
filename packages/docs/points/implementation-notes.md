@@ -10,7 +10,13 @@
 
 ### DynamoDB Tables
 
-[Your existing tables documentation here...]
+- **Users Table**
+- **Events Table**
+- **Rewards Table**
+- **Milestone Table**
+- **Events Definition Table**
+- **Rewards Definition Table**
+- **Milestone Definition Table**
 
 ### Event Flow
 
