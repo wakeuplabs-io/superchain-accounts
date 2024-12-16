@@ -1,7 +1,6 @@
 import { createFileRoute, Outlet, redirect} from "@tanstack/react-router";
 import { z } from "zod";
-
-import { LogOut, Home, Settings, Menu } from "lucide-react";
+import { LogOut, Settings, User, ScrollText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +10,13 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+
+import optimismLogo from "@/assets/logos/optimism-logo.svg";
+import { AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -43,34 +44,29 @@ function AuthenticatedLayout() {
   return (
     <SidebarProvider>
       <div className="flex w-full h-screen">
-        <Sidebar>
-          <SidebarHeader>
+        <Sidebar className="w-80">
+          <SidebarHeader className="px-8 py-14">
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton size="lg">
-                  <Menu className="h-6 w-6" />
-                  <span className="font-semibold">My App</span>
-                </SidebarMenuButton>
+              <SidebarMenuItem className="flex justify-center">
+                <img src={optimismLogo} className="w-[135px]" />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarHeader>
-          <SidebarContent>
+          <SidebarContent className="px-8">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/">
-                    <Home className="h-4 w-4" />
-                    <span>Home</span>
-                  </a>
-                </SidebarMenuButton>
+                <AuthenticatedSidebarMenuButton
+                  Icon={User}
+                  text="Profile"
+                  route="/profile"
+                />
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/settings">
-                    <Settings className="h-4 w-4" />
-                    <span>Settings</span>
-                  </a>
-                </SidebarMenuButton>
+                <AuthenticatedSidebarMenuButton
+                  Icon={ScrollText}
+                  text="Accounts"
+                  route="/accounts"
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
