@@ -8,7 +8,6 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * It is pseudo-coded and must be thoroughly tested before delivery to production/staging.
  */
 export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
-  console.log("Processing deleted item:", event);
 
   const records = event.Records;
 
@@ -17,7 +16,6 @@ export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
       const deletedItem = AWS.DynamoDB.Converter.unmarshall(
         record.dynamodb.OldImage
       );
-      console.log("Deleted Item:", JSON.stringify(deletedItem));
 
       // Extract relevant attributes from the deleted item
       const userId = deletedItem.userId;
