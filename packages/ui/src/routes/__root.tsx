@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import React from "react";
 
 const TanStackRouterDevtools =
@@ -13,7 +13,7 @@ const TanStackRouterDevtools =
 export const Route = createRootRoute({
   component: () => (
     <div className="w-screen h-screen flex flex-col">
-      <main className="flex flex-1">
+      <main className="flex min-h-screen items-center justify-center p-4 bg-gray-100">
         <Outlet />
       </main>
       <TanStackRouterDevtools />

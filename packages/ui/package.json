@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.1.1",
     "@tanstack/react-query": "^5.40.0",
     "@tanstack/react-router": "^1.34.7",
     "class-variance-authority": "^0.7.1",
