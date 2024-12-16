@@ -1,0 +1,6 @@
+name: process-blockchain-${self:custom.stage}
+handler: packages/api/dist/handlers/processBlockchainEvent.processBlockchainEvent
+events:
+  - http:
+      path: process-blockchain-event
+      method: post
