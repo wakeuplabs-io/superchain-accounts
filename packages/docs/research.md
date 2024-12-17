@@ -321,9 +321,9 @@ Additionally, Torus offers a user-friendly wallet recovery mechanism. Since the 
 
 - Allow users to log in using their preferred method (e.g., email, social login, etc.).
 - Simplifies wallet management and recovery.
+- While users are required to approve and sign each UserOperation through the Torus wallet interface, the process largely abstracts the need for them to directly create or manage an Externally Owned Account (EOA) wallet. This approach is particularly beneficial for onboarding new users to the ecosystem, as it simplifies their experience while maintaining control and security.
 
 **Cons:**
-- Users are not fully abstracted from interacting with an Externally Owned Account (EOA) wallet, as they must approve and sign each UserOperation through the Torus wallet interface.
 - Centralized solution, which may not align with decentralized principles.
 - It's not entirely free, although it offers a generous free tier.
 
