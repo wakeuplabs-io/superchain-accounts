@@ -61,9 +61,11 @@ export default {
   				border: "hsl(var(--sidebar-border))",
   				ring: "hsl(var(--sidebar-ring))"
   			},
-			"custom-slate": {
-				"50": "hsl(var(--custom-slate-50))"
-			},
+        "custom-slate": {
+          "50": "hsl(var(--custom-slate-50))",
+          "90": "hsl(var(--custom-slate-90))",
+          "400": "hsl(var(--custom-slate-400))"
+        },
   		}
   	}
   },

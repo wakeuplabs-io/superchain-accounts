@@ -1,8 +1,7 @@
 import { createFileRoute, Outlet, redirect} from "@tanstack/react-router";
 import { z } from "zod";
-import { LogOut, Settings, User, ScrollText } from "lucide-react";
+import { LogOut, Lock, User, ScrollText } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
-import { AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
+import { ActionButton, AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -71,13 +70,12 @@ function AuthenticatedLayout() {
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
-            <div className="flex justify-between px-2 pb-4">
-              <Button variant="outline" size="icon" className="h-10 w-10">
-                <Settings className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="h-10 w-10">
-                <LogOut className="h-4 w-4" />
-              </Button>
+            <div className="flex px-8 py-14">
+              <div className="flex gap-4">
+                <ActionButton icon={LogOut} onClick={() => console.log("logging out")}/>
+                <ActionButton variant='slate' icon={Lock} onClick={() => console.log("locking")}/>
+              </div>
+              
             </div>
           </SidebarFooter>
         </Sidebar>
