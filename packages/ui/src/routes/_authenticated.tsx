@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect} from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouter} from "@tanstack/react-router";
 import { z } from "zod";
 import { LogOut, Lock, User, ScrollText } from "lucide-react";
 
@@ -17,6 +17,7 @@ import {
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { ActionButton, AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
+import { useMockAuth } from "@/contexts/MockAuthContext";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -24,23 +25,31 @@ const authenticatedSearchSchema = z.object({
 
 export const Route = createFileRoute("/_authenticated")({
   validateSearch: authenticatedSearchSchema,
-  // beforeLoad: async ({ context,location }) => {
-  //   if (!context.isLoggedIn) {
-  //     throw redirect({
-  //       to: "/login",
-  //       search: {
-  //       // Use the current location to power a redirect after login
-  //       // (Do not use `router.state.resolvedLocation` as it can
-  //       // potentially lag behind the actual current location)
-  //         redirect: location.href,
-  //       },
-  //     });
-  //   }
-  // },
+  beforeLoad: async ({ context,location }) => {
+    if (!context.isLoggedIn) {
+      throw redirect({
+        to: "/login",
+        search: {
+        // Use the current location to power a redirect after login
+        // (Do not use `router.state.resolvedLocation` as it can
+        // potentially lag behind the actual current location)
+          redirect: location.href,
+        },
+      });
+    }
+  },
   component: AuthenticatedLayout
 });
 
 function AuthenticatedLayout() {
+  const {logout} = useMockAuth();
+  const router = useRouter();
+
+  const onLogout = () => {
+    logout();
+    router.history.push("/login");
+  };
+
   return (
     <SidebarProvider>
       <div className="flex w-full h-screen">
@@ -73,7 +82,7 @@ function AuthenticatedLayout() {
           <SidebarFooter>
             <div className="flex flex-col px-8 py-14 gap-9">
               <div className="flex gap-4">
-                <ActionButton icon={LogOut} onClick={() => console.log("logging out")}/>
+                <ActionButton icon={LogOut} onClick={onLogout}/>
                 <ActionButton variant='slate' icon={Lock} onClick={() => console.log("locking")}/>
               </div>
               <img className="w-[124px]" src={wakeUpPowered} />
