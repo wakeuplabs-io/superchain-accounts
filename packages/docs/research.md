@@ -351,6 +351,13 @@ This iterative approach ensures we can balance functionality with practical cons
 
 ## Points Strategy
 
+### Please note:
+
+**Future adjustments might be necessary to streamline its functionality within the system.**
+
+---
+
+
 [On this link](./points/events.md) the points/events strategies are listed.
 
 This approach to collecting points involves an off-chain activity tracking mechanism, combined with on-chain rewards issuance, offering flexibility in recognizing and rewarding user actions across multiple blockchains. Here's how it works in overview:
