@@ -304,14 +304,29 @@ This approach builds on the foundation of the non-custodial model while incorpor
 **1. Leverage Web3Auth**
 Use Web3Auth to handle login and wallet creation. This solution utilizes the wallet generated during authentication, streamlining the user experience.
 
-**Pro:**
+**Pros:**
 
 - Provides a seamless and abstracted user experience, allowing users to log in using their preferred method (e.g., email, social login, etc.).
 
 **Cons:**
 
 - Centralized solution, which may not align with decentralized principles.
-- it is a paid services.
+- it is a paid service.
+
+**2. Authentication and Wallet Management with Torus** [Torus](https://tor.us) is an open-source, non-custodial key management network designed to simplify user authentication in Web3 applications. It allows users to sign in seamlessly using their email, social media accounts, or other identifiers. Upon authentication, a wallet is automatically generated, enabling users to interact with the application without the complexity of managing a traditional externally owned account (EOA) wallet.
+
+Additionally, Torus offers a user-friendly wallet recovery mechanism. Since the wallet is linked to the user's social media accounts, it eliminates the need to remember or securely store a seed phrase or private key, ensuring a smoother and more accessible user experience.
+
+**Pro:**
+
+- Allow users to log in using their preferred method (e.g., email, social login, etc.).
+- Simplifies wallet management and recovery.
+- While users are required to approve and sign each UserOperation through the Torus wallet interface, the process largely abstracts the need for them to directly create or manage an Externally Owned Account (EOA) wallet. This approach is particularly beneficial for onboarding new users to the ecosystem, as it simplifies their experience while maintaining control and security.
+
+**Cons:**
+- Centralized solution, which may not align with decentralized principles.
+- It's not entirely free, although it offers a generous free tier.
+
 
 **2. Implement Custom Login Using Tools Like Auth0**
 Develop a custom login system integrated with tools like Auth0. This approach would require managing wallet creation (Externally Owned Accounts, or EOAs) as part of the onboarding process.
