@@ -9,7 +9,7 @@ type ActionButtonProps =  ButtonProps & {
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({ icon: Icon, onClick, className, ...props }: ActionButtonProps) => (
-  <Button onClick={onClick} className={cn("w-12 h-12",className)} size='icon' {...props}>
+  <Button onClick={onClick} className={cn("w-12 h-12 rounded-xl",className)} size='icon' {...props}>
     <Icon size={24}/>
   </Button>
 );

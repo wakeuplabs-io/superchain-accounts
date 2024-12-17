@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
+import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { ActionButton, AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
 
 const authenticatedSearchSchema = z.object({
@@ -70,12 +71,12 @@ function AuthenticatedLayout() {
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
-            <div className="flex px-8 py-14">
+            <div className="flex flex-col px-8 py-14 gap-9">
               <div className="flex gap-4">
                 <ActionButton icon={LogOut} onClick={() => console.log("logging out")}/>
                 <ActionButton variant='slate' icon={Lock} onClick={() => console.log("locking")}/>
               </div>
-              
+              <img className="w-[124px]" src={wakeUpPowered} />
             </div>
           </SidebarFooter>
         </Sidebar>
