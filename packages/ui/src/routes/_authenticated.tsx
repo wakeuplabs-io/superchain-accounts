@@ -5,8 +5,6 @@ const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
 });
 
-// type AuthenticatedSearch = z.infer<typeof authenticatedSearchSchema>
-
 export const Route = createFileRoute("/_authenticated")({
   validateSearch: authenticatedSearchSchema,
   beforeLoad: async ({ context,location }) => {
