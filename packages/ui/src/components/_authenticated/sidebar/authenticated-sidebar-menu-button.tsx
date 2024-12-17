@@ -12,7 +12,7 @@ export const AuthenticatedSidebarMenuButton: React.FC<AuthenticatedSidebarMenuBu
   return (
     <SidebarMenuButton size='lg' asChild>
       <a href={route} className="font-medium text-custom-slate-400">
-        <Icon className="h-4 w-4" strokeWidth={3} />
+        <Icon size={24} strokeWidth={2} className="mr-4" />
         <span className="text-base">{text}</span>
       </a>
     </SidebarMenuButton>
