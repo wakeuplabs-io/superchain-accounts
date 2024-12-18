@@ -1,5 +1,6 @@
 import { z } from "zod";
 import dotenv from "dotenv";
+import { getAddress } from "viem";
 
 dotenv.config();
 
@@ -8,6 +9,7 @@ dotenv.config();
 const env = {
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
+  PAYMASTER_ADDRESS: process.env.PAYMASTER_ADDRESS,
   EVENTS_TABLE: process.env.EVENTS_TABLE,
   USERS_TABLE: process.env.USERS_TABLE,
   MILESTONES_TABLE: process.env.MILESTONES_TABLE,
@@ -28,6 +30,7 @@ const envSchema = z
     EVENTS_DEF_TABLE: z.string().default("events-def-staging-table"),
     MILESTONES_DEF_TABLE: z.string().default("milestones-def-staging-table"),
     REWARDS_DEF_TABLE: z.string().default("rewards-def-staging-table"),
+    PAYMASTER_ADDRESS: z.string().transform((str) => getAddress(str)),
   })
   .required();
 

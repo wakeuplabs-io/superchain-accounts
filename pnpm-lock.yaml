@@ -66,6 +66,9 @@ importers:
       helmet:
         specifier: 7.1.0
         version: 7.1.0
+      jsonrpc-lite:
+        specifier: ^2.2.0
+        version: 2.2.0
       morgan:
         specifier: 1.10.0
         version: 1.10.0
@@ -73,7 +76,7 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0
       viem:
-        specifier: ^2.21.55
+        specifier: ^2.21.35
         version: 2.21.55(typescript@5.4.4)(zod@3.22.4)
       zod:
         specifier: 3.22.4
@@ -4396,6 +4399,9 @@ packages:
 
   jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
+
+  jsonrpc-lite@2.2.0:
+    resolution: {integrity: sha512-/cbbSxtZWs1O7R4tWqabrCM/t3N8qKUZMAg9IUqpPvUs6UyRvm6pCNYkskyKN/XU0UgffW+NY2ZRr8t0AknX7g==}
 
   jsonschema@1.4.1:
     resolution: {integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==}
@@ -11575,6 +11581,8 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  jsonrpc-lite@2.2.0: {}
 
   jsonschema@1.4.1: {}
 
