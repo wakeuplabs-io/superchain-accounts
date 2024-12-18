@@ -8,8 +8,9 @@ Accelerating meaningful participation in the Superchain Ecosystem.
 The purpose of this project is to enhance participation across Optimism Chains by using Smart Accounts. This type of account works like a regular EOA but abstracts users from its management, so they do not have to worry about creation, recovery, or gas.
 In addition, the project will implement a reward program that grants users different perks and badges based on their activity.
 
-## Disclaimer
-[Read the disclaimer](points/disclaimer.md)
+### Please note:
+
+**Future adjustments might be necessary to streamline its functionality within the system.**
 
 ---
 
@@ -349,13 +350,6 @@ During the development phase, we will continue exploring alternative solutions t
 This iterative approach ensures we can balance functionality with practical constraints while keeping long-term scalability and usability in mind.
 
 ## Points Strategy
-
-### Please note:
-
-**Future adjustments might be necessary to streamline its functionality within the system.**
-
----
-
 
 [On this link](./points/events.md) the points/events strategies are listed.
 
