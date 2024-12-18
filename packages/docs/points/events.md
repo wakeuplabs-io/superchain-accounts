@@ -5,7 +5,9 @@ This document outlines the proposed system for earning points and rewards within
 
 [← Overview](../research.md#points-strategy)
 
-[Read the disclaimer](./disclaimer.md)
+### Please note:
+
+**Future adjustments might be necessary to streamline its functionality within the system.**
 
 ---
 

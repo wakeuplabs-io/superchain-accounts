@@ -4,7 +4,9 @@
 
 This document outlines the architecture and functionality of the backend required to implement the Superchain Points System, including the handling of user accounts, event processing, and points mapping.
 
-[Read the disclaimer](./disclaimer.md)
+### Please note:
+
+**Future adjustments might be necessary to streamline its functionality within the system.**
 
 ---
 
