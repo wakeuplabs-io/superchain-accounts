@@ -5,6 +5,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 /**
  * This function processes deleted items from a DynamoDB stream.
+ * @todo
  * It is pseudo-coded and must be thoroughly tested before delivery to production/staging.
  */
 export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
@@ -23,17 +24,7 @@ export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
       const userId = deletedItem.userId;
       const eventType = deletedItem.event_type;
 
-      // Example conditions (replace with your actual logic)
-      if (eventType === "someEventType") {
-        // Grant points
-        await grantPoints(userId, 10);
-      } else if (eventType === "anotherEventType") {
-        // Grant rewards
-        await grantRewards(userId, "rewardId");
-      } else if (eventType === "yetAnotherEventType") {
-        // Grant milestones
-        await grantMilestones(userId, "milestoneId");
-      }
+      //@todo calculate points rewards and milestones in a module and call it here
     }
   }
 
@@ -43,21 +34,3 @@ export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
   };
 };
 
-// Example functions to grant points, rewards, and milestones
-const grantPoints = async (userId: string, points: number) => {
-  // Logic to grant points
-  console.log(`Granting ${points} points to user ${userId}`);
-  // Update the user's points in DynamoDB or perform other actions
-};
-
-const grantRewards = async (userId: string, rewardId: string) => {
-  // Logic to grant rewards
-  console.log(`Granting reward ${rewardId} to user ${userId}`);
-  // Update the user's rewards in DynamoDB or perform other actions
-};
-
-const grantMilestones = async (userId: string, milestoneId: string) => {
-  // Logic to grant milestones
-  console.log(`Granting milestone ${milestoneId} to user ${userId}`);
-  // Update the user's milestones in DynamoDB or perform other actions
-};

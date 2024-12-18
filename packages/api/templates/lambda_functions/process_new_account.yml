@@ -1,6 +1,0 @@
-name: process-new-account-${self:custom.stage}
-handler: packages/api/dist/handlers/processNewUserAccount.createUserAccount
-events:
-  - http:
-      path: process-new-user-account
-      method: post

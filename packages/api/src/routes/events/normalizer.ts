@@ -1,0 +1,35 @@
+import { NormalizedCryptoEvent } from "@/types/index.js";
+import { isAddress, Address } from "viem";
+import { z } from "zod";
+
+const requiredAddress = z
+  .string()
+  .refine((x) => isAddress(x), { message: "ADDRESS_INVALID" })
+  .transform((x) => x as Address);
+
+const NormalizedCryptoEventSchema = z.object({
+  transactionHash: z.string(),
+  eventName: z.string(),
+  blockNumber: z.string(),
+  eventKey: z.string(),
+  eventDate: z.number(),
+  address: requiredAddress,
+  args: z.record(z.unknown()),
+}) satisfies z.ZodType<NormalizedCryptoEvent>;
+
+export const normalizeCryptoEvent = (event: any): NormalizedCryptoEvent =>
+  NormalizedCryptoEventSchema.parse(event);
+
+const CreateOrUpdateEventSchema = z.object({
+  event_type: z.string(),
+  event_trigger_type: z.enum(["blockchain", "timeframe"]),
+  expires_on_ttl: z.optional(z.number()),
+  event_name: z.string(),
+  points_awarded: z.number(),
+  description: z.string(),
+  active: z.boolean(),
+});
+
+export const normalizeCreateOrUpdateEvent = (event: any) => {
+  return CreateOrUpdateEventSchema.parse(event);
+};
