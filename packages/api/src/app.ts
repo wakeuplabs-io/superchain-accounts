@@ -2,9 +2,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-
 import serverless from "serverless-http";
-
 import envParsed from "@/envParsed.js";
 import middlewares from "@/middlewares/index.js";
 import routes from "@/routes/index.js";

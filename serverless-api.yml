@@ -47,11 +47,10 @@ functions:
     name: ${self:service}-${self:custom.stage}
     handler: packages/api/dist/app.handler
     timeout: 10
+    private: true
     events:
       - http: ANY /
       - http: ANY /{proxy+}
   processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
-  processNewUserAccount: ${file(./packages/api/templates/lambda_functions/process_new_account.yml)}
-  processBlockchainEvent: ${file(./packages/api/templates/lambda_functions/process_blockchain.yml)}
 
 
