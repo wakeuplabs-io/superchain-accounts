@@ -25,9 +25,6 @@ In addition, the project will implement a reward program that grants users diffe
 - **Account Factory Contract**: Deploys Account Contracts on behalf of users.
 - **Paymaster Contract**: Handles transaction fees, allowing users to pay fees in tokens other than ETH.
 
-### ERC-4337 implementation based on eth-infinitism
-
-
 ## Purpose
 
 This project aims to enhance participation across OP Chains by using Smart Accounts. This type of account works like a regular EOA but abstracts users from its management, so they do not have to worry about creation, recovery, or gas.
@@ -35,9 +32,9 @@ In addition, the project will implement a reward program that grants users diffe
 
 - SuperChain Points may be issued as non-transferable ERC-20 tokens, enhancing the amount of on-chain transactions and enabling their tracking on the blockchain.
 - Claimable Badges will be non-transferable ERC-721, enhancing the amount of on-chain transactions and enabling their tracking on the blockchain.
-- SuperChain Accounts might be dynamic ERC-721 NFTs, symbolizing the user's achievements and level.
+- SuperChain Accounts may be associated with dynamic ERC-721 NFTs, symbolizing the user's achievements and levels.
 
-# Use cases
+## Use cases
 
 - **Create a Smart Account:** Simplified process for new users to generate and activate a blockchain account with minimal technical knowledge.
 - **Recover a Smart Account:** Secure and user-friendly recovery options for lost or inaccessible accounts.
@@ -49,7 +46,7 @@ In addition, the project will implement a reward program that grants users diffe
 
 ## Wire frames
 
-The following wire frames have been designed to illustrate the structure and user flow for the implementation of Smart Accounts and Superchain Accounts, highlighting key interactions and functionalities:
+The following wire frames have been designed to illustrate the structure and user flow for the implementation of Superchain Accounts, highlighting key interactions and functionalities:
 
 
 1. Login and connect wallet. <br />
@@ -63,8 +60,7 @@ The following wire frames have been designed to illustrate the structure and use
 ![Account wireframe](./assets/wireframe-accounts.png)
 
 **Description:**
-- A dashboard displaying the user’s Smart Account and its activity segmented by different Optimism chains.
-Features include token balances, recent transactions, and activity logs for each chain.
+- A dashboard displaying the user’s Smart Account and its activity segmented by different the different chains from the Superchain network. Features include token balances, recent transactions, and activity logs for each chain.
 - Users can navigate to specific chains to explore detailed activity or manage tokens.
 
 3. Summarize of points and achievements. <br />
@@ -74,15 +70,14 @@ Features include token balances, recent transactions, and activity logs for each
 - A profile page summarizing the user's Superchain Points, earned badges, and achievements.
 - Visual elements include detailed milestone tracking and a section for claiming rewards.
 
-# Technical plan
+## Technical plan
 
-## Smart Accounts Implementation (ERC-4337)
+### Smart Accounts Implementation (ERC-4337)
 
 We have developed a custom Smart Account based on the [ERC-4337 Standard](https://eips.ethereum.org/EIPS/eip-4337). This advanced account design offers the following capabilities:
 
 - **Seamless Transaction Execution:** Functions like an Externally Owned Account (EOA), enabling smooth interaction with smart contracts and other accounts.
 - **Signature Verification:** Ensures secure and reliable validation of transaction authenticity.
-- **Account Recovery Mechanism:** Supports adding account guardians to facilitate secure and efficient recovery of account access.
 
 ### Architecture
 
@@ -91,7 +86,7 @@ ERC-4337 introduces several key components that work together to enable account 
 ![ERC-4337 Architecture](./assets/architecture-erc-4337.png)
 [Learn more about ERC-4337](https://www.erc4337.io/docs)
 
-After conducting research and some PoCs, we identified an implementation of the [ERC-4337 Standard](https://eips.ethereum.org/EIPS/eip-4337) by **eth-infinitism**. 
+After conducting research and some proof of concepts (PoCs), we decided to base our development on the implementation of the [ERC-4337 Standard](https://eips.ethereum.org/EIPS/eip-4337) by **eth-infinitism**.
 
 Our goal is to create custom contracts that comply with this standard by leveraging the contracts and interfaces provided by the [account-abstraction project](https://github.com/eth-infinitism/account-abstraction). 
 
@@ -131,7 +126,7 @@ sequenceDiagram
 
 A User Operation is a pseudo-transaction object that describes a transaction to be executed. Unlike traditional network transactions, User Operations are processed through a dedicated entrypoint contract and can be bundled together by "bundlers" who submit them to the network.
 
-##### Implementation
+**Implementation**
 
 The User Operation is implemented using the `UserOperation` and `PackedUserOperation` classes from the Viem library. These classes provide a standardized structure for defining and processing account abstraction operations in compliance with the ERC-4337 standard. For comprehensive details on implementation specifics, consult the [Viem Account Abstraction Documentation](https://viem.sh/account-abstraction).
 
@@ -142,7 +137,7 @@ Account Abstractions or Smart Accounts are wallets hosted as smart contracts on 
 
 Account Abstractions also have the potential to provide more complex functionalities, which are not limited to interacting or sending and receiving transactions. Instead, these smart wallets can perform high-level programmed functions by deploying them on their smart contracts.
 
-##### Implementation
+**Implementation**
 
 The Account Abstraction contract used in our project is an implementation of eth-infinitism [Simple Account](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/samples/SimpleAccount.sol). This approach provides a robust and standard-compliant solution for ERC-4337 account abstraction.
 
@@ -150,7 +145,7 @@ The Account Abstraction contract used in our project is an implementation of eth
 
 It's Contract in charge of creating Smart Accounts. It's address is provided in the `initCode`property of the `User Operation`, which then the entrypoint contract uses to create Smart Accounts when needed. It uses the `CREATE2` opcode to calculate the account address in a deterministic way.
 
-##### Implementation
+**Implementation**
 
 Our SimpleAccount Factory is Directly adapted from the eth-infinitism [SimpleAccountFactory](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/samples/SimpleAccountFactory.sol) contract, ensuring standard-compliant account creation.
 
@@ -164,7 +159,7 @@ The EntryPoint is a singleton contract that is a central entity for all ERC-4337
 5. Manage Paymaster Staking
 6. Manage Smart Account Nonces.
 
-##### Implementation
+**Implementation**
 
 For the Entrypoint we will use the eth-infinitism [EntryPoint](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/core/EntryPoint.sol) without any modifications.
 
@@ -178,11 +173,11 @@ The bundler acts as a transaction aggregator and economic coordinator, enabling 
 4. Pays Ethereum gas fees, then gets reimbursed through the operations' built-in fee mechanism
 5. Sends the bundled transaction to the EntryPoint smart contract for processing
 
-##### Implementation
+**Implementation** 
 
 For the bundler component of our implementation, we have chosen [Pimlico's Alto bundler](https://docs.pimlico.io/infra/bundler), an open-source and highly performant implementation of the ERC-4337 standard. Alto is a TypeScript-based, type-safe bundler designed for reliability and efficiency in production environments.  
 
-Alto stands out as a proven solution, being listed in the [ERC-4337 Bundlers Directory](https://www.erc4337.io/bundlers) and successfully passing the comprehensive [ETH-Infinitism Bundler Test Suite](https://github.com/eth-infinitism/bundler-spec-tests). This endorsement confirms its robustness, security, and readiness for production use. 
+Alto stands out as a proven solution, being listed in the [ERC-4337 Bundlers Directory](https://www.erc4337.io/bundlers) and satisfies [ETH-Infinitism Bundler Test Suite](https://github.com/eth-infinitism/bundler-spec-tests). This endorsement confirms its robustness, security, and readiness for production use. 
 
 Our decision to adopt Alto is driven by several key factors: 
 
@@ -198,7 +193,7 @@ This approach allows us to maintain full control over the bundler’s operation 
 
 Paymasters are smart contracts that enable flexible gas policies like allowing decentralized applications to sponsor operations for their users (i.e.pay gas fees in the blockchain's native currency), or accept gas fee payments in an ERC-20 token (e.g. USDC) in place of the blockchain's native currency.
 
-##### Implementation
+**Implementation**
 
 Our Paymaster contract extends the eth-infinitism [BasePaymaster](https://github.com/eth-infinitism/account-abstraction/blob/main/contracts/core/BasePaymaster.sol) contract, introducing custom functionality for controlled gas sponsorship within our application ecosystem.
 The paymaster includes a validation process that ensures gas sponsorship is limited to whitelisted accounts.
@@ -215,7 +210,7 @@ This approach ensures alignment with our objectives while fostering collaboratio
 
 ## Authentication
 
-The application aims to provide users with a seamless experience for creating, recovering, and interacting with their superchain accounts. At a high level, the system architecture is composed of four core components: a frontend, a backend, the smart contract solutions and a database. For the purposes of discussing the authentication feature, this high-level overview suffices, as the document will provide in-depth descriptions of each component in subsequent sections.
+The application aims to provide users with a seamless experience for creating, recovering, and interacting with their superchain accounts. At a high level, the system architecture is composed of four core components: a frontend, a backend, the ERC-4337 standard solution (smart contracts, bundler and paymaster client) and a database. For the purposes of discussing the authentication feature, this high-level overview suffices, as the document will provide in-depth descriptions of each component in subsequent sections.
 
 ### Rainbow kit login
 
@@ -326,7 +321,6 @@ Additionally, Torus offers a user-friendly wallet recovery mechanism. Since the 
 
 **Cons:**
 - Centralized solution, which may not align with decentralized principles.
-- It's not entirely free, although it offers a generous free tier.
 
 
 **2. Implement Custom Login Using Tools Like Auth0**
@@ -389,7 +383,7 @@ An implementation for representing the points in the blockchain will be implemen
 
 - SuperChain Points may be issued as non-transferable ERC-20 tokens, enhancing the amount of on-chain transactions and enabling their tracking on the blockchain.
 - Claimable Badges will be non-transferable ERC-721, enhancing the amount of on-chain transactions and enabling their tracking on the blockchain.
-- SuperChain Accounts might be dynamic ERC-721 NFTs, symbolizing the user's achievements and level.
+- - SuperChain Accounts may be associated with dynamic ERC-721 NFTs, symbolizing the user's achievements and levels.
 
 **Pros:**
 
