@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/about/")({
-  component: About,
+export const Route = createFileRoute("/_authenticated/profile")({
+  component: Profile,
 });
 
-function About() {
+function Profile() {
   return (
     <div className="flex flex-1 items-center justify-center">
-      <h3>About Page</h3>
+      <h3>Profile Page</h3>
     </div>
   );
 }
