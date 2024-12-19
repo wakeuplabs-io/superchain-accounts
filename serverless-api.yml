@@ -1,14 +1,56 @@
-service: react-monorepo-template-api
+service: superchain-accounts-api
 provider:
   name: aws
   region: sa-east-1
-  runtime: nodejs18.x
+  runtime: nodejs20.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Scan
+        - dynamodb:Query
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
+  tags:
+    customer: optimism-gov
+    application: superchain-accounts
 plugins:
-  - serverless-plugin-common-excludes
-  - serverless-plugin-include-dependencies
+  - serverless-esbuild
+custom:
+  stage: ${opt:stage, 'dev'}
+  esbuild:
+    bundle: true
+    minify: true
+    target: "node20"
+    exclude:
+      - "@aws-sdk/*"
+      - "!@aws-sdk/client-bedrock-runtime"
+  cloudformation:
+    timeout: 3600 # Increase timeout if your stack takes longer to update
+    forceUpdate: true
+
+resources:
+  Resources:
+    UsersTable: ${file(./packages/api/templates/dynamodb/users_table.yml)}
+    EventsTable: ${file(./packages/api/templates/dynamodb/events_table.yml)}
+    RewardsTable: ${file(./packages/api/templates/dynamodb/rewards_table.yml)}
+    MilestonesTable: ${file(./packages/api/templates/dynamodb/milestones_table.yml)}
+    EventDefinitionTable: ${file(./packages/api/templates/dynamodb/events_def_table.yml)}
+    RewardDefinitionTable: ${file(./packages/api/templates/dynamodb/rewards_def_table.yml)}
+    MilestoneDefinitionTable: ${file(./packages/api/templates/dynamodb/milestones_def_table.yml)}
+    TimeframeCronTable: ${file(./packages/api/templates/dynamodb/timeframe_cron_table.yml)}
+
 functions:
-  app:
+  express-api:
+    name: ${self:service}-${self:custom.stage}
     handler: packages/api/dist/app.handler
+    timeout: 10
+    private: true
     events:
       - http: ANY /
       - http: ANY /{proxy+}
+  processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
+
+
