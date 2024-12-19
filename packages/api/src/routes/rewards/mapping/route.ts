@@ -14,7 +14,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
   const reward: { [key: string]: any } = normalizeCreateOrUpdateRewards(
-    req.body
+    req.body,
   );
   const { reward_type } = reward;
 
@@ -46,7 +46,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 
   const reward: { [key: string]: any } = normalizeCreateOrUpdateRewards(
-    req.body
+    req.body,
   );
   const { reward_type } = reward;
 
@@ -74,7 +74,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
           ...acc,
           [`#${key}`]: key,
         }),
-        {}
+        {},
       ),
     },
     ExpressionAttributeValues: {
@@ -84,7 +84,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
           ...acc,
           [`:value${index}`]: reward[key],
         }),
-        {}
+        {},
       ),
     },
     ReturnValues: "UPDATED_NEW",

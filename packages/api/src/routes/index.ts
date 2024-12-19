@@ -18,5 +18,4 @@ router.use("/milestones", milestonesRoute);
 router.use("/rewards", rewardsRoute);
 router.use(paymasterClientRoute);
 
-
 export default router;

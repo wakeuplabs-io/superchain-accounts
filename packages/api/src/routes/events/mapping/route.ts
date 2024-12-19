@@ -66,7 +66,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
           ...acc,
           [`#${key}`]: key,
         }),
-        {}
+        {},
       ),
     },
     ExpressionAttributeValues: {
@@ -76,7 +76,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
           ...acc,
           [`:value${index}`]: event[key],
         }),
-        {}
+        {},
       ),
     },
     ReturnValues: "UPDATED_NEW",

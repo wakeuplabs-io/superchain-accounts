@@ -62,7 +62,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
           ...acc,
           [`#${key}`]: key,
         }),
-        {}
+        {},
       ),
     },
     ExpressionAttributeValues: {
@@ -72,7 +72,7 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
           ...acc,
           [`:value${index}`]: milestone[key as keyof typeof milestone],
         }),
-        {} as { [key: string]: any }
+        {} as { [key: string]: any },
       ),
     },
     ReturnValues: "UPDATED_NEW",

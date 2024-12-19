@@ -27,7 +27,7 @@ router.get(
     } catch (error) {
       res.status(500);
     }
-  }
+  },
 );
 
 router.post(
@@ -62,7 +62,7 @@ router.post(
     } catch (error) {
       res.status(500).send({ message: "Error creating user" });
     }
-  }
+  },
 );
 
 export default router;

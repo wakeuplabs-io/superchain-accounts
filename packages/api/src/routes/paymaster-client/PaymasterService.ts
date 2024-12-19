@@ -1,4 +1,9 @@
-import jsonrpc, { ErrorObject, IParsedObject, RequestObject, SuccessObject } from "jsonrpc-lite";
+import jsonrpc, {
+  ErrorObject,
+  IParsedObject,
+  RequestObject,
+  SuccessObject,
+} from "jsonrpc-lite";
 import { Address, encodePacked } from "viem";
 
 export class PaymasterService {
@@ -17,12 +22,15 @@ export class PaymasterService {
     }
 
     switch (payload.method) {
-    case "pm_getPaymasterStubData":
-      return this.handleGetPaymasterStubData(payload);
-    case "pm_getPaymasterData":
-      return this.handleGetPaymasterData(payload);
-    default:
-      return jsonrpc.error(payload.id, { code: -32601, message: "Method not found" });
+      case "pm_getPaymasterStubData":
+        return this.handleGetPaymasterStubData(payload);
+      case "pm_getPaymasterData":
+        return this.handleGetPaymasterData(payload);
+      default:
+        return jsonrpc.error(payload.id, {
+          code: -32601,
+          message: "Method not found",
+        });
     }
   }
 

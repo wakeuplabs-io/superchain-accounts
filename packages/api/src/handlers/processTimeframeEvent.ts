@@ -16,7 +16,7 @@ export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
   for (const record of records) {
     if (record.dynamodb && record.dynamodb.OldImage) {
       const deletedItem = AWS.DynamoDB.Converter.unmarshall(
-        record.dynamodb.OldImage
+        record.dynamodb.OldImage,
       );
       console.log("Deleted Item:", JSON.stringify(deletedItem));
 
@@ -33,4 +33,3 @@ export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
     body: JSON.stringify({ message: "Item processed successfully" }),
   };
 };
-
