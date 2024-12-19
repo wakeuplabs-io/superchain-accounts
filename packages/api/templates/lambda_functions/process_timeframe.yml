@@ -1,0 +1,12 @@
+name: process-timeframe-event-${self:custom.stage}
+handler: packages/api/dist/handlers/processTimeframeEvent.processDeletedItem
+events:
+  - stream:
+      type: dynamodb
+      arn:
+        Fn::GetAtt:
+          - TimeframeCronTable
+          - StreamArn
+      filterPatterns:
+        - eventName:
+            - REMOVE

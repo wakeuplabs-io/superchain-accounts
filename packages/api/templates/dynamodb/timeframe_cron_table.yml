@@ -1,0 +1,19 @@
+Type: AWS::DynamoDB::Table
+Properties:
+  TableName: timeframe-cron-${self:custom.stage}
+  AttributeDefinitions:
+    - AttributeName: ID
+      AttributeType: S
+  KeySchema:
+    - AttributeName: ID
+      KeyType: HASH
+  ProvisionedThroughput:
+    ReadCapacityUnits: 5
+    WriteCapacityUnits: 5
+  TimeToLiveSpecification:
+    AttributeName: expires_on
+    Enabled: true
+  SSESpecification:
+    SSEEnabled: true
+  StreamSpecification:
+    StreamViewType: OLD_IMAGE

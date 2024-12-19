@@ -1,0 +1,18 @@
+Type: AWS::DynamoDB::Table
+Properties:
+  TableName: rewards-def-${self:custom.stage}
+  AttributeDefinitions:
+    - AttributeName: PK
+      AttributeType: S
+    - AttributeName: SK
+      AttributeType: S
+  KeySchema:
+    - AttributeName: PK
+      KeyType: HASH
+    - AttributeName: SK
+      KeyType: RANGE
+  ProvisionedThroughput:
+    ReadCapacityUnits: 5
+    WriteCapacityUnits: 5
+  SSESpecification:
+    SSEEnabled: true
