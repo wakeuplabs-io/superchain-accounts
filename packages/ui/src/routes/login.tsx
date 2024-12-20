@@ -6,12 +6,14 @@ import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { cn } from "@/lib/utils";
 import { useSuperChainStore } from "@/core/store";
+import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
   component: Login,
 });
 
 function Login() {
+  const [isLoading, setIsLoading] = useState(false);
   const authHandler = useSuperChainStore((state => state.authHandler));
   
   const router = useRouter();
@@ -20,8 +22,13 @@ function Login() {
   });
 
   const doLogin = async () => {
-    await authHandler.login();
-    router.history.push(search.redirect ?? "/");
+    try {
+      setIsLoading(true);
+      await authHandler.login();
+      router.history.push(search.redirect ?? "/");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -37,7 +44,7 @@ function Login() {
           <CardDescription className="text-2xl text-inherit font-light !mt-4">Connect to create your Smart Accounts.</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center pt-7">
-          <Button className="w-full max-w-xs py-10 text-2xl font-bold" size="lg" onClick={doLogin}>
+          <Button className="w-full max-w-xs py-10 text-2xl font-bold" size="lg" onClick={doLogin} loading={isLoading}>
           Connect Wallet
           </Button>
         </CardContent>

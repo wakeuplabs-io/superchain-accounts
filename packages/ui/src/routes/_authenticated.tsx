@@ -40,7 +40,9 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
   },
-  component: AuthenticatedLayout
+  component: AuthenticatedLayout,
+  // TODO: Add a pending component
+  // pendingComponent: () => <span>Loading...</span>,
 });
 
 function AuthenticatedLayout() {
