@@ -6,7 +6,7 @@ const BUNDLER_PORT_FORWARDING = `${BUNDLER_PORT}/http` as `${number}/http`;
 export default $config({
   app(input) {
     return {
-      name: "superchain",
+      name: "superchain-bundler",
       removal: input?.stage === "production" ? "retain" : "remove",
       home: "aws",
       providers: {
@@ -16,7 +16,7 @@ export default $config({
           defaultTags: {
             tags: {
               customer: "optimism-gov",
-              application: "superchain",
+              application: "superchain-bundler",
               environment: input?.stage,
             }
           },
