@@ -11,6 +11,9 @@ importers:
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
+      sst:
+        specifier: ^3.3.52
+        version: 3.4.24
       zod:
         specifier: 3.22.4
         version: 3.22.4
