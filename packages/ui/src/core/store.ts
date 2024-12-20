@@ -1,8 +1,10 @@
 import { Chain } from "viem";
 import { create } from "zustand";
-import { INITIAL_NETWORK } from "../network";
+import { getLocalDevNetwork, INITIAL_NETWORK } from "../network";
 import { TorusAuthHandler } from "./auth";
 import envParsed from "@/envParsed";
+
+const environment = envParsed();
 
 type SuperChainStore = {
     chain: Chain,
@@ -15,8 +17,11 @@ type SuperChainActions = {
 
 type SuperChainStoreType = SuperChainStore & SuperChainActions;
 
+const initialChain = environment.LOCAL_DEV ? getLocalDevNetwork() : INITIAL_NETWORK;
+const authMode = environment.LOCAL_DEV ? "local" : environment.DEV ? "development" : "production";
+
 export const useSuperChainStore = create<SuperChainStoreType >((set) => ({
-  chain: INITIAL_NETWORK,
-  authHandler: new TorusAuthHandler(INITIAL_NETWORK, envParsed().DEV),
+  chain: initialChain,
+  authHandler: new TorusAuthHandler(initialChain, authMode),
   updateChain: (chain) => set({ chain }),
 }));
