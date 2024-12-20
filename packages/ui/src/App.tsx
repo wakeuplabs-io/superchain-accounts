@@ -1,15 +1,11 @@
 import { router } from "@/shared/config/tanstackRouter";
 import { RouterProvider } from "@tanstack/react-router";
-import { useMockAuth } from "./contexts/MockAuthContext";
-import { useSuperChainStore } from "./store";
-
+import { useSuperChainStore } from "./core/store";
 
 function App() {
-  const store = useSuperChainStore();
+  const authHandler = useSuperChainStore((state => state.authHandler));
 
-  console.log(store);
-  const {isLoggedIn} = useMockAuth();
-  return <RouterProvider router={router} context={{isLoggedIn}} />;
+  return <RouterProvider router={router} context={{authHandler}} />;
 }
 
 export default App;

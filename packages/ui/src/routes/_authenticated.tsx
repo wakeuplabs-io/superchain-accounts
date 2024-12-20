@@ -17,7 +17,7 @@ import {
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { ActionButton, AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
-import { useMockAuth } from "@/contexts/MockAuthContext";
+import { useSuperChainStore } from "@/core/store";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -25,8 +25,10 @@ const authenticatedSearchSchema = z.object({
 
 export const Route = createFileRoute("/_authenticated")({
   validateSearch: authenticatedSearchSchema,
-  beforeLoad: async ({ context,location }) => {
-    if (!context.isLoggedIn) {
+  beforeLoad: async ({ context, location }) => {
+    await context.authHandler.initialize();
+
+    if (!context.authHandler.isLoggedIn()) {
       throw redirect({
         to: "/login",
         search: {
@@ -42,11 +44,11 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const {logout} = useMockAuth();
   const router = useRouter();
+  const authHandler = useSuperChainStore((state => state.authHandler));
 
-  const onLogout = () => {
-    logout();
+  const onLogout = async() => {
+    await authHandler.logout();
     router.history.push("/login");
   };
 

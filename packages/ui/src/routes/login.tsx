@@ -1,25 +1,26 @@
 import { createFileRoute, useRouter, useSearch } from "@tanstack/react-router";
 import { Button } from "@/components";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useMockAuth } from "@/contexts/MockAuthContext";
 
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { cn } from "@/lib/utils";
+import { useSuperChainStore } from "@/core/store";
 
 export const Route = createFileRoute("/login")({
   component: Login,
 });
 
 function Login() {
-  const {login} = useMockAuth();
+  const authHandler = useSuperChainStore((state => state.authHandler));
+  
   const router = useRouter();
   const search = useSearch({
     strict: false,
   });
 
-  const doLogin = () => {
-    login();
+  const doLogin = async () => {
+    await authHandler.login();
     router.history.push(search.redirect ?? "/");
   };
 

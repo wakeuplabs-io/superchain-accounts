@@ -4,13 +4,15 @@ import { z } from "zod";
 
 const env = {
   APP_URL: import.meta.env.APP_URL,
-  ENVIRONMENT: import.meta.env.ENVIRONMENT ?? "staging",
+  DEV: import.meta.env.DEV,
+  PROD: import.meta.env.PROD,
 };
 
 const envSchema = z
   .object({
     APP_URL: z.string().url().optional().default("http://localhost:5000"),
-    ENVIRONMENT: z.enum(["staging", "production"]),
+    DEV: z.boolean(),
+    PROD: z.boolean(),
   })
   .required();
 
