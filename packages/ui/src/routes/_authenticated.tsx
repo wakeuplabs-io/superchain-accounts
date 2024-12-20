@@ -26,6 +26,10 @@ const authenticatedSearchSchema = z.object({
 export const Route = createFileRoute("/_authenticated")({
   validateSearch: authenticatedSearchSchema,
   beforeLoad: async ({ context, location }) => {
+    if(!context.authHandler) {
+      throw Error("AuthHandler not provided");
+    }
+
     await context.authHandler.initialize();
 
     if (!context.authHandler.isLoggedIn()) {

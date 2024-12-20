@@ -1,4 +1,6 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+
+import { TorusAuthHandler } from "@/core/auth";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import React from "react";
 
 const TanStackRouterDevtools =
@@ -10,7 +12,7 @@ const TanStackRouterDevtools =
       }))
     );
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{authHandler: TorusAuthHandler | null}>()({
   component: () => (
     <div className="w-screen h-screen flex flex-col">
       <main className="min-h-screen bg-gray-100">
