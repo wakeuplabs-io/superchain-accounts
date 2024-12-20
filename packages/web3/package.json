@@ -10,6 +10,7 @@
     "deploy": "npx hardhat ignition deploy ./ignition/modules/wakeUpERC4337.ts",
     "deploy:testnet": "npm run deploy -- --network testnet --verify",
     "deploy:mainnet": "npm run deploy -- --network mainnet --verify",
+    "deploy:local": "npm run deploy -- --network local",
     "test": "npx hardhat test",
     "setup-paymaster": "ts-node ./scripts/setUpPaymaster",
     "setup-paymaster:mainnet": "npm run setup-paymaster -- --network mainnet",
