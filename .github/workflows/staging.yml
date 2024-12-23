@@ -6,4 +6,4 @@ on:
 
 jobs:
   call-build-workflow:
-    uses: ./.github/workflows/Build.yml
+    uses: ./.github/workflows/build.yml
