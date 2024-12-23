@@ -4,32 +4,74 @@ on:
   workflow_call:
 
 jobs:
-  Deploy:
+  install:
     runs-on: ubuntu-latest
+
+    # Define concurrency at the job level
+    concurrency:
+      group: build_environment
+      cancel-in-progress: true
+
     steps:
+    # Checkout the repository
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+
+     # Set up Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
-      
-      - name: Install dependencies
+
+
+    # Cache pnpm dependencies
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        id: pnpm-cache
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      # Install pnpm dependencies
+      - name: Install pnpm dependencies
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
         run: pnpm install
 
-      - name: Build all
-        run: pnpm build
+      outputs:
+        cache-hit: ${{ steps.pnpm-cache.outputs.cache-hit }}
+      
+  # Job to build the UI
+  build-ui:
+    runs-on: ubuntu-latest
+    needs: install
 
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Restore cached dependencies
+      - name: Restore pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      # Run the build for the UI
       - name: Build UI
-      - run: pnpm --filter ./packages/ui run build
-      - concurrency:
-        group: staging_environment
-        cancel-in-progress: true
-
-      - name: Build Api
-      - run: pnpm --filter ./packages/api run build
-      - concurrency:
-        group: staging_environment
-        cancel-in-progress: true
+        run: pnpm --filter ./packages/ui run build
