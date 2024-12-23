@@ -9,7 +9,7 @@ jobs:
     uses: ./.github/workflows/install-deps.yml
       
   # Job to Deploy the UI
-  build-ui:
+  deploy:
     runs-on: ubuntu-latest
     needs: call-install-workflow
 
