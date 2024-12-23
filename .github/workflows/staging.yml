@@ -5,36 +5,13 @@ on:
     types: [opened, synchronize, reopened, converted_to_draft]
 
 jobs:
-  # call-build-workflow:
-  #   uses: ./.github/workflows/Build.yml
+  call-build-workflow:
+    uses: ./.github/workflows/Build.yml
 
   call-deploy-ui-workflow:
     uses: ./.github/workflows/deploy-ui.yml
+    needs: call-build-workflow
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
-
-  # deploy-ui:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Deploy UI Workflow
-  #     uses: ./.github/workflows/deploy-ui.yml
-  #     with:
-  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       aws-region: ${{ secrets.AWS_REGION }}
-
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     # CHECK ENV VARS
-  #     - name: Check ENV VARS
-  #       run: |
-  #         echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}"
-  #         echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}"
-  #         echo "AWS_REGION=${{ env.AWS_REGION }}"
-  #       env:
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         AWS_REGION: ${{ secrets.AWS_REGION }}
