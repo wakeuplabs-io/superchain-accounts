@@ -173,6 +173,9 @@ importers:
       lucide-react:
         specifier: ^0.468.0
         version: 0.468.0(react@18.2.0)
+      permissionless:
+        specifier: ^0.2.23
+        version: 0.2.23(viem@2.21.55(typescript@5.7.2)(zod@3.24.1))(webauthn-p256@0.0.10)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -5418,6 +5421,12 @@ packages:
 
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
+
+  permissionless@0.2.23:
+    resolution: {integrity: sha512-J/Z8Tvgv/FKcbu9DMDYu/QLkssnlOAbQ6yXPqKsRywdB+x4FT5PDHVkwBdK46t6QnDy8r4zU9G1EmlTSmZA2kA==}
+    peerDependencies:
+      viem: ^2.21.54
+      webauthn-p256: 0.0.10
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -13007,6 +13016,11 @@ snapshots:
   peek-readable@4.1.0: {}
 
   pend@1.2.0: {}
+
+  permissionless@0.2.23(viem@2.21.55(typescript@5.7.2)(zod@3.24.1))(webauthn-p256@0.0.10):
+    dependencies:
+      viem: 2.21.55(typescript@5.7.2)(zod@3.24.1)
+      webauthn-p256: 0.0.10
 
   picocolors@1.1.1: {}
 

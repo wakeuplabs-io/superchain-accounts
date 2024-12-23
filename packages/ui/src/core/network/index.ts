@@ -1,5 +1,5 @@
 import {Chain, optimism, optimismSepolia} from "viem/chains";
-import envParsed from "../envParsed";
+import envParsed from "../../envParsed";
 
 export const supportedChains: Record<string, Chain> = {
   "optimism": optimism,
