@@ -1,4 +1,3 @@
-import { MockAuthProvider } from "@/contexts/MockAuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 
@@ -9,5 +8,5 @@ interface ProvidersWrapperProps {
 }
 
 export default function ProvidersWrapper({ children }: ProvidersWrapperProps) {
-  return <MockAuthProvider><QueryClientProvider client={queryClient}>{children}</QueryClientProvider></MockAuthProvider>;
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

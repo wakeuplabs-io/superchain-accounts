@@ -2,7 +2,7 @@ import { routeTree } from "@/routeTree.gen";
 import { createRouter } from "@tanstack/react-router";
 
 export const router = createRouter({ routeTree, context: {
-  isLoggedIn: false,
+  authHandler: null
 } });
 
 declare module "@tanstack/react-router" {
