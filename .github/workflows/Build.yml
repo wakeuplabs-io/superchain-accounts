@@ -7,27 +7,26 @@ jobs:
   install:
     runs-on: ubuntu-latest
 
-    # Define concurrency at the job level
-    concurrency:
-      group: build_environment
-      cancel-in-progress: true
-
     steps:
-    # Checkout the repository
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-     # Set up Node.js
-      - uses: actions/setup-node@v4
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # Set up pnpm
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
-    # Cache pnpm dependencies
+      # Cache pnpm dependencies
       - name: Cache pnpm dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: pnpm-cache
         with:
           path: |
@@ -42,8 +41,8 @@ jobs:
         if: steps.pnpm-cache.outputs.cache-hit != 'true'
         run: pnpm install
 
-      outputs:
-        cache-hit: ${{ steps.pnpm-cache.outputs.cache-hit }}
+    outputs:
+      cache-hit: ${{ steps.pnpm-cache.outputs.cache-hit }}
       
   # Job to build the UI
   build-ui:
@@ -53,17 +52,23 @@ jobs:
     steps:
       # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
+      
+      # Set up pnpm
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       # Restore cached dependencies
       - name: Restore pnpm dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.pnpm-store
