@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build all
+        run: pnpm build
+
+      - name: Build UI
+      - run: pnpm --filter ./packages/ui run build
+      - concurrency:
+        group: staging_environment
+        cancel-in-progress: true
+
+      - name: Build Api
+      - run: pnpm --filter ./packages/api run build
+      - concurrency:
+        group: staging_environment
+        cancel-in-progress: true
