@@ -32,6 +32,8 @@ jobs:
           path: |
             ~/.pnpm-store
             node_modules
+            packages/ui/node_modules
+            packages/api/node_modules
           key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-
@@ -73,6 +75,7 @@ jobs:
           path: |
             ~/.pnpm-store
             node_modules
+            packages/ui/node_modules
           key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-
