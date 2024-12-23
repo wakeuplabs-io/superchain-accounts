@@ -12,6 +12,7 @@ jobs:
   # Job to build the UI
   call-build-workflow:
     uses: ./.github/workflows/Build.yml
+    needs: call-install-workflow
 
   # Job to deploy the UI
   call-deploy-ui-workflow:
