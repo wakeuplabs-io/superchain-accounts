@@ -8,12 +8,15 @@ jobs:
   # call-build-workflow:
   #   uses: ./.github/workflows/Build.yml
 
-  call-deploy-ui-workflow:
-    uses: ./.github/workflows/deploy-ui.yml
-    with:
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      aws-region: ${{ secrets.AWS_REGION }}
+  deploy-ui:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy UI Workflow
+      uses: ./.github/workflows/deploy-ui.yml
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
   # test:
   #   runs-on: ubuntu-latest

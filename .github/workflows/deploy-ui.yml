@@ -9,12 +9,12 @@ on:
         required: true
       aws-secret-access-key:
         description: 'AWS secret access key'
-        required: false
+        required: true
         type: string
       aws-region:
         description: 'AWS region'
         type: string
-        required: false
+        required: true
         default: 'us-east-1'
 
 jobs:
