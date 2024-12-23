@@ -76,7 +76,9 @@ jobs:
             ~/.pnpm-store
             node_modules
             packages/ui/node_modules
+            packages/api/node_modules
           key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          fail-on-cache-miss: true
 
       # Run the build for the UI
       - name: Build UI
