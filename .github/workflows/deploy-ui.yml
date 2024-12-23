@@ -2,6 +2,20 @@ name: Deploy ui
 
 on:
   workflow_call:
+    inputs:
+      aws-access-key-id:
+        description: 'AWS access key ID'
+        type: string
+        required: true
+      aws-secret-access-key:
+        description: 'AWS secret access key'
+        required: false
+        type: string
+      aws-region:
+        description: 'AWS region'
+        type: string
+        required: false
+        default: 'us-east-1'
 
 jobs:
   # Install dependencies
@@ -50,6 +64,6 @@ jobs:
           echo "AWS_REGION=${{ env.AWS_REGION }}"
           pnpm deploy:app:staging
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+          AWS_REGION: ${{ inputs.aws-region }}
