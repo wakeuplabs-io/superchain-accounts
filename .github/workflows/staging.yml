@@ -5,5 +5,8 @@ on:
     types: [opened, synchronize, reopened, converted_to_draft]
 
 jobs:
-  call-build-workflow:
-    uses: ./.github/workflows/Build.yml
+  # call-build-workflow:
+    # uses: ./.github/workflows/Build.yml
+
+  call-deploy-ui-workflow:
+    uses: ./.github/workflows/deploy-ui.yml
