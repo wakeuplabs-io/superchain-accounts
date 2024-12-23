@@ -11,7 +11,7 @@ jobs:
   # Job to build the UI
   build-ui:
     runs-on: ubuntu-latest
-    needs: install
+    needs: call-install-workflow
 
     steps:
       # Checkout the repository
