@@ -9,7 +9,6 @@ export default $config({
       providers: {
         aws: {
           region: process.env.AWS_REGION,
-          profile: process.env.AWS_PROFILE,
           defaultTags: {
             tags: {
               customer: "optimism-gov",
