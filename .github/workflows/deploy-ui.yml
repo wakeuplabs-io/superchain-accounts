@@ -11,10 +11,6 @@ on:
         required: true
 
 jobs:
-  # Install dependencies
-  call-install-workflow:
-    uses: ./.github/workflows/install-deps.yml
-      
   # Job to Deploy the UI
   deploy:
     runs-on: ubuntu-latest

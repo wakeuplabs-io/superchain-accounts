@@ -5,9 +5,15 @@ on:
     types: [opened, synchronize, reopened, converted_to_draft]
 
 jobs:
+  # Install dependencies
+  call-install-workflow:
+    uses: ./.github/workflows/install-deps.yml
+  
+  # Job to build the UI
   call-build-workflow:
     uses: ./.github/workflows/Build.yml
 
+  # Job to deploy the UI
   call-deploy-ui-workflow:
     uses: ./.github/workflows/deploy-ui.yml
     needs: call-build-workflow

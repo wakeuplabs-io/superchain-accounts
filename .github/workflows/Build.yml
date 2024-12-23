@@ -3,11 +3,7 @@ name: Build
 on:
   workflow_call:
 
-jobs:
-  # Install dependencies
-  call-install-workflow:
-    uses: ./.github/workflows/install-deps.yml
-      
+jobs:   
   # Job to build the UI
   build-ui:
     runs-on: ubuntu-latest
