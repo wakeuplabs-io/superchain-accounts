@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
     },
     define: {
-      "process.env": env,
+      "process": {env},
       "global": {},
     },
   };
