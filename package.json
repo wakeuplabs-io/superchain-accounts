@@ -7,7 +7,8 @@
     "dev": "concurrently --kill-others \"pnpm --filter api run dev\" \"pnpm --filter ui run dev\"",
     "deploy:api": "npm --prefix packages/api run build && serverless deploy --config serverless-api.yml",
     "package:api": "npm --prefix packages/api run build && serverless package --config serverless-api.yml",
-    "build": "pnpm -r run build"
+    "build": "pnpm -r run build",
+    "deploy:app:staging": "sst deploy --stage=staging --print-logs"
   },
   "keywords": [],
   "author": "",
@@ -23,10 +24,12 @@
     "serverless": "3.38.0",
     "serverless-plugin-common-excludes": "4.0.0",
     "serverless-plugin-include-dependencies": "6.0.0",
-    "serverless-s3-sync": "3.3.0"
+    "serverless-s3-sync": "3.3.0",
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "dotenv": "16.4.5",
+    "sst": "^3.3.52",
     "zod": "3.22.4"
   }
 }
