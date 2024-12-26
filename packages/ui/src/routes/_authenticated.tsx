@@ -61,7 +61,7 @@ function AuthenticatedLayout() {
     <SidebarProvider style={{
       "--sidebar-width": "20rem",
       "--sidebar-width-mobile": "20rem",
-    }}>
+    } as React.CSSProperties}>
       <div className="flex w-full h-screen">
         <Sidebar className="w-80">
           <SidebarHeader className="px-8 py-14">
