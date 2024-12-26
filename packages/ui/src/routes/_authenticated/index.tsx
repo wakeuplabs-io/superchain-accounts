@@ -1,7 +1,7 @@
-import { useSuperChainStore } from "@/core/store";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SmartAccount } from "viem/account-abstraction";
+import { useSuperChainStore } from "@/core/store";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Index,
@@ -41,7 +41,7 @@ function Index() {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-3xl font-bold">Home Page</p>
+      <p className="text-3xl font-bold">Accounts</p>
       {isInitializing && <p className="text-xl">Initializing smart account, please confirm the transaction in your wallet...</p>}
       {smartAccount && (
         <>
