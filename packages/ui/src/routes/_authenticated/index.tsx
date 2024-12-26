@@ -10,8 +10,10 @@ export const Route = createFileRoute("/_authenticated/")({
 function Index() {
   const smartAccountHandler  = useSuperChainStore(state => state.smartAccountHandler);
   const authHandler = useSuperChainStore(state => state.authHandler);
+  const web3Client = useSuperChainStore(state => state.web3Client);
   const [smartAccount, setSmartAccount] = useState<SmartAccount>();
   const [isInitializing, setIsInitializing] = useState(false);
+  const [accountBalance, setAccountBalance] = useState<string>("");
 
   useEffect(() => {
     setIsInitializing(true);
@@ -19,17 +21,34 @@ function Index() {
   }, []);
 
   useEffect(() => {
+    async function getSmartAccountBalance(smartAccount: SmartAccount): Promise<string> {
+      const isDeployed = await smartAccount?.isDeployed();
+      if(!isDeployed) {
+        console.log("Smart account not deployed");
+        return "0";
+      }
+
+      console.log("Getting balance for smart account", smartAccount.address);
+      return web3Client.getBalance(smartAccount.address);
+    }
+
     if(!smartAccount) {
       return;
     }
-    smartAccount?.isDeployed().then(result => console.log("isDeployed", result));
-  }, [smartAccount]);
+
+    getSmartAccountBalance(smartAccount).then(setAccountBalance);
+  }, [smartAccount, web3Client]);
 
   return (
-    <div className="flex flex-1 flex-col  items-center justify-center">
-      <h2>Home Page</h2>
-      {isInitializing && <h3>Initializing smart account, please confirm the transaction in your wallet...</h3>}
-      {smartAccount && <h3>Smart Account: {smartAccount.address.toString()}</h3>}
+    <div className="flex flex-col gap-3">
+      <p className="text-3xl font-bold">Home Page</p>
+      {isInitializing && <p className="text-xl">Initializing smart account, please confirm the transaction in your wallet...</p>}
+      {smartAccount && (
+        <>
+          <p><b>Smart Account Address:</b> {smartAccount.address.toString()}</p>
+          <p><b>Account Balance:</b> {accountBalance} ETH</p>
+        </>
+      )}
     </div>
   );
 }

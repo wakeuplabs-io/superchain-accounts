@@ -1,13 +1,12 @@
 import { createFileRoute, Outlet, redirect, useRouter} from "@tanstack/react-router";
 import { z } from "zod";
-import { LogOut, Lock, User, ScrollText } from "lucide-react";
+import { LogOut, Lock, ScrollText } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarInset,
   SidebarMenu,
   SidebarMenuItem,
   SidebarProvider,
@@ -59,7 +58,10 @@ function AuthenticatedLayout() {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider style={{
+      "--sidebar-width": "20rem",
+      "--sidebar-width-mobile": "20rem",
+    }}>
       <div className="flex w-full h-screen">
         <Sidebar className="w-80">
           <SidebarHeader className="px-8 py-14">
@@ -71,13 +73,13 @@ function AuthenticatedLayout() {
           </SidebarHeader>
           <SidebarContent className="px-8">
             <SidebarMenu>
-              <SidebarMenuItem>
+              {/* <SidebarMenuItem>
                 <AuthenticatedSidebarMenuButton
                   Icon={User}
                   text="Profile"
                   route="/profile"
                 />
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
               <SidebarMenuItem>
                 <AuthenticatedSidebarMenuButton
                   Icon={ScrollText}
@@ -97,12 +99,12 @@ function AuthenticatedLayout() {
             </div>
           </SidebarFooter>
         </Sidebar>
-        <SidebarInset className="flex-1 bg-inherit">
-          <header className="flex h-14 items-center border-b px-4">
-            <SidebarTrigger />
-          </header>
-          <main className="overflow-auto p-4"><Outlet /></main>
-        </SidebarInset>
+        <main className="flex flex-1 overflow-auto p-8">
+          <div className="w-full">
+            <SidebarTrigger className="mb-4"/>
+            <Outlet />
+          </div>
+        </main>
       </div>
     </SidebarProvider>
   );
