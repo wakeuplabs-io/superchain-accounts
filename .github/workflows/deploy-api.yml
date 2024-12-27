@@ -63,4 +63,4 @@ jobs:
       # Output the API URL and store in $GITHUB_OUTPUT
       - name: Save Output
         id: save-output
-        run: cat asd | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p' | {read superchain_api_url; echo superchain_api_url=$superchain_api_url} >> "$GITHUB_OUTPUT"
+        run: cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p' | {read superchain_api_url; echo superchain_api_url=$superchain_api_url} >> "$GITHUB_OUTPUT"
