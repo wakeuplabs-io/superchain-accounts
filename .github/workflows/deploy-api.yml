@@ -50,11 +50,13 @@ jobs:
 
       # Run the build for the UI
       - name: Deploy
-        run: |
-          pnpm deploy:api:staging
-          cat .env
+        run: pnpm deploy:api:staging
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           PAYMASTER_ADDRESS: ${{ inputs.PAYMASTER_ADDRESS }}
+      
+      # Output the API URL and store in GITHUB outputs
+      - name: Output
+        run: cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p'
