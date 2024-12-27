@@ -18,6 +18,7 @@ provider:
     application: superchain-accounts
 plugins:
   - serverless-esbuild
+  - serverless-stack-output
 custom:
   stage: ${opt:stage, 'development'}
   esbuild:
@@ -30,6 +31,9 @@ custom:
   cloudformation:
     timeout: 3600 # Increase timeout if your stack takes longer to update
     forceUpdate: true
+  output:
+    handler: scripts/output.handler
+    file: superchain-accounts-stack-output.json
 
 resources:
   Resources:

@@ -25,6 +25,7 @@
     "serverless-plugin-common-excludes": "4.0.0",
     "serverless-plugin-include-dependencies": "6.0.0",
     "serverless-s3-sync": "3.3.0",
+    "serverless-stack-output": "^0.2.3",
     "typescript": "^5.7.2"
   },
   "dependencies": {

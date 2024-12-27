@@ -51,6 +51,9 @@ importers:
       serverless-s3-sync:
         specifier: 3.3.0
         version: 3.3.0(serverless@3.38.0)
+      serverless-stack-output:
+        specifier: ^0.2.3
+        version: 0.2.3
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -5926,6 +5929,9 @@ packages:
     peerDependencies:
       serverless: ^3.0.0
 
+  serverless-stack-output@0.2.3:
+    resolution: {integrity: sha512-bJUUXJ+bc0E+IBlWz+FyUpdNjEmSM0dYd2UpDX0h2zeW+luPOJeP//rbIamBmteJjbed9S3FtRWnLLRAJbzM5g==}
+
   serverless@3.38.0:
     resolution: {integrity: sha512-NJE1vOn8XmQEqfU9UxmVhkUFaCRmx6FhYw/jITN863WlOt4Y3PQbj3hwQyIb5QS1ZrXFq5ojklwewUXH7xGpdA==}
     engines: {node: '>=12.0'}
@@ -6320,6 +6326,9 @@ packages:
   token-types@4.2.1:
     resolution: {integrity: sha512-6udB24Q737UD/SDsKAHI9FCRP7Bqc9D/MQUV02ORQg5iskjtLJlZJNdN4kKtcdtwCeWIwIHDGaUsTsCCAa8sFQ==}
     engines: {node: '>=10'}
+
+  tomlify-j0.4@2.2.1:
+    resolution: {integrity: sha512-0kCocYX8ujnbK6jQ9e+g9GLiCIfVkFaCB3DCTQDP7J79gPVZVmZgQZ/KUNe1a6hUfrmHHaErVGUjedfpaX5EZw==}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -13598,6 +13607,11 @@ snapshots:
       minimatch: 3.1.2
       serverless: 3.38.0
 
+  serverless-stack-output@0.2.3:
+    dependencies:
+      tomlify-j0.4: 2.2.1
+      yamljs: 0.3.0
+
   serverless@3.38.0:
     dependencies:
       '@serverless/dashboard-plugin': 7.2.3(supports-color@8.1.1)
@@ -14156,6 +14170,8 @@ snapshots:
     dependencies:
       '@tokenizer/token': 0.3.0
       ieee754: 1.2.1
+
+  tomlify-j0.4@2.2.1: {}
 
   tr46@0.0.3: {}
 

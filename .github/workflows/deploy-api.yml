@@ -50,9 +50,9 @@ jobs:
 
       # Run the build for the UI
       - name: Deploy
-        run: |
+        run: | 
           pnpm deploy:api:staging
-          pnpm serverless output list
+          cat superchain-accounts-stack-output.json
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
