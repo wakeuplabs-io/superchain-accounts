@@ -19,7 +19,7 @@ provider:
 plugins:
   - serverless-esbuild
 custom:
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'development'}
   esbuild:
     bundle: true
     minify: true
