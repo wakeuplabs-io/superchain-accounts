@@ -33,7 +33,7 @@ custom:
     forceUpdate: true
   output:
     handler: ./scripts/output.handler
-    file: superchain-accounts-stack-output.json
+    file: ./superchain-accounts-stack-output.json
 
 resources:
   Resources:
