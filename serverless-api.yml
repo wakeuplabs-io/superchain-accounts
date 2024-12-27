@@ -32,7 +32,7 @@ custom:
     timeout: 3600 # Increase timeout if your stack takes longer to update
     forceUpdate: true
   output:
-    handler: ./scripts/output.handler
+    handler: scripts/output.handler
     file: ./superchain-accounts-stack-output.json
 
 resources:
