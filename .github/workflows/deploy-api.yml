@@ -57,6 +57,6 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           PAYMASTER_ADDRESS: ${{ inputs.PAYMASTER_ADDRESS }}
       
-      # Output the API URL and store in GITHUB outputs
-      - name: Output
-        run: cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p'
+      # Output the API URL and store in $GITHUB_OUTPUT
+      - name: Save Output
+        run: cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p' >> "$GITHUB_OUTPUT"
