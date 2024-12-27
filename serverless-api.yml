@@ -1,7 +1,7 @@
 service: superchain-accounts-api
 provider:
   name: aws
-  region: sa-east-1
+  region: ${env:AWS_REGION}
   runtime: nodejs20.x
   iamRoleStatements:
     - Effect: Allow
@@ -47,10 +47,18 @@ functions:
     name: ${self:service}-${self:custom.stage}
     handler: packages/api/dist/app.handler
     timeout: 10
-    private: true
     events:
       - http: ANY /
       - http: ANY /{proxy+}
+    environment:
+      NODE_ENV: ${self:custom.stage, 'development'}
+      EVENTS_TABLE: !Ref EventsTable
+      EVENTS_DEF_TABLE: !Ref EventDefinitionTable
+      REWARDS_DEF_TABLE: !Ref RewardDefinitionTable
+      MILESTONES_DEF_TABLE: !Ref MilestoneDefinitionTable
+      USERS_TABLE: !Ref UsersTable
+      PAYMASTER_ADDRESS: ${env:PAYMASTER_ADDRESS}
+
   processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
 
 

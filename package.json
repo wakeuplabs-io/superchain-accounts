@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "dev": "concurrently --kill-others \"pnpm --filter api run dev\" \"pnpm --filter ui run dev\"",
-    "deploy:api": "npm --prefix packages/api run build && serverless deploy --config serverless-api.yml",
-    "package:api": "npm --prefix packages/api run build && serverless package --config serverless-api.yml",
+    "deploy:api:stage": "npm --prefix packages/api run build && serverless deploy --config serverless-api.yml --stage=staging --verbose ",
+    "package:api": "npm --prefix packages/api run build && serverless package --config serverless-api.yml --stage=staging",
     "build": "pnpm -r run build",
     "deploy:app:staging": "sst deploy --stage=staging --print-logs"
   },
