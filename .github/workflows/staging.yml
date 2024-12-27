@@ -31,5 +31,5 @@ jobs:
       - name: Check Output
         run: |
           echo TESTING OUTPUT FROM  call-deploy-api-workflow
-          echo ${{ needs.call-deploy-api-workflow.outputs.output1 }}
+          echo ${{ needs.call-deploy-api-workflow.outputs.superchain_api_url }}
     

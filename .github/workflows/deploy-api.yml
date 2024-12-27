@@ -19,6 +19,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    outputs:
+      superchain_api_url: ${{ steps.save-output.outputs.superchain_api_url }}
+
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -59,4 +62,5 @@ jobs:
       
       # Output the API URL and store in $GITHUB_OUTPUT
       - name: Save Output
-        run: cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p' >> "$GITHUB_OUTPUT"
+        id: save-output
+        run: cat asd | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p' | {read superchain_api_url; echo superchain_api_url=$superchain_api_url} >> "$GITHUB_OUTPUT"
