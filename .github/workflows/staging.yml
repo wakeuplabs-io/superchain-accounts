@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/deploy-api.yml
     needs: call-install-workflow
     with:
-      PAYMASTER_ADDRESS: 0xE560b889fa1d2Ca72ee4FB165787b2aD6D506Ac7
+      PAYMASTER_ADDRESS: '0xE560b889fa1d2Ca72ee4FB165787b2aD6D506Ac7'
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
