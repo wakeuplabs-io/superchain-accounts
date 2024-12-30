@@ -23,6 +23,8 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   const event = normalizeCryptoEvent(req.body);
   const { userId, eventType, chain, eventDate, address } = event;
   const points_awarded = calculatePoints(event);
+  console.log("points_awarded", points_awarded);
+  console.log("event", event);
   //@todo calculate rewards and milestones in a module and call it here
   const params = {
     TransactItems: [
@@ -62,7 +64,9 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     await dynamoDb.transactWrite(params).promise();
     res.send({ message: "Event created", code: 201 });
   } catch (error) {
-    res.status(500).send({ message: "Error creating event" });
+    res
+      .status(500)
+      .send({ message: "Error creating event", reason: JSON.stringify(error) });
   }
 });
 
