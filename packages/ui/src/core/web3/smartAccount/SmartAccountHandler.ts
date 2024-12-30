@@ -36,6 +36,10 @@ export class SmartAccountHandler {
         version: "0.7",
       },
     });
+
+     if(!this.smartAccount) { 
+      throw Error("Smart account not initialized");
+    }
     
     //initialize bundler client
     this.bundlerClient = createBundlerClient({
@@ -45,20 +49,28 @@ export class SmartAccountHandler {
       paymaster: this.paymaster,
     });
 
-    const isDeployed = await this.smartAccount.isDeployed();
+    return this.smartAccount;
+  }
 
-    if(!isDeployed) {
-      console.log("Deploying smart account", this.smartAccount.address);
-      // Send a user operation to the bundler to deploy the smart account
-      const transaction = {
-        to: this.smartAccount.address,
-        value: BigInt(0),
-      };
-      
-      await this.sendTransaction(transaction);
+  async deploySmartAccount() {
+    if(!this.smartAccount) { 
+      throw Error("Smart account not initialized");
     }
 
-    return this.smartAccount;
+    const isDeployed = await this.smartAccount.isDeployed();
+
+    if(isDeployed) {
+      return;
+    }
+
+    console.log("Deploying smart account", this.smartAccount.address);
+    // Send a user operation to the bundler to deploy the smart account
+    const transaction = {
+      to: this.smartAccount.address,
+      value: BigInt(0),
+    };
+    
+    await this.sendTransaction(transaction);
   }
 
   async sendTransaction(transaction: UserOperationCall) {
