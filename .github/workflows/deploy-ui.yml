@@ -46,11 +46,7 @@ jobs:
 
       # Run the build for the UI
       - name: Deploy
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}"
-          echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}"
-          echo "AWS_REGION=${{ env.AWS_REGION }}"
-          pnpm deploy:app:staging
+        run: pnpm sst remove --stage=staging --print-logs
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
