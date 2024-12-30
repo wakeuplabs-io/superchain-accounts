@@ -5,7 +5,7 @@ on:
 
 jobs:   
   # Job to build the UI
-  build-ui:
+  build-packages:
     runs-on: ubuntu-latest
 
     steps:
