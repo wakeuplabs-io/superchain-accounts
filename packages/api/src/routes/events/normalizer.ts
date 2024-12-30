@@ -14,11 +14,17 @@ const NormalizedCryptoEventSchema = z.object({
   eventKey: z.string(),
   eventDate: z.number(),
   address: requiredAddress,
-  args: z.record(z.unknown()),
+  endpointUrl: z.string(),
+  args: z.object({
+    from: z.string(),
+    to: z.string(),
+    value: z.string(),
+  }),
 }) satisfies z.ZodType<NormalizedCryptoEvent>;
 
-export const normalizeCryptoEvent = (event: any): NormalizedCryptoEvent =>
-  NormalizedCryptoEventSchema.parse(event);
+export const normalizeCryptoEvent = (body: {
+  message: NormalizedCryptoEvent;
+}): NormalizedCryptoEvent => NormalizedCryptoEventSchema.parse(body.message);
 
 const CreateOrUpdateEventSchema = z.object({
   event_type: z.string(),

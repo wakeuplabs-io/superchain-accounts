@@ -15,7 +15,9 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     normalizeCryptoEvent(req.body);
   } catch (error) {
-    res.status(400).send({ message: "Invalid event" });
+    res
+      .status(400)
+      .send({ message: "Invalid event", reason: JSON.stringify(error) });
     return;
   }
   const event = normalizeCryptoEvent(req.body);

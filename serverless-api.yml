@@ -61,5 +61,3 @@ functions:
       PAYMASTER_ADDRESS: ${env:PAYMASTER_ADDRESS}
 
   processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
-
-
