@@ -69,5 +69,4 @@ jobs:
         id: save-output
         run: |
           SUPERCHAIN_API_URL=$(cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p')
-          echo "superchain_api_url=$SUPERCHAIN_API_URL"
           echo "superchain_api_url=$SUPERCHAIN_API_URL" >> "$GITHUB_OUTPUT"
