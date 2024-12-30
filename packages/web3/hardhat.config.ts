@@ -12,6 +12,14 @@ const NETWORK_MAINNET = envParsed().NETWORK_MAINNET;
 const networkTestnet = getNetwork(NETWORK_TESTNET, true);
 const networkMainnet = getNetwork(NETWORK_MAINNET, false);
 
+const localNetwork =
+  envParsed().LOCAL_RPC_URL && envParsed().LOCAL_PRIVATE_KEY
+    ? {
+      url: envParsed().LOCAL_RPC_URL,
+      accounts: [envParsed().LOCAL_PRIVATE_KEY],
+    }
+    : undefined;
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [{ version: "0.8.24", settings: {
@@ -24,6 +32,7 @@ const config: HardhatUserConfig = {
   networks: {
     testnet: networkTestnet ? networkTestnet.network : undefined,
     mainnet: networkMainnet ? networkMainnet.network : undefined,
+    ...(localNetwork ? { local: localNetwork } : {}),
   },
 
   etherscan: {

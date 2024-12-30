@@ -4,23 +4,25 @@ import Torus from "@toruslabs/torus-embed";
 export class TorusAuthHandler {
   private torus: Torus;
   
-  constructor(private chain: Chain, private readonly devMode = false) {
+  constructor(private chain: Chain, private readonly mode: "development" | "production" | "local" = "production") {
     this.torus = new Torus({
       buttonPosition: "bottom-right",
     });
   }
 
   async initialize() {
+    const testEnvironment = this.mode === "development" || this.mode === "local";
+    const showTorusButton = this.mode === "local";
     if (!this.torus.isInitialized) {
       await this.torus.init({
-        showTorusButton: false,
+        showTorusButton: showTorusButton,
         network: {
           host: this.chain.rpcUrls.default.http[0],
           chainId: this.chain.id,
           networkName: this.chain.name,
         },
-        enableLogging: this.devMode,
-        buildEnv: this.devMode ? "testing" : "production",
+        enableLogging: testEnvironment,
+        buildEnv: testEnvironment ? "testing" : "production",
       });
     }
   }

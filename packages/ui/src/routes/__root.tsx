@@ -15,7 +15,7 @@ const TanStackRouterDevtools =
 
 export const Route = createRootRouteWithContext<{authHandler: TorusAuthHandler | null}>()({
   component: () => (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-screen">
       <main className="min-h-screen bg-gray-100">
         <Outlet />
       </main>
