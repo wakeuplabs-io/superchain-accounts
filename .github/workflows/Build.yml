@@ -43,4 +43,4 @@ jobs:
 
       # Run the build for API
       - name: Build API
-        run: pnpm --filter ./packages/ui run build
+        run: pnpm --filter ./packages/api run build
