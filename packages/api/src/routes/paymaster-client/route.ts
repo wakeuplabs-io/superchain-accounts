@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import jsonrpc from "jsonrpc-lite";
 import { PaymasterService } from "./PaymasterService.js";
-import envParsed from "@/envParsed.js";
+import envParsed from "../../envParsed.js";
 
 const router = Router();
 const paymasterService = new PaymasterService(envParsed().PAYMASTER_ADDRESS);

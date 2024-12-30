@@ -1,0 +1,78 @@
+name: Deploy api
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+    inputs:
+      PAYMASTER_ADDRESS:
+        required: true
+        type: string
+    outputs:
+      superchain_api_url:
+        description: "The URL of the deployed API"
+        value: ${{ jobs.deploy.outputs.superchain_api_url }}
+
+jobs:
+  # Job to Deploy the UI
+  deploy:
+    runs-on: ubuntu-latest
+
+    outputs:
+      superchain_api_url: ${{ steps.save-output.outputs.superchain_api_url }}
+      deploy_api_output: ${{ steps.test-output.outputs.deploy_api_output }}
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      # Set up pnpm
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # Restore cached dependencies
+      - name: Restore pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            packages/ui/node_modules
+            packages/api/node_modules
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          fail-on-cache-miss: true
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          mask-aws-account-id: "no"
+
+      # Run the build for the UI
+      - name: Deploy
+        run: pnpm deploy:api:staging
+        env:
+          PAYMASTER_ADDRESS: ${{ inputs.PAYMASTER_ADDRESS }}
+      
+      # Output the API URL and store in $GITHUB_OUTPUT
+      - name: Save Output
+        id: save-output
+        run: |
+          SUPERCHAIN_API_URL=$(cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p')
+          echo "superchain_api_url=$SUPERCHAIN_API_URL" >> "$GITHUB_OUTPUT"

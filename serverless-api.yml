@@ -1,7 +1,7 @@
 service: superchain-accounts-api
 provider:
   name: aws
-  region: sa-east-1
+  region: ${env:AWS_REGION}
   runtime: nodejs20.x
   iamRoleStatements:
     - Effect: Allow
@@ -18,8 +18,9 @@ provider:
     application: superchain-accounts
 plugins:
   - serverless-esbuild
+  - serverless-export-outputs
 custom:
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'development'}
   esbuild:
     bundle: true
     minify: true
@@ -30,7 +31,7 @@ custom:
   cloudformation:
     timeout: 3600 # Increase timeout if your stack takes longer to update
     forceUpdate: true
-
+    
 resources:
   Resources:
     UsersTable: ${file(./packages/api/templates/dynamodb/users_table.yml)}
@@ -47,10 +48,18 @@ functions:
     name: ${self:service}-${self:custom.stage}
     handler: packages/api/dist/app.handler
     timeout: 10
-    private: true
     events:
       - http: ANY /
       - http: ANY /{proxy+}
+    environment:
+      NODE_ENV: ${self:custom.stage, 'development'}
+      EVENTS_TABLE: !Ref EventsTable
+      EVENTS_DEF_TABLE: !Ref EventDefinitionTable
+      REWARDS_DEF_TABLE: !Ref RewardDefinitionTable
+      MILESTONES_DEF_TABLE: !Ref MilestoneDefinitionTable
+      USERS_TABLE: !Ref UsersTable
+      PAYMASTER_ADDRESS: ${env:PAYMASTER_ADDRESS}
+
   processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
 
 

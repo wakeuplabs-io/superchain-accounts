@@ -5,7 +5,7 @@ on:
 
 jobs:   
   # Job to build the UI
-  build-ui:
+  build-packages:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,3 +40,7 @@ jobs:
       # Run the build for the UI
       - name: Build UI
         run: pnpm --filter ./packages/ui run build
+
+      # Run the build for API
+      - name: Build API
+        run: pnpm --filter ./packages/api run build
