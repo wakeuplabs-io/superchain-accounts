@@ -41,6 +41,8 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
             created_at: new Date().toISOString(),
           },
         },
+      },
+      {
         Update: {
           TableName: envParsed().USERS_TABLE,
           Key: {
@@ -59,7 +61,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       },
     ],
   };
-
   try {
     await dynamoDb.transactWrite(params).promise();
     res.send({ message: "Event created", code: 201 });

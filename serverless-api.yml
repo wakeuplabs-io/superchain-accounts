@@ -3,6 +3,10 @@ provider:
   name: aws
   region: ${env:AWS_REGION}
   runtime: nodejs20.x
+  apiGateway:
+  apiKeys:
+    - name: my-api-key-${self:custom.stage}
+      description: API key for ${self:custom.stage} stage
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -31,7 +35,7 @@ custom:
   cloudformation:
     timeout: 3600 # Increase timeout if your stack takes longer to update
     forceUpdate: true
-    
+
 resources:
   Resources:
     UsersTable: ${file(./packages/api/templates/dynamodb/users_table.yml)}
@@ -49,8 +53,16 @@ functions:
     handler: packages/api/dist/app.handler
     timeout: 10
     events:
-      - http: ANY /
-      - http: ANY /{proxy+}
+      - http:
+          path: /
+          method: ANY
+          private: true
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          private: true
+          cors: true
     environment:
       NODE_ENV: ${self:custom.stage, 'development'}
       EVENTS_TABLE: !Ref EventsTable
