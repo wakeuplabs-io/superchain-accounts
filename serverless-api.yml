@@ -53,11 +53,11 @@ functions:
       - http: ANY /{proxy+}
     environment:
       NODE_ENV: ${self:custom.stage, 'development'}
-      EVENTS_TABLE: !Ref EventsTable
-      EVENTS_DEF_TABLE: !Ref EventDefinitionTable
-      REWARDS_DEF_TABLE: !Ref RewardDefinitionTable
-      MILESTONES_DEF_TABLE: !Ref MilestoneDefinitionTable
-      USERS_TABLE: !Ref UsersTable
+      EVENTS_TABLE: ${self:resources.Resources.EventsTable.Ref}
+      EVENTS_DEF_TABLE: ${self:resources.Resources.EventDefinitionTable.Ref}
+      REWARDS_DEF_TABLE: ${self:resources.Resources.RewardDefinitionTable.Ref}
+      MILESTONES_DEF_TABLE: ${self:resources.Resources.MilestoneDefinitionTable.Ref}
+      USERS_TABLE: ${self:resources.Resources.UsersTable.Ref}
       PAYMASTER_ADDRESS: ${env:PAYMASTER_ADDRESS}
 
   processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
