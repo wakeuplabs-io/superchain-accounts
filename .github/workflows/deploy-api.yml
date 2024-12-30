@@ -13,6 +13,10 @@ on:
       PAYMASTER_ADDRESS:
         required: true
         type: string
+    outputs:
+      superchain_api_url:
+        description: "The URL of the deployed API"
+        value: ${{ jobs.deploy.outputs.superchain_api_url }}
 
 jobs:
   # Job to Deploy the UI
