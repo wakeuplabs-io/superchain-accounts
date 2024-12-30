@@ -17,6 +17,9 @@ on:
       superchain_api_url:
         description: "The URL of the deployed API"
         value: ${{ jobs.deploy.outputs.superchain_api_url }}
+      deploy_api_output:
+        description: "ASDF"
+        value: ${{ jobs.deploy.outputs.deploy_api_output }}
 
 jobs:
   # Job to Deploy the UI
@@ -25,6 +28,7 @@ jobs:
 
     outputs:
       superchain_api_url: ${{ steps.save-output.outputs.superchain_api_url }}
+      deploy_api_output: ${{ steps.test-output.outputs.deploy_api_output }}
 
     steps:
       # Checkout the repository
@@ -70,3 +74,8 @@ jobs:
         run: |
           SUPERCHAIN_API_URL=$(cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p')
           echo "superchain_api_url=$SUPERCHAIN_API_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Test Output
+        id: test-output
+        run: |
+          echo "deploy_api_output=ASD1234" >> "$GITHUB_OUTPUT"
