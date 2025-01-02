@@ -3,8 +3,11 @@ provider:
   name: aws
   region: ${env:AWS_REGION}
   runtime: nodejs20.x
-  apiKeys:
-    - ${self:service}-${self:custom.stage}-key
+  apiGateway:
+    apiKeys:
+      - free:
+          - myFreeKey
+          - ${opt:stage}-myFreeKey
   iamRoleStatements:
     - Effect: Allow
       Action:
