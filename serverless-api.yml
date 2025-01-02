@@ -3,10 +3,8 @@ provider:
   name: aws
   region: ${env:AWS_REGION}
   runtime: nodejs20.x
-  apiGateway:
   apiKeys:
-    - name: my-api-key-${self:custom.stage}
-      description: API key for ${self:custom.stage} stage
+    - ${self:service}-${self:custom.stage}-key
   iamRoleStatements:
     - Effect: Allow
       Action:
