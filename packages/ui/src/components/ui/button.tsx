@@ -60,6 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, loading = false,...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return loading ? (
+      //TODO: FIX LOADING STATE TO AVOID RESIZING WHEN LOADING
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}

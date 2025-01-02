@@ -25,7 +25,26 @@ export default $config({
     };
   },
   async run() {
-    const vpc = new sst.aws.Vpc("bundler-vpc");
+    // const vpc = new sst.aws.Vpc("bundler-vpc", {
+    //   transform: {
+    //     vpc(args, opts, name) {
+    //       args.cidrBlock = process.env.BUNDLER_VPC_CIDR_BLOCK;
+    //       opts.import = process.env.BUNDLER_VPC_ID;
+    //     },
+    //     internetGateway(args, opts, name) {
+    //       opts.import = process.env.BUNDLER_VPC_INTERNET_GATEWAY_ID;
+    //     },
+    //     privateSubnet(args, opts, name) {
+          
+    //     },
+    //     publicRouteTable(args, opts, name) {
+          
+    //     },
+    //   }
+    // });
+
+    const vpc = sst.aws.Vpc.get("bundler-vpc-default", process.env.BUNDLER_VPC_ID!)
+
     const cluster = new sst.aws.Cluster("bundler-cluster", { vpc });
 
     cluster.addService("bundler-service", {

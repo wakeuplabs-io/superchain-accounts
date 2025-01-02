@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy:staging": "sst deploy --stage staging --print-logs"
+    "deploy:staging": "sst deploy --stage staging --print-logs",
+    "deploy:development": "sst deploy --stage development --print-logs"
   },
   "keywords": [],
   "author": "",
