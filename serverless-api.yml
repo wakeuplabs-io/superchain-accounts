@@ -1,13 +1,14 @@
+frameworkVersion: "3.38.0"
+
 service: superchain-accounts-api
 provider:
   name: aws
   region: ${env:AWS_REGION}
   runtime: nodejs20.x
   apiGateway:
-    apiKeys:
-      - free:
-          - myFreeKey
-          - ${opt:stage}-myFreeKey
+  apiKeys:
+    - name: ${self:service}/${self:custom.stage}/api-key
+      value: ${ssm:/aws/reference/secretsmanager/${self:service}/${self:custom.stage}/api-key}
   iamRoleStatements:
     - Effect: Allow
       Action:
