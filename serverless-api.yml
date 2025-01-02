@@ -6,9 +6,9 @@ provider:
   region: ${env:AWS_REGION}
   runtime: nodejs20.x
   apiGateway:
-  apiKeys:
-    - name: ${self:service}/dev/api-key
-      value: ${ssm:/aws/reference/secretsmanager/${self:service}/dev/api-key}
+    apiKeys:
+      - name: ${self:service}/dev/api-key
+        value: ${ssm:/aws/reference/secretsmanager/${self:service}/dev/api-key}
   iamRoleStatements:
     - Effect: Allow
       Action:
