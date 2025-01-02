@@ -7,8 +7,8 @@ provider:
   runtime: nodejs20.x
   apiGateway:
   apiKeys:
-    - name: ${self:service}/${self:custom.stage}/api-key
-      value: ${ssm:/aws/reference/secretsmanager/${self:service}/${self:custom.stage}/api-key}
+    - name: ${self:service}/dev/api-key
+      value: ${ssm:/aws/reference/secretsmanager/${self:service}/dev/api-key}
   iamRoleStatements:
     - Effect: Allow
       Action:
