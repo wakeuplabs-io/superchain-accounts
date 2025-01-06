@@ -21,7 +21,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
   const event = normalizeCryptoEvent(req.body);
-  const { userId, eventType, chain, eventDate, address } = event;
+  const { eventType, chain, eventDate, address } = event;
   const points_awarded = calculatePoints(event);
   console.log("points_awarded", points_awarded);
   console.log("event", event);
@@ -32,12 +32,12 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         Put: {
           TableName: envParsed().EVENTS_TABLE,
           Item: {
-            PK: `EVENT#${userId}`,
+            PK: `EVENT#${address}`,
             SK: `TIMESTAMP#${eventDate}`,
             event_type: eventType,
             chain,
             points_awarded,
-            data: {}, //metadata
+            data: { ...event.args }, //metadata
             created_at: new Date().toISOString(),
           },
         },
