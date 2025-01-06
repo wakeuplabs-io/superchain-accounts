@@ -1,6 +1,6 @@
 Type: AWS::DynamoDB::Table
 Properties:
-  TableName: timeframe-cron-${self:custom.stage}-table
+  TableName: ${self:service}-timeframe-cron-${self:custom.stage}-table
   AttributeDefinitions:
     - AttributeName: ID
       AttributeType: S

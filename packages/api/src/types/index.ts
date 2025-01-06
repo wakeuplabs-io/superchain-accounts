@@ -4,6 +4,10 @@ export interface NormalizedCryptoEvent {
   blockNumber: string;
   eventKey: string;
   eventDate: number;
-  args?: Record<string, any>;
+  args?: {
+    from: string;
+    to: string;
+    value: string;
+  };
   [key: string]: any;
 }
