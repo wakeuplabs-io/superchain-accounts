@@ -11,3 +11,14 @@ export interface NormalizedCryptoEvent {
   };
   [key: string]: any;
 }
+
+export interface EventDef {
+  event_type: string;
+  event_trigger_type: "blockchain" | "timeframe";
+  expires_on_ttl?: number;
+  event_name: string;
+  points_awarded: number;
+  description: string;
+  active: boolean;
+  [key: string]: any;
+}

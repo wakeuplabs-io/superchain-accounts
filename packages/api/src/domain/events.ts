@@ -1,9 +1,0 @@
-export const event = {
-  configKey: "EVENT",
-  address: "0xb205B3d484eb6dBB36B7D300987Cf512273E9868",
-  endpointUrl:
-    "https://ggy80bz9vh.execute-api.us-east-1.amazonaws.com/dev/events",
-  eventName: "Transfer",
-};
-
-export default event;

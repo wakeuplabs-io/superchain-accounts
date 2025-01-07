@@ -1,6 +1,9 @@
-import { NormalizedCryptoEvent } from "@/types/index.js";
+import { EventDef, NormalizedCryptoEvent } from "@/types/index.js";
+import e from "cors";
 
-//@todo implement the calculatePoints function
-export const calculatePoints = (event: NormalizedCryptoEvent): number => {
-  return 10;
-};
+export class PointsService {
+  constructor() {}
+  calculatePoints = (event: EventDef): number => {
+    return event.points_awarded;
+  };
+}

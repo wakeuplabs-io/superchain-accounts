@@ -1,4 +1,4 @@
-import { NormalizedCryptoEvent } from "@/types/index.js";
+import { EventDef, NormalizedCryptoEvent } from "@/types/index.js";
 import { isAddress, Address } from "viem";
 import { z } from "zod";
 
@@ -34,8 +34,8 @@ const CreateOrUpdateEventSchema = z.object({
   points_awarded: z.number(),
   description: z.string(),
   active: z.boolean(),
-});
+}) satisfies z.ZodType<EventDef>;
 
-export const normalizeCreateOrUpdateEvent = (event: any) => {
+export const normalizeCreateOrUpdateEvent = (event: EventDef): EventDef => {
   return CreateOrUpdateEventSchema.parse(event);
 };
