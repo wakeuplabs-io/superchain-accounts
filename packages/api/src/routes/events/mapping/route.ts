@@ -1,6 +1,5 @@
 import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
-import envParsed from "@/envParsed.js";
 import { normalizeCreateOrUpdateEvent } from "../normalizer.js";
 import { EventDefService } from "./service.js";
 
@@ -47,5 +46,16 @@ router.patch("/", async (req: Request, res: Response, next: NextFunction) => {
     res.status(500).send({ message: "Error updating event" });
   }
 });
+
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const events = await eventDefService.getAllEvents();
+    res.send(events);
+  } catch (error) {
+    console.error("Error getting events:", error);
+    res.status(500).send({ message: "Error getting events" });
+  }
+});
+
 
 export default router;
