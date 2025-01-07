@@ -12,11 +12,10 @@ class EventDefService {
   async getAllEvents(): Promise<EventDef[]> {
     const params = {
       TableName: this.table,
-      Key: {
-        SK: this.SK,
-      },
     };
-    return (await this.client.query(params).promise()).Items as EventDef[];
+
+    const result = await this.client.scan(params).promise();
+    return result.Items as EventDef[];
   }
 
   async getEventByID(eventName: string, eventType: string): Promise<EventDef> {

@@ -53,7 +53,9 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     res.send(events);
   } catch (error) {
     console.error("Error getting events:", error);
-    res.status(500).send({ message: "Error getting events" });
+    res
+      .status(500)
+      .send({ message: "Error getting events", reason: JSON.stringify(error) });
   }
 });
 
