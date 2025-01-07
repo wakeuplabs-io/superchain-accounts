@@ -1,11 +1,17 @@
 import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
-import envParsed from "@/envParsed.js";
+
 import mappingRoute from "./mapping/route.js";
-import { normalizeCryptoEvent } from "./normalizer.js";
-import { calculatePoints } from "@/domain/points.js";
+import { EventType, normalizeCryptoEvent } from "./normalizer.js";
+import { UserService } from "../users/service.js";
+import { EventDefService } from "./mapping/service.js";
+
+import { EventService } from "./service.js";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const eventDefService = new EventDefService(dynamoDb);
+const eventService = new EventService(dynamoDb);
+const userService = new UserService(dynamoDb);
 
 const router = Router();
 
@@ -15,52 +21,35 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     normalizeCryptoEvent(req.body);
   } catch (error) {
-    res.status(400).send({ message: "Invalid event" });
-    return;
+    res
+      .status(400)
+      .send({ message: "Invalid event", reason: JSON.stringify(error) });
   }
   const event = normalizeCryptoEvent(req.body);
-  const { userId, eventType, chain, eventDate, address } = event;
-  const points_awarded = calculatePoints(event);
-  //@todo calculate rewards and milestones in a module and call it here
-  const params = {
-    TransactItems: [
-      {
-        Put: {
-          TableName: envParsed().EVENTS_TABLE,
-          Item: {
-            PK: `EVENT#${userId}`,
-            SK: `TIMESTAMP#${eventDate}`,
-            event_type: eventType,
-            chain,
-            points_awarded,
-            data: {}, //metadata
-            created_at: new Date().toISOString(),
-          },
-        },
-        Update: {
-          TableName: envParsed().USERS_TABLE,
-          Key: {
-            PK: `USER#${address}`,
-            SK: `PROFILE`,
-          },
-          UpdateExpression: "ADD #points :incrementValue",
-          ExpressionAttributeNames: {
-            "#points": "superchain_points",
-          },
-          ExpressionAttributeValues: {
-            ":incrementValue": points_awarded,
-          },
-          ReturnValues: "UPDATED_NEW",
-        },
-      },
-    ],
-  };
+  const { eventType, eventName, args } = event;
+  if (args) {
+    const { from: userAddress, ...rest } = args;
+    console.log("event", event);
 
-  try {
-    await dynamoDb.transactWrite(params).promise();
-    res.send({ message: "Event created", code: 201 });
-  } catch (error) {
-    res.status(500).send({ message: "Error creating event" });
+    try {
+      const [user, eventDef] = await Promise.all([
+        userService.getUserById(userAddress),
+        eventDefService.getEventByID(eventName, eventType || EventType.Basic),
+      ]);
+      console.log("user", user);
+      console.log("eventDef", eventDef);
+      await eventService.processEvent(eventDef, userAddress);
+      res.send({ message: "Event created", code: 201 });
+    } catch (error) {
+      res.status(500).send({
+        message: "Error processing event",
+        reason: JSON.stringify(error),
+      });
+    }
+  } else {
+    // Handle the case where args is undefined or null
+    console.error("args is undefined or null");
+    res.status(400).send({ message: "Invalid event" });
   }
 });
 

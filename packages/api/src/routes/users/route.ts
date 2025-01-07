@@ -2,32 +2,21 @@ import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
 import envParsed from "@/envParsed.js";
 import { normalizeCreateAccount } from "./normalizer.js";
+import { UserService } from "./service.js";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-
 const router = Router();
+const userService = new UserService(dynamoDb);
 
 router.get(
   "/:address",
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = `USER#${req.params.address}`;
-    const params = {
-      TableName: envParsed().USERS_TABLE,
-      Key: {
-        PK: userId,
-        SK: "PROFILE",
-      },
-    };
-
     try {
-      const data = await dynamoDb.get(params).promise();
-      if (!data.Item) {
-        res.status(404).send({ message: "User not found" });
-      }
-      res.send(data.Item);
+      const user = await userService.getUserById(req.params.address);
+      res.send(user);
     } catch (error) {
-      res.status(500);
+      res.send(404).send({ message: "User not found" });
     }
-  },
+  }
 );
 
 router.post(
@@ -41,28 +30,13 @@ router.post(
     }
     const payload = normalizeCreateAccount(req.body);
     const { address, name, email } = payload;
-    const userId = `USER#${address}`;
-    const params = {
-      TableName: envParsed().USERS_TABLE,
-      Item: {
-        PK: userId,
-        SK: "PROFILE",
-        name,
-        address,
-        superchain_points: 0,
-        email,
-        nft_level: 1,
-        created_at: new Date().toISOString(),
-      },
-    };
-
     try {
-      await dynamoDb.put(params).promise();
+      await userService.createUser(address, name, email);
       res.send({ message: "User created", code: 201 });
     } catch (error) {
       res.status(500).send({ message: "Error creating user" });
     }
-  },
+  }
 );
 
 export default router;

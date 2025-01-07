@@ -1,4 +1,4 @@
-import { NormalizedCryptoEvent } from "@/types/index.js";
+import { EventDef, NormalizedCryptoEvent } from "@/types/index.js";
 import { isAddress, Address } from "viem";
 import { z } from "zod";
 
@@ -7,18 +7,29 @@ const requiredAddress = z
   .refine((x) => isAddress(x), { message: "ADDRESS_INVALID" })
   .transform((x) => x as Address);
 
+export enum EventType {
+  Basic = "basic",
+}
+
 const NormalizedCryptoEventSchema = z.object({
   transactionHash: z.string(),
   eventName: z.string(),
+  eventType: z.string().default(EventType.Basic),
   blockNumber: z.string(),
   eventKey: z.string(),
   eventDate: z.number(),
   address: requiredAddress,
-  args: z.record(z.unknown()),
+  endpointUrl: z.string(),
+  args: z.object({
+    from: z.string(),
+    to: z.string(),
+    value: z.string(),
+  }),
 }) satisfies z.ZodType<NormalizedCryptoEvent>;
 
-export const normalizeCryptoEvent = (event: any): NormalizedCryptoEvent =>
-  NormalizedCryptoEventSchema.parse(event);
+export const normalizeCryptoEvent = (body: {
+  message: NormalizedCryptoEvent;
+}): NormalizedCryptoEvent => NormalizedCryptoEventSchema.parse(body.message);
 
 const CreateOrUpdateEventSchema = z.object({
   event_type: z.string(),
@@ -28,8 +39,8 @@ const CreateOrUpdateEventSchema = z.object({
   points_awarded: z.number(),
   description: z.string(),
   active: z.boolean(),
-});
+}) satisfies z.ZodType<EventDef>;
 
-export const normalizeCreateOrUpdateEvent = (event: any) => {
+export const normalizeCreateOrUpdateEvent = (event: EventDef): EventDef => {
   return CreateOrUpdateEventSchema.parse(event);
 };
