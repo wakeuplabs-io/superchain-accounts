@@ -38,7 +38,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       ]);
       console.log("user", user);
       console.log("eventDef", eventDef);
-      await eventService.processEvent(eventDef);
+      await eventService.processEvent(eventDef, userAddress);
       res.send({ message: "Event created", code: 201 });
     } catch (error) {
       res.status(500).send({

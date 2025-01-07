@@ -13,8 +13,8 @@ export class EventService {
   private readonly user_PK = "USER#";
   private readonly user_SK = "PROFILE";
 
-  async processEvent(event: EventDef) {
-    const { eventType, chain, points_awarded, from } = event;
+  async processEvent(event: EventDef, address: string) {
+    const { eventType, chain, points_awarded } = event;
     const params = {
       TransactItems: [
         {
@@ -35,7 +35,7 @@ export class EventService {
           Update: {
             TableName: this.user_table,
             Key: {
-              PK: `${this.user_PK}${from}`,
+              PK: `${this.user_PK}${address}`,
               SK: this.user_SK,
             },
             UpdateExpression: "ADD #points :incrementValue",
