@@ -9,6 +9,7 @@ export interface NormalizedCryptoEvent {
     to: string;
     value: string;
   };
+  eventType?: string;
   [key: string]: any;
 }
 

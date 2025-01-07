@@ -2,7 +2,7 @@ import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
 
 import mappingRoute from "./mapping/route.js";
-import { normalizeCryptoEvent } from "./normalizer.js";
+import { EventType, normalizeCryptoEvent } from "./normalizer.js";
 import { UserService } from "../users/service.js";
 import { EventDefService } from "./mapping/service.js";
 
@@ -34,7 +34,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
       const [user, eventDef] = await Promise.all([
         userService.getUserById(userAddress),
-        eventDefService.getEventByID(eventName, eventType),
+        eventDefService.getEventByID(eventName, eventType || EventType.Basic),
       ]);
       await eventService.processEvent(eventDef);
       res.send({ message: "Event created", code: 201 });

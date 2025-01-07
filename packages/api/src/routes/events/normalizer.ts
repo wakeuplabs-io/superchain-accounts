@@ -7,9 +7,14 @@ const requiredAddress = z
   .refine((x) => isAddress(x), { message: "ADDRESS_INVALID" })
   .transform((x) => x as Address);
 
+export enum EventType {
+  Basic = "basic",
+}
+
 const NormalizedCryptoEventSchema = z.object({
   transactionHash: z.string(),
   eventName: z.string(),
+  eventType: z.string().default(EventType.Basic),
   blockNumber: z.string(),
   eventKey: z.string(),
   eventDate: z.number(),
