@@ -36,6 +36,8 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         userService.getUserById(userAddress),
         eventDefService.getEventByID(eventName, eventType || EventType.Basic),
       ]);
+      console.log("user", user);
+      console.log("eventDef", eventDef);
       await eventService.processEvent(eventDef);
       res.send({ message: "Event created", code: 201 });
     } catch (error) {

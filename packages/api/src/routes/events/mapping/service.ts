@@ -24,7 +24,6 @@ class EventDefService {
       Key: {
         PK: `${this.PK}${eventType}${eventName}`,
         SK: this.SK,
-        active: true,
       },
     };
     return (await this.client.get(params).promise()).Item as EventDef;
