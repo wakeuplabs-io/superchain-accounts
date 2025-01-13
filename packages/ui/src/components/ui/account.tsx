@@ -1,4 +1,3 @@
-import React from "react";
 import { Send, Download, Import } from "lucide-react";
 
 interface OptimismAccountCardProps {

@@ -8,13 +8,12 @@ import {
   SecretsManagerClient,
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
-import { Address } from "viem";
 
 interface SecretResult {
   apiKey: string;
 }
 
-export async function getSecret(secretName: string): Promise<SecretResult> {
+async function getSecret(secretName: string): Promise<SecretResult> {
   const credentials = await fromIni()();
 
   const client = new SecretsManagerClient({
@@ -38,16 +37,19 @@ export async function getSecret(secretName: string): Promise<SecretResult> {
     };
   } catch (error) {
     console.error("Error fetching secret:", error);
-    throw error;
+    return { apiKey: "BUILD_TIME_DUMMY_KEY" };
   }
 }
 
-// https://vitejs.dev/config/
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async ({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  //@todo - interpolate env name
-  const secret_name = `superchain-accounts-api/dev/api-key`;
-  const secrets = await getSecret(secret_name);
+  const isBuild = command === "build";
+
+  let secrets = { apiKey: "BUILD_TIME_DUMMY_KEY" };
+  if (!isBuild) {
+    const secret_name = `superchain-accounts-api/dev/api-key`;
+    secrets = await getSecret(secret_name);
+  }
 
   return {
     base: "./",

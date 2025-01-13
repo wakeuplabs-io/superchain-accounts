@@ -23,7 +23,7 @@ function Index() {
     account: SmartAccount | null;
     isDeployed: boolean;
   }>({ account: null, isDeployed: false });
-  const [accountBalance, setAccountBalance] = useState<string>("");
+  const [_, setAccountBalance] = useState<string>("");
   const [accountPoints, setAccountPoints] = useState<number>(0);
   const [smartAccountAddress, setSmartAccountAddress] =
     useState<Address>("0x0");
