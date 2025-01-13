@@ -74,7 +74,8 @@ export class SmartAccountHandler {
   }
 
   async sendTransaction(transaction: UserOperationCall) {
-    if(!this.bundlerClient) {
+    console.log("Sending transaction", transaction);
+    if (!this.bundlerClient) {
       throw Error("Bundler client not initialized");
     }
 
@@ -85,6 +86,7 @@ export class SmartAccountHandler {
       maxFeePerGas: 1000304n,
       paymasterVerificationGasLimit: 1000304n,
     });
+
 
     const receipt = await this.bundlerClient.waitForUserOperationReceipt({ hash });
     
