@@ -21,20 +21,43 @@ const env = {
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
 };
 
-const envSchema = z
-  .object({
-    APP_URL: z.string().url().optional().default("http://localhost:5000"),
-    DEV: z.boolean(),
-    PROD: z.boolean(),
-    LOCAL_DEV: z.string().optional().default("false").transform((x) => x === "true"),
-    LOCAL_CHAIN_ID: z.string().optional().transform((x) => Number(x)),
-    LOCAL_CHAIN_NAME: z.string().optional(),
-    LOCAL_RPC_URL: z.string().optional(),
-    BUNDLER_URL: z.string().url(),
-    PAYMASTER_CLIENT_URL: z.string().url(),
-    ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
-    SMART_ACCOUNT_FACTORY_ADDRESS: z.string().transform((x) => getAddress(x)),
-  });
+const envSchema = z.object({
+  APP_URL: z.string().url().optional().default("http://localhost:5000"),
+  DEV: z.boolean(),
+  PROD: z.boolean(),
+  LOCAL_DEV: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((x) => x === "true"),
+  LOCAL_CHAIN_ID: z
+    .string()
+    .optional()
+    .transform((x) => Number(x)),
+  LOCAL_CHAIN_NAME: z.string().optional(),
+  LOCAL_RPC_URL: z.string().optional(),
+  BUNDLER_URL: z
+    .string()
+    .url()
+    .optional()
+    .default("https://api.stackup.sh/v1/node/"),
+  PAYMASTER_CLIENT_URL: z
+    .string()
+    .url()
+    .optional()
+    .default("https://paymaster.base.org"),
+  ENTRYPOINT_ADDRESS: z
+    .string()
+    .transform((x) =>
+      getAddress(x || "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789")
+    ),
+  SMART_ACCOUNT_FACTORY_ADDRESS: z
+    .string()
+    .transform((x) =>
+      getAddress(x || "0x000000893A26168158fbeaDD9335Be5bC96592E2")
+    ),
+  API_BASE_URL: z.string().optional().default("https://api.example.com"),
+});
 
 const envParsed = () => envSchema.parse(env);
 
