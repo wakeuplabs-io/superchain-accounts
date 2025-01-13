@@ -23,6 +23,8 @@ function Index() {
     account: SmartAccount | null;
     isDeployed: boolean;
   }>({ account: null, isDeployed: false });
+  const [name, setUserName] = useState<string>("");
+  const [email, setUserEmail] = useState("");
   const [_, setAccountBalance] = useState<string>("");
   const [accountPoints, setAccountPoints] = useState<number>(0);
   const [smartAccountAddress, setSmartAccountAddress] =
@@ -30,6 +32,7 @@ function Index() {
   const [error, setError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
+
   const testNetworks: SuperchainNetwork[] = [
     {
       ...optimism,
@@ -93,6 +96,11 @@ function Index() {
     setIsDeploying(true);
     try {
       await smartAccountHandler.deploySmartAccount();
+      await Promise.all([
+        authHandler.getUserName().then((name) => setUserName(name || "")),
+        authHandler.getUserEmail().then((email) => setUserEmail(email || "")),
+      ]);
+      await web2Client.createUser(email, name, smartAccount.account!.address);
       setSmartAccount((prev) => ({ ...prev, isDeployed: true }));
     } catch (error) {
       if (error instanceof Error) {
@@ -145,12 +153,17 @@ function Index() {
         </>
       )}
       {!smartAccount.isDeployed && (
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-col gap-4 max-w-md">
           <span>
-            Smart account not deployed, click the next button to deploy it and
-            confirm the transaction in your wallet.
+            Smart account not deployed, please fill in your details and click
+            deploy to continue.
           </span>
-          <Button size="sm" onClick={deploySmartAccount} loading={isDeploying}>
+          <Button
+            size="sm"
+            onClick={deploySmartAccount}
+            loading={isDeploying}
+            disabled={isDeploying}
+          >
             Deploy Account
           </Button>
         </div>

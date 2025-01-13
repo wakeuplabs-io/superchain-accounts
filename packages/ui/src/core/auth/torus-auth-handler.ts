@@ -3,15 +3,35 @@ import Torus from "@toruslabs/torus-embed";
 
 export class TorusAuthHandler {
   private torus: Torus;
-  
-  constructor(private chain: Chain, private readonly mode: "development" | "production" | "local" = "production") {
+
+  constructor(
+    private chain: Chain,
+    private readonly mode: "development" | "production" | "local" = "production"
+  ) {
     this.torus = new Torus({
       buttonPosition: "bottom-right",
     });
   }
 
+  async getUserName() {
+    if (!this.isInitialized() || !this.isLoggedIn()) {
+      return;
+    }
+
+    return (await this.torus.getUserInfo("")).name;
+  }
+
+  async getUserEmail() {
+    if (!this.isInitialized() || !this.isLoggedIn()) {
+      return;
+    }
+
+    return (await this.torus.getUserInfo("")).email;
+  }
+
   async initialize() {
-    const testEnvironment = this.mode === "development" || this.mode === "local";
+    const testEnvironment =
+      this.mode === "development" || this.mode === "local";
     const showTorusButton = this.mode === "local";
     if (!this.torus.isInitialized) {
       await this.torus.init({
@@ -36,7 +56,7 @@ export class TorusAuthHandler {
   }
 
   async logout() {
-    if(!this.isInitialized() || !this.isLoggedIn()) {
+    if (!this.isInitialized() || !this.isLoggedIn()) {
       return;
     }
 
