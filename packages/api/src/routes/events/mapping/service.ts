@@ -1,5 +1,5 @@
 import envParsed from "@/envParsed.js";
-import { EventDef } from "@/types/index.js";
+import { EventDef, EventTriggerType } from "@/types/index.js";
 import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
 
 class EventDefService {
@@ -9,9 +9,17 @@ class EventDefService {
 
   constructor(private client: DocumentClient) {}
 
-  async getAllEvents(): Promise<EventDef[]> {
+  async getAllEvents(
+    event_trigger_type?: EventTriggerType
+  ): Promise<EventDef[]> {
     const params = {
       TableName: this.table,
+      ...(event_trigger_type && {
+        FilterExpression: "event_trigger_type = :event_trigger_type",
+        ExpressionAttributeValues: {
+          ":event_trigger_type": event_trigger_type,
+        },
+      }),
     };
 
     const result = await this.client.scan(params).promise();

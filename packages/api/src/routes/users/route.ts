@@ -3,9 +3,11 @@ import AWS from "aws-sdk";
 import envParsed from "@/envParsed.js";
 import { normalizeCreateAccount } from "./normalizer.js";
 import { UserService } from "./service.js";
+import { EventDefService } from "../events/mapping/service.js";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const router = Router();
 const userService = new UserService(dynamoDb);
+const eventDefService = new EventDefService(dynamoDb);
 
 router.get(
   "/:address",
@@ -28,11 +30,12 @@ router.post(
       res.status(400).send({ message: "Invalid event" });
       return;
     }
-    const payload = normalizeCreateAccount(req.body);
-    const { address, name, email } = payload;
+    const { address, name, email } = normalizeCreateAccount(req.body);
     try {
-      await userService.createUser(address, name, email);
-      res.send({ message: "User created", code: 201 });
+      const user = await userService.createUser(address, name, email);
+      const timeframeEvents = await eventDefService.getAllEvents("timeframe");
+      console.log("Timeframe events", timeframeEvents);
+      res.status(201).send(user);
     } catch (error) {
       res.status(500).send({ message: "Error creating user" });
     }

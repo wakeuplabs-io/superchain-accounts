@@ -3,6 +3,7 @@ import envParsed from "@/envParsed.js";
 import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
 import { EventDef } from "@/types/index.js";
 
+
 export class EventService {
   constructor(private client: DocumentClient) {}
   private readonly event_table = envParsed().EVENTS_TABLE;
@@ -52,4 +53,5 @@ export class EventService {
     };
     return this.client.transactWrite(params).promise();
   }
+  async createTimeBasedEvents(userID: string) {}
 }
