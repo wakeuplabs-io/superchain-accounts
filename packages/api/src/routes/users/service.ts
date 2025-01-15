@@ -32,7 +32,8 @@ class UserService {
         created_at: new Date().toISOString(),
       },
     };
-    return this.client.put(params).promise();
+    await this.client.put(params).promise();
+    return this.getUserById(address);
   }
 }
 
