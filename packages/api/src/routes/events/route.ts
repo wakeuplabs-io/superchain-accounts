@@ -2,11 +2,12 @@ import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
 
 import mappingRoute from "./mapping/route.js";
-import { EventType, normalizeCryptoEvent } from "./normalizer.js";
+import { normalizeCryptoEvent } from "./normalizer.js";
 import { UserService } from "../users/service.js";
 import { EventDefService } from "./mapping/service.js";
 
 import { EventService } from "./service.js";
+import { EventType } from "@/domain/events/types.js";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const eventDefService = new EventDefService(dynamoDb);

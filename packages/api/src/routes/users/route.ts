@@ -4,10 +4,12 @@ import envParsed from "@/envParsed.js";
 import { normalizeCreateAccount } from "./normalizer.js";
 import { UserService } from "./service.js";
 import { EventDefService } from "../events/mapping/service.js";
+import { TimeframeEventsService } from "../events/service.js";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const router = Router();
 const userService = new UserService(dynamoDb);
 const eventDefService = new EventDefService(dynamoDb);
+const timeframeService = new TimeframeEventsService(dynamoDb);
 
 router.get(
   "/:address",
@@ -33,8 +35,13 @@ router.post(
     const { address, name, email } = normalizeCreateAccount(req.body);
     try {
       const user = await userService.createUser(address, name, email);
+      console.log("User created", user);
       const timeframeEvents = await eventDefService.getAllEvents("timeframe");
       console.log("Timeframe events", timeframeEvents);
+      await timeframeService.createTimeBasedEventsForUser(
+        address,
+        timeframeEvents
+      );
       res.status(201).send(user);
     } catch (error) {
       res.status(500).send({ message: "Error creating user" });

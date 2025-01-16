@@ -8,7 +8,7 @@
     "deploy:api:staging": "npm --prefix packages/api run build && serverless deploy --config serverless-api.yml --verbose ",
     "package:api": "npm --prefix packages/api run build && serverless package --config serverless-api.yml",
     "build": "pnpm -r run build",
-    "deploy:app:staging": "sst deploy --stage=staging --print-logs"
+    "deploy:app:dev": "sst deploy --stage=development --print-logs"
   },
   "keywords": [],
   "author": "",

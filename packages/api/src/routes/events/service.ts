@@ -3,9 +3,20 @@ import envParsed from "@/envParsed.js";
 import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
 import { EventDef } from "@/types/index.js";
 import { Address } from "viem";
+import { EventType, IEventProcessor } from "@/domain/events/types.js";
+import { BasicEventProcessor } from "@/domain/events/BasicEventProcessor.js";
+import { ConditionalEventProcessor } from "@/domain/events/ConditionalEventProcessor.js";
 
 export class EventService {
-  constructor(private client: DocumentClient) {}
+  private processors: Map<EventType, IEventProcessor>;
+  private defaultProcessor: IEventProcessor;
+  constructor(private client: DocumentClient) {
+    this.defaultProcessor = new BasicEventProcessor(client);
+    this.processors = new Map([
+      [EventType.Basic, new BasicEventProcessor(client)],
+      [EventType.Conditional, new ConditionalEventProcessor(client)],
+    ]);
+  }
   private readonly event_table = envParsed().EVENTS_TABLE;
   private readonly event_PK = "EVENT#";
   private readonly event_SK = "TIMESTAMP";
@@ -14,44 +25,10 @@ export class EventService {
   private readonly user_PK = "USER#";
   private readonly user_SK = "PROFILE";
 
-  async processEvent(event: EventDef, address: string) {
-    const { eventType, chain, points_awarded } = event;
-    const params = {
-      TransactItems: [
-        {
-          Put: {
-            TableName: this.event_table,
-            Item: {
-              PK: this.event_PK,
-              SK: this.event_SK,
-              event_type: eventType,
-              chain,
-              points_awarded: points_awarded,
-              data: { ...event.args }, //metadata
-              created_at: new Date().toISOString(),
-            },
-          },
-        },
-        {
-          Update: {
-            TableName: this.user_table,
-            Key: {
-              PK: `${this.user_PK}${address}`,
-              SK: this.user_SK,
-            },
-            UpdateExpression: "ADD #points :incrementValue",
-            ExpressionAttributeNames: {
-              "#points": "superchain_points",
-            },
-            ExpressionAttributeValues: {
-              ":incrementValue": points_awarded,
-            },
-            ReturnValues: "UPDATED_NEW",
-          },
-        },
-      ],
-    };
-    return this.client.transactWrite(params).promise();
+  public async processEvent(event: EventDef, address: string) {
+    const { event_type } = event;
+    const processor = this.processors.get(event_type) || this.defaultProcessor;
+    await processor.process(event, address);
   }
 }
 
@@ -70,10 +47,11 @@ export class TimeframeEventsService {
             Item: {
               PK: this.PK,
               SK: this.SK,
-              event_type: event.eventType,
+              event_type: event.event_type,
               chain: event.chain,
               points_awarded: event.points_awarded,
               user_id: userID,
+              expires_on: event.expires_on_ttl,
               data: { ...event.args }, //metadata
               created_at: new Date().toISOString(),
             },
