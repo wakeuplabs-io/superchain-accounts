@@ -36,11 +36,7 @@ const envSchema = z.object({
     .transform((x) => Number(x)),
   LOCAL_CHAIN_NAME: z.string().optional(),
   LOCAL_RPC_URL: z.string().optional(),
-  BUNDLER_URL: z
-    .string()
-    .url()
-    .optional()
-    .default("https://api.stackup.sh/v1/node/"),
+  BUNDLER_URL: z.string().optional().default("https://api.stackup.sh/v1/node/"),
   PAYMASTER_CLIENT_URL: z
     .string()
     .url()

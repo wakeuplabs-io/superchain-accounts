@@ -1,13 +1,14 @@
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { defineConfig, loadEnv, ProxyOptions } from "vite";
+import { Connect, defineConfig, loadEnv, ProxyOptions } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { fromIni } from "@aws-sdk/credential-providers";
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
+import { IncomingMessage, ServerResponse } from "http";
 
 interface SecretResult {
   apiKey: string;
@@ -41,6 +42,14 @@ async function getSecret(secretName: string): Promise<SecretResult> {
   }
 }
 
+interface ExtendedProxyOptions extends ProxyOptions {
+  bypass?: (
+    req: IncomingMessage,
+    res: ServerResponse,
+    options: ProxyOptions
+  ) => void | null | undefined | false | string;
+}
+
 export default defineConfig(async ({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const isBuild = command === "build";
@@ -70,6 +79,23 @@ export default defineConfig(async ({ mode, command }) => {
               proxyReq.setHeader("x-api-key", secrets.apiKey);
             });
           },
+          "/bundler-proxy": {
+            target: "http://test-lb-153247287.us-west-1.elb.amazonaws.com:4337",
+            changeOrigin: true,
+            rewrite: (path: string) => path.replace(/^\/bundler-proxy/, ""),
+            secure: false,
+            ws: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            bypass: (req: Connect.IncomingMessage): string | undefined => {
+              const accept = req.headers.accept;
+              if (typeof accept === "string" && accept.includes("text/html")) {
+                return req.url;
+              }
+              return undefined;
+            },
+          } as ExtendedProxyOptions,
         },
       },
     },

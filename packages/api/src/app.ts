@@ -7,11 +7,24 @@ import envParsed from "@/envParsed.js";
 import middlewares from "@/middlewares/index.js";
 import routes from "@/routes/index.js";
 
+const corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  credentials: true,
+  maxAge: 86400,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+
 const app = express();
 
+// Handle OPTIONS preflight
+app.options("*", cors(corsOptions));
 app.use(morgan("dev"));
-app.use(helmet());
-app.use(cors());
+//app.use(helmet());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(routes);

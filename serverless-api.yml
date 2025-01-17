@@ -3,12 +3,21 @@ frameworkVersion: "3.38.0"
 service: superchain-accounts-api
 provider:
   name: aws
-  region: ${env:AWS_REGION}
+  region: ${env:AWS_REGION, 'us-east-1'}
   runtime: nodejs20.x
   apiGateway:
     apiKeys:
       - name: ${self:service}/dev/api-key
         value: ${ssm:/aws/reference/secretsmanager/${self:service}/dev/api-key}
+    cors:
+      origin: "*"
+      headers:
+        - Content-Type
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+      allowCredentials: true
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -59,12 +68,18 @@ functions:
           path: /
           method: ANY
           private: true
-          cors: true
+      - http:
+          path: /v1/rpc
+          method: OPTIONS
+          private: false
+      - http:
+          path: /v1/rpc
+          method: ANY
+          private: false
       - http:
           path: /{proxy+}
           method: ANY
           private: true
-          cors: true
     environment:
       NODE_ENV: ${self:custom.stage, 'development'}
       EVENTS_TABLE: !Ref EventsTable
@@ -72,6 +87,6 @@ functions:
       REWARDS_DEF_TABLE: !Ref RewardDefinitionTable
       MILESTONES_DEF_TABLE: !Ref MilestoneDefinitionTable
       USERS_TABLE: !Ref UsersTable
-      PAYMASTER_ADDRESS: ${env:PAYMASTER_ADDRESS}
+      PAYMASTER_ADDRESS: ${env:PAYMASTER_ADDRESS, '0xE560b889fa1d2Ca72ee4FB165787b2aD6D506Ac7'}
 
   processTimeframeEvent: ${file(./packages/api/templates/lambda_functions/process_timeframe.yml)}
