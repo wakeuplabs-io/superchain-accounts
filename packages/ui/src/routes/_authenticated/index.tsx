@@ -5,7 +5,7 @@ import { useSuperChainStore } from "@/core/store";
 import { Button } from "@/components";
 import { SmartAccountCard } from "@/components/_authenticated/SmartAccountCard/SmartAccountContainer";
 import { SuperchainNetwork } from "@/types";
-import { base, optimism } from "viem/chains";
+import { base, optimismSepolia } from "viem/chains";
 import { Address } from "viem";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -35,15 +35,15 @@ function Index() {
 
   const testNetworks: SuperchainNetwork[] = [
     {
-      ...optimism,
+      ...optimismSepolia,
       isConnected: true,
-      symbol: "OP",
+      symbol: optimismSepolia.nativeCurrency.symbol,
       color: "#FF0420",
     },
     {
       ...base,
       isConnected: false,
-      symbol: "BASE",
+      symbol: base.nativeCurrency.symbol,
       color: "#0052FF",
     },
   ];

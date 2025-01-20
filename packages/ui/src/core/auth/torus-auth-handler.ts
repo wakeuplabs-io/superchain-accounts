@@ -34,6 +34,10 @@ export class TorusAuthHandler {
       this.mode === "development" || this.mode === "local";
     const showTorusButton = this.mode === "local";
     if (!this.torus.isInitialized) {
+      console.log("Initializing Torus...");
+      console.log("Chain ID: ", this.chain.id);
+      console.log("Chain Name: ", this.chain.name);
+      console.log("RPC URL: ", this.chain.rpcUrls.default.http[0]);
       await this.torus.init({
         showTorusButton: showTorusButton,
         network: {

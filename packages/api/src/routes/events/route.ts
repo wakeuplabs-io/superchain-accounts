@@ -2,11 +2,13 @@ import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
 
 import mappingRoute from "./mapping/route.js";
-import { EventType, normalizeCryptoEvent } from "./normalizer.js";
+import { normalizeCryptoEvent } from "./normalizer.js";
 import { UserService } from "../users/service.js";
 import { EventDefService } from "./mapping/service.js";
 
 import { EventService } from "./service.js";
+import { EventType } from "@/domain/events/types.js";
+import { Address } from "viem";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const eventDefService = new EventDefService(dynamoDb);
@@ -28,17 +30,17 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   const event = normalizeCryptoEvent(req.body);
   const { eventType, eventName, args } = event;
   if (args) {
-    const { from: userAddress, ...rest } = args;
+    const { from, to, ...rest } = args;
     console.log("event", event);
 
     try {
       const [user, eventDef] = await Promise.all([
-        userService.getUserById(userAddress),
+        userService.getUserByArgs({ from, to }),
         eventDefService.getEventByID(eventName, eventType || EventType.Basic),
       ]);
       console.log("user", user);
       console.log("eventDef", eventDef);
-      await eventService.processEvent(eventDef, userAddress);
+      await eventService.processEvent(eventDef, user.address);
       res.send({ message: "Event created", code: 201 });
     } catch (error) {
       res.status(500).send({

@@ -4,10 +4,12 @@ import envParsed from "@/envParsed.js";
 import { normalizeCreateAccount } from "./normalizer.js";
 import { UserService } from "./service.js";
 import { EventDefService } from "../events/mapping/service.js";
+import { TimeframeEventsService } from "../events/service.js";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const router = Router();
 const userService = new UserService(dynamoDb);
 const eventDefService = new EventDefService(dynamoDb);
+const timeframeService = new TimeframeEventsService(dynamoDb);
 
 router.get(
   "/:address",
@@ -27,17 +29,30 @@ router.post(
     try {
       normalizeCreateAccount(req.body);
     } catch (e) {
-      res.status(400).send({ message: "Invalid event" });
+      res
+        .status(400)
+        .send({ message: "Invalid event", reason: JSON.stringify(e) });
       return;
     }
-    const { address, name, email } = normalizeCreateAccount(req.body);
+    const {
+      smartAccount: address,
+      name,
+      email,
+      networks,
+    } = normalizeCreateAccount(req.body);
     try {
-      const user = await userService.createUser(address, name, email);
+      const user = await userService.createUser(address, name, email, networks);
+      console.log("User created", user);
       const timeframeEvents = await eventDefService.getAllEvents("timeframe");
       console.log("Timeframe events", timeframeEvents);
+      const events = await timeframeService.createTimeBasedEventsForUser(
+        address,
+        timeframeEvents
+      );
+      console.log("Timeframe events created", events);
       res.status(201).send(user);
     } catch (error) {
-      res.status(500).send({ message: "Error creating user" });
+      res.status(500).send({ message: "Error creating user", reason: error });
     }
   }
 );

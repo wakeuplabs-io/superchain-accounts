@@ -1,15 +1,14 @@
+import { EventType } from "@/domain/events/types.js";
 import { EventDef, NormalizedCryptoEvent } from "@/types/index.js";
 import { isAddress, Address } from "viem";
 import { z } from "zod";
 
 const requiredAddress = z
   .string()
-  .refine((x) => isAddress(x), { message: "ADDRESS_INVALID" })
+  .refine((x) => isAddress(x, { strict: false }), {
+    message: "ADDRESS_INVALID",
+  })
   .transform((x) => x as Address);
-
-export enum EventType {
-  Basic = "basic",
-}
 
 const NormalizedCryptoEventSchema = z.object({
   transactionHash: z.string(),
@@ -32,7 +31,7 @@ export const normalizeCryptoEvent = (body: {
 }): NormalizedCryptoEvent => NormalizedCryptoEventSchema.parse(body.message);
 
 const CreateOrUpdateEventSchema = z.object({
-  event_type: z.string(),
+  event_type: z.nativeEnum(EventType),
   event_trigger_type: z.enum(["blockchain", "timeframe"]),
   expires_on_ttl: z.optional(z.number()),
   event_name: z.string(),

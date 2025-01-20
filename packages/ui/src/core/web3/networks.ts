@@ -6,7 +6,9 @@ export const supportedChains: Record<string, Chain> = {
   "optimismSepolia": optimismSepolia
 };
 
-export const INITIAL_NETWORK = envParsed().PROD ? supportedChains["optimism"] : supportedChains["optimismSepolia"];
+export const INITIAL_NETWORK = supportedChains["optimismSepolia"];
+
+console.log("envParsed", JSON.stringify(envParsed()));
 
 export function getLocalDevNetwork(): Chain {
   const environment = envParsed();

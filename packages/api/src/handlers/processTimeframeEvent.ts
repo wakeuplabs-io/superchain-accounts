@@ -1,7 +1,31 @@
+import { EventDefService } from "@/routes/events/mapping/service.js";
+import { EventService } from "@/routes/events/service.js";
+import { UserService } from "@/routes/users/service.js";
 import { DynamoDBStreamEvent } from "aws-lambda";
 import AWS from "aws-sdk";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+interface EventData {
+  from: string;
+  to: string;
+  value: number;
+}
+
+interface EventItem {
+  PK: string;
+  SK: string;
+  event_type: string;
+  event_name: string;
+  chain: string;
+  points_awarded: number;
+  user_id: string;
+  expires_on: number;
+  data: EventData;
+  created_at: string;
+}
+
+const eventDefService = new EventDefService(dynamoDb);
+const eventService = new EventService(dynamoDb);
 
 /**
  * This function processes deleted items from a DynamoDB stream.
@@ -16,15 +40,25 @@ export const processDeletedItem = async (event: DynamoDBStreamEvent) => {
   for (const record of records) {
     if (record.dynamodb && record.dynamodb.OldImage) {
       const deletedItem = AWS.DynamoDB.Converter.unmarshall(
-        record.dynamodb.OldImage,
-      );
+        record.dynamodb.OldImage
+      ) as Partial<EventItem>;
+
+      if (
+        !deletedItem.PK ||
+        !deletedItem.SK ||
+        !deletedItem.event_type ||
+        !deletedItem.event_name ||
+        !deletedItem.points_awarded ||
+        !deletedItem.user_id
+      ) {
+        throw new Error("Missing required properties in deleted item");
+      }
       console.log("Deleted Item:", JSON.stringify(deletedItem));
-
-      // Extract relevant attributes from the deleted item
-      const userId = deletedItem.userId;
-      const eventType = deletedItem.event_type;
-
-      //@todo calculate points rewards and milestones in a module and call it here
+      const event = await eventDefService.getEventByID(
+        deletedItem.event_name,
+        deletedItem.event_type
+      );
+      await eventService.processEvent(event, deletedItem.user_id);
     }
   }
 
