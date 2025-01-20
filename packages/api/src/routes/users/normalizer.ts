@@ -8,7 +8,8 @@ const requiredAddress = z
 
 const CreateAccountEventSchema = z.object({
   email: z.string(),
-  address: requiredAddress,
+  smartAccount: requiredAddress,
+  networks: z.array(z.object({ chain: z.string(), address: requiredAddress })),
   name: z.string(),
 });
 

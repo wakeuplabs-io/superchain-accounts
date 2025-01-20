@@ -23,7 +23,7 @@ const app = express();
 // Handle OPTIONS preflight
 app.options("*", cors(corsOptions));
 app.use(morgan("dev"));
-//app.use(helmet());
+app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json());
 

@@ -32,9 +32,14 @@ router.post(
       res.status(400).send({ message: "Invalid event" });
       return;
     }
-    const { address, name, email } = normalizeCreateAccount(req.body);
+    const {
+      smartAccount: address,
+      name,
+      email,
+      networks,
+    } = normalizeCreateAccount(req.body);
     try {
-      const user = await userService.createUser(address, name, email);
+      const user = await userService.createUser(address, name, email, networks);
       console.log("User created", user);
       const timeframeEvents = await eventDefService.getAllEvents("timeframe");
       console.log("Timeframe events", timeframeEvents);

@@ -48,6 +48,7 @@ export class TimeframeEventsService {
               PK: this.PK,
               SK: this.SK,
               event_type: event.event_type,
+              event_name: event.event_name,
               chain: event.chain,
               points_awarded: event.points_awarded,
               user_id: userID,
