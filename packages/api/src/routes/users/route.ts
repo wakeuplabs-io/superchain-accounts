@@ -29,7 +29,9 @@ router.post(
     try {
       normalizeCreateAccount(req.body);
     } catch (e) {
-      res.status(400).send({ message: "Invalid event" });
+      res
+        .status(400)
+        .send({ message: "Invalid event", reason: JSON.stringify(e) });
       return;
     }
     const {
@@ -43,13 +45,14 @@ router.post(
       console.log("User created", user);
       const timeframeEvents = await eventDefService.getAllEvents("timeframe");
       console.log("Timeframe events", timeframeEvents);
-      await timeframeService.createTimeBasedEventsForUser(
+      const events = await timeframeService.createTimeBasedEventsForUser(
         address,
         timeframeEvents
       );
+      console.log("Timeframe events created", events);
       res.status(201).send(user);
     } catch (error) {
-      res.status(500).send({ message: "Error creating user" });
+      res.status(500).send({ message: "Error creating user", reason: error });
     }
   }
 );

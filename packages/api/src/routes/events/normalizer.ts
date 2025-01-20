@@ -5,7 +5,9 @@ import { z } from "zod";
 
 const requiredAddress = z
   .string()
-  .refine((x) => isAddress(x), { message: "ADDRESS_INVALID" })
+  .refine((x) => isAddress(x, { strict: false }), {
+    message: "ADDRESS_INVALID",
+  })
   .transform((x) => x as Address);
 
 const NormalizedCryptoEventSchema = z.object({

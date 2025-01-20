@@ -47,7 +47,7 @@ const envSchema = z
       .default("superchain-accounts-api-rewards-def-development-table"),
     TIMEFRAME_EVENTS_TABLE: z
       .string()
-      .default("superchain-accounts-api-timeframe-cron-development-table"),
+      .default("superchain-accounts-api-timeframe-development-table"),
     PAYMASTER_ADDRESS: z.string().transform((str) => getAddress(str)),
   })
   .required();

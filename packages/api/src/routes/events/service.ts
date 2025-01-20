@@ -36,17 +36,25 @@ export class TimeframeEventsService {
   constructor(private client: DocumentClient) {}
   private readonly table = envParsed().TIMEFRAME_EVENTS_TABLE;
   private readonly PK = "TIMEFRAME#";
-  private readonly SK = "TIMESTAMP";
+  private readonly SK = "TIMESTAMP#";
 
   async createTimeBasedEventsForUser(userID: Address, eventsDef: EventDef[]) {
+    console.log(
+      "Mapping timeframe events for user",
+      userID,
+      "events",
+      eventsDef
+    );
+    const timestamp = new Date().getTime();
+    const FULL_SK = `${this.SK}${timestamp}`;
     const params = {
       TransactItems: eventsDef.map((event) => {
         return {
           Put: {
             TableName: this.table,
             Item: {
-              PK: this.PK,
-              SK: this.SK,
+              PK: `${this.PK}${userID}-${event.event_name}`,
+              SK: FULL_SK,
               event_type: event.event_type,
               event_name: event.event_name,
               chain: event.chain,
@@ -60,7 +68,21 @@ export class TimeframeEventsService {
         };
       }),
     };
+    console.log("Creating events to be cron scheduled", JSON.stringify(params));
+    await this.client.transactWrite(params).promise();
+    return this.getEventsBySK(FULL_SK);
+  }
 
-    return this.client.transactWrite(params).promise();
+  async getEventsBySK(sk: string) {
+    const params = {
+      TableName: this.table,
+      FilterExpression: "begins_with(SK, :sk)",
+      ExpressionAttributeValues: {
+        ":sk": sk,
+      },
+    };
+
+    const { Items } = await this.client.scan(params).promise();
+    return Items || [];
   }
 }

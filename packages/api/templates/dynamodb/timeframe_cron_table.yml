@@ -1,12 +1,16 @@
 Type: AWS::DynamoDB::Table
 Properties:
-  TableName: ${self:service}-timeframe-cron-${self:custom.stage}-table
+  TableName: ${self:service}-timeframe-${self:custom.stage}-table
   AttributeDefinitions:
-    - AttributeName: ID
+    - AttributeName: PK
+      AttributeType: S
+    - AttributeName: SK
       AttributeType: S
   KeySchema:
-    - AttributeName: ID
+    - AttributeName: PK
       KeyType: HASH
+    - AttributeName: SK
+      KeyType: RANGE
   ProvisionedThroughput:
     ReadCapacityUnits: 5
     WriteCapacityUnits: 5
