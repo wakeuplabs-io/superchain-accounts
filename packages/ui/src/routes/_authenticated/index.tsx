@@ -5,7 +5,7 @@ import { useSuperChainStore } from "@/core/store";
 import { Button } from "@/components";
 import { SmartAccountCard } from "@/components/_authenticated/SmartAccountCard/SmartAccountContainer";
 import { SuperchainNetwork } from "@/types";
-import { base, optimismSepolia } from "viem/chains";
+import { base, optimism } from "viem/chains";
 import { Address } from "viem";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -23,8 +23,6 @@ function Index() {
     account: SmartAccount | null;
     isDeployed: boolean;
   }>({ account: null, isDeployed: false });
-  const [name, setUserName] = useState<string>("");
-  const [email, setUserEmail] = useState("");
   const [_, setAccountBalance] = useState<string>("");
   const [accountPoints, setAccountPoints] = useState<number>(0);
   const [smartAccountAddress, setSmartAccountAddress] =
@@ -32,18 +30,17 @@ function Index() {
   const [error, setError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
-
   const testNetworks: SuperchainNetwork[] = [
     {
-      ...optimismSepolia,
+      ...optimism,
       isConnected: true,
-      symbol: optimismSepolia.nativeCurrency.symbol,
+      symbol: "OP",
       color: "#FF0420",
     },
     {
       ...base,
       isConnected: false,
-      symbol: base.nativeCurrency.symbol,
+      symbol: "BASE",
       color: "#0052FF",
     },
   ];
@@ -96,11 +93,6 @@ function Index() {
     setIsDeploying(true);
     try {
       await smartAccountHandler.deploySmartAccount();
-      await Promise.all([
-        authHandler.getUserName().then((name) => setUserName(name || "")),
-        authHandler.getUserEmail().then((email) => setUserEmail(email || "")),
-      ]);
-      await web2Client.createUser(email, name, smartAccount.account!.address);
       setSmartAccount((prev) => ({ ...prev, isDeployed: true }));
     } catch (error) {
       if (error instanceof Error) {
@@ -153,17 +145,12 @@ function Index() {
         </>
       )}
       {!smartAccount.isDeployed && (
-        <div className="flex flex-col gap-4 max-w-md">
+        <div className="flex flex-row gap-2 items-center">
           <span>
-            Smart account not deployed, please fill in your details and click
-            deploy to continue.
+            Smart account not deployed, click the next button to deploy it and
+            confirm the transaction in your wallet.
           </span>
-          <Button
-            size="sm"
-            onClick={deploySmartAccount}
-            loading={isDeploying}
-            disabled={isDeploying}
-          >
+          <Button size="sm" onClick={deploySmartAccount} loading={isDeploying}>
             Deploy Account
           </Button>
         </div>

@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, useRouter} from "@tanstack/react-router";
 import { z } from "zod";
-import { LogOut, Lock, ScrollText } from "lucide-react";
+import { LogOut, Lock, ScrollText, Beaker } from "lucide-react";
 
 import {
   Sidebar,
@@ -58,10 +58,14 @@ function AuthenticatedLayout() {
   };
 
   return (
-    <SidebarProvider style={{
-      "--sidebar-width": "20rem",
-      "--sidebar-width-mobile": "20rem",
-    } as React.CSSProperties}>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "20rem",
+          "--sidebar-width-mobile": "20rem",
+        } as React.CSSProperties
+      }
+    >
       <div className="flex w-full h-screen">
         <Sidebar className="w-80">
           <SidebarHeader className="px-8 py-14">
@@ -88,13 +92,27 @@ function AuthenticatedLayout() {
                   isActive={router.state.location.pathname === "/"}
                 />
               </SidebarMenuItem>
+              {process.env.NODE_ENV === "development" && (
+                <SidebarMenuItem>
+                  <AuthenticatedSidebarMenuButton
+                    Icon={Beaker}
+                    text="Mockups"
+                    route="/mockup"
+                    isActive={router.state.location.pathname === "/mockup"}
+                  />
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
             <div className="flex flex-col px-8 py-14 gap-9">
               <div className="flex gap-4">
-                <ActionButton icon={LogOut} onClick={onLogout}/>
-                <ActionButton variant='slate' icon={Lock} onClick={() => console.log("locking")}/>
+                <ActionButton icon={LogOut} onClick={onLogout} />
+                <ActionButton
+                  variant="slate"
+                  icon={Lock}
+                  onClick={() => console.log("locking")}
+                />
               </div>
               <img className="w-[124px]" src={wakeUpPowered} />
             </div>
@@ -102,7 +120,7 @@ function AuthenticatedLayout() {
         </Sidebar>
         <main className="flex flex-1 overflow-auto p-8">
           <div className="w-full">
-            <SidebarTrigger className="mb-4"/>
+            <SidebarTrigger className="mb-4" />
             <Outlet />
           </div>
         </main>
