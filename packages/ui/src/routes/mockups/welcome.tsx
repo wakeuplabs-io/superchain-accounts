@@ -1,6 +1,6 @@
 // src/routes/mockups/welcome.tsx
 import { createFileRoute } from "@tanstack/react-router";
-import { Welcome } from "@/components/ui/welcome";
+import { Welcome } from "@/components/ui/Welcome";
 
 export const Route = createFileRoute("/mockups/welcome")({
   component: WelcomeMockup,

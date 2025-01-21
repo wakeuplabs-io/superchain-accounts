@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SmartAccountCard } from "@/components/_authenticated/SmartAccountCard/SmartAccountContainer";
+import { SmartAccountCard } from "@/components/ui/SmartAccountCard/SmartAccountContainer";
 import { SuperchainNetwork } from "@/types";
 import { base, optimism } from "viem/chains";
 

@@ -22,7 +22,6 @@ export const SmartAccountCard = ({
   networks,
   onNetworkSelect,
   onSend,
-  onImport,
 }: SmartAccountCardProps) => (
   <div className="w-full">
     <NetworkSelector
@@ -39,7 +38,6 @@ export const SmartAccountCard = ({
         network={currentNetwork}
         address={address}
         onSend={onSend}
-        onImport={onImport}
       />
     </div>
   </div>

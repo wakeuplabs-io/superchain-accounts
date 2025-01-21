@@ -1,24 +1,24 @@
 // src/components/ui/ActionButtons.tsx
 import { useState } from "react";
 import { Send, Download, Import } from "lucide-react";
-import { ReceiveTokensDialog } from "@/components/ui/ReceiveTokensDialog";
+import { ReceiveTokensDialog } from "@/components/ui/SmartAccountCard/ReceiveTokensDialog";
+import { ImportTokensDialog } from "@/components/ui/SmartAccountCard/ImportTokenDialog";
 import { SuperchainNetwork } from "@/types";
 import { Address } from "viem";
 
 interface ActionButtonsProps {
   onSend?: () => void;
-  onImport?: () => void;
   network: SuperchainNetwork;
   address: Address;
 }
 
 export const ActionButtons = ({
   onSend,
-  onImport,
   network,
   address,
 }: ActionButtonsProps) => {
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   return (
     <>
@@ -40,7 +40,7 @@ export const ActionButtons = ({
         </button>
 
         <button
-          onClick={onImport}
+          onClick={() => setIsImportOpen(true)}
           className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md hover:bg-gray-50 text-gray-700"
         >
           <Import className="w-4 h-4" />
@@ -53,6 +53,11 @@ export const ActionButtons = ({
         onClose={() => setIsReceiveOpen(false)}
         address={address}
         network={network}
+      />
+
+      <ImportTokensDialog
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
       />
     </>
   );

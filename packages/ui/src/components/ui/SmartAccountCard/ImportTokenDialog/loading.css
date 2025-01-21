@@ -1,0 +1,10 @@
+/* src/styles/loading.css */
+.loading-bar {
+    animation: loading 2s ease-in-out infinite;
+  }
+  
+  @keyframes loading {
+    0% { width: 0% }
+    50% { width: 70% }
+    100% { width: 100% }
+  }
