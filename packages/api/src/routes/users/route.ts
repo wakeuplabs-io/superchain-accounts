@@ -1,7 +1,11 @@
 import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
 import envParsed from "@/envParsed.js";
-import { normalizeCreateAccount } from "./normalizer.js";
+import {
+  normalizeAddNetwork,
+  normalizeCreateAccount,
+  normalizeImportTokens,
+} from "./normalizer.js";
 import { UserService } from "./service.js";
 import { EventDefService } from "../events/mapping/service.js";
 import { TimeframeEventsService } from "../events/service.js";
@@ -18,7 +22,45 @@ router.get(
       const user = await userService.getUserById(req.params.address);
       res.send(user);
     } catch (error) {
-      res.send(404).send({ message: "User not found" });
+      res.status(404).send({ message: "User not found" });
+    }
+  }
+);
+
+router.post(
+  "/tokens/:address",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      normalizeImportTokens(req.body);
+    } catch (e) {
+      res.status(400).send({ message: "Invalid event", reason: e });
+      return;
+    }
+    try {
+      const { tokens } = normalizeImportTokens(req.body);
+      const user = await userService.importTokens(req.params.address, tokens);
+      res.send(user);
+    } catch (error) {
+      res.status(500).send({ error });
+    }
+  }
+);
+
+router.post(
+  "/networks/:address",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      normalizeAddNetwork(req.body);
+    } catch (e) {
+      res.status(400).send({ message: "Invalid event", reason: e });
+      return;
+    }
+    try {
+      const { networks } = normalizeAddNetwork(req.body);
+      const user = await userService.addNetworks(req.params.address, networks);
+      res.send(user);
+    } catch (error) {
+      res.status(500).send({ error });
     }
   }
 );

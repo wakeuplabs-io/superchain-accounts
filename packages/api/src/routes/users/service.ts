@@ -2,6 +2,7 @@ import envParsed from "@/envParsed.js";
 import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
 import { Address } from "viem";
 
+
 interface Network {
   address: `0x${string}`;
   chain: string;
@@ -17,6 +18,12 @@ interface UserItem {
   email: string;
   nft_level: number;
   created_at: string;
+}
+
+export interface Tokens {
+  address: Address;
+  symbol: string;
+  decimals: number;
 }
 
 class UserService {
@@ -74,6 +81,67 @@ class UserService {
       } as UserItem,
     };
     await this.client.put(params).promise();
+    return this.getUserById(address);
+  }
+  async addNetworks(address: string, newNetworks: Network[]) {
+    const currentUser = await this.getUserById(address);
+
+    const existingNetworks = currentUser?.networks || [];
+
+    const networkSet = new Set(existingNetworks.map((n: Network) => n.address));
+
+    const networksToAdd = newNetworks.filter(
+      (network) => !networkSet.has(network.address)
+    );
+
+    if (networksToAdd.length === 0) {
+      return currentUser;
+    }
+
+    const params = {
+      TableName: this.table,
+      Key: {
+        PK: `${this.PK}${address}`,
+        SK: this.SK,
+      },
+      UpdateExpression: "SET networks = :networks",
+      ExpressionAttributeValues: {
+        ":networks": [...existingNetworks, ...networksToAdd],
+      },
+    };
+
+    await this.client.update(params).promise();
+    return this.getUserById(address);
+  }
+
+  async importTokens(address: string, newTokens: Tokens[]) {
+    const currentUser = await this.getUserById(address);
+
+    const existingTokens = currentUser?.tokens || [];
+
+    const tokenSet = new Set(existingTokens.map((t: Tokens) => t.address));
+
+    const tokensToAdd = newTokens.filter(
+      (token) => !tokenSet.has(token.address)
+    );
+
+    if (tokensToAdd.length === 0) {
+      return currentUser;
+    }
+
+    const params = {
+      TableName: this.table,
+      Key: {
+        PK: `${this.PK}${address}`,
+        SK: this.SK,
+      },
+      UpdateExpression: "SET tokens = :tokens",
+      ExpressionAttributeValues: {
+        ":tokens": [...existingTokens, ...tokensToAdd],
+      },
+    };
+
+    await this.client.update(params).promise();
     return this.getUserById(address);
   }
 }
