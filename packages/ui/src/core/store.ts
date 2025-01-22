@@ -40,9 +40,83 @@ const authMode = environment.LOCAL_DEV
 //instantiate the public client
 const publicClient = createPublicClient(initialChain);
 
+class MockAuthHandler {
+  torus: any;
+  chain: Chain;
+  mode: any;
+
+  constructor(chain: Chain, mode: any) {
+    this.chain = chain;
+    this.mode = mode;
+    this.torus = {};
+  }
+
+  async init(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  async login(): Promise<{
+    privateKey: `0x${string}`;
+    publicAddress: `0x${string}`;
+    email: string;
+    name: string;
+  }> {
+    return Promise.resolve({
+      privateKey: "0xMockPrivateKey" as `0x${string}`,
+      publicAddress: "0xMockAddress" as `0x${string}`,
+      email: "mock@example.com",
+      name: "Mock User",
+    });
+  }
+
+  async logout(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  getUserName(): string {
+    return "Mock User";
+  }
+
+  getUserEmail(): string {
+    return "mock@example.com";
+  }
+
+  getUserInfo(): any {
+    return {
+      email: this.getUserEmail(),
+      name: this.getUserName(),
+      profileImage: "https://api.dicebear.com/7.x/personas/svg?seed=mock",
+    };
+  }
+
+  isLoggedIn(): boolean {
+    return true;
+  }
+
+  getPublicAddress(): `0x${string}` {
+    return "0xMockAddress" as `0x${string}`;
+  }
+
+  getPrivateKey(): `0x${string}` {
+    return "0xMockPrivateKey" as `0x${string}`;
+  }
+
+  async initialize(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  getProvider(): any {
+    return this.torus.provider;
+  }
+}
+
 export const useSuperChainStore = create<SuperChainStoreType>((set) => ({
   chain: initialChain,
-  authHandler: new TorusAuthHandler(initialChain, authMode),
+  //authHandler: new TorusAuthHandler(initialChain, authMode),
+  authHandler: new MockAuthHandler(
+    initialChain,
+    authMode
+  ) as unknown as TorusAuthHandler,
   smartAccountHandler: createSmartAccountHandler({
     publicClient,
     bundlerUrl: environment.BUNDLER_URL,

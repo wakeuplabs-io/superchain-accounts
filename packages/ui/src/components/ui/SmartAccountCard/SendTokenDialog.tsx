@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import qrIconPng from "@/assets/qr-scan.png";
 import { SuperchainNetwork } from "@/types";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface SendTokensDialogProps {
   isOpen: boolean;
@@ -21,18 +21,83 @@ export const SendTokensDialog = ({
 }: SendTokensDialogProps) => {
   const [toAddress, setToAddress] = useState("");
   const [showScanner, setShowScanner] = useState(false);
+  const qrContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (showScanner && qrContainerRef.current) {
+      const startScanner = async () => {
+        try {
+          // Obtener lista de cámaras disponibles
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const cameras = devices.filter(
+            (device) => device.kind === "videoinput"
+          );
+
+          // Intentar encontrar la cámara trasera principal
+          const rearCamera = cameras.find(
+            (camera) =>
+              camera.label.toLowerCase().includes("back") ||
+              camera.label.toLowerCase().includes("rear") ||
+              camera.label.toLowerCase().includes("environment")
+          );
+
+          const scanner = new Html5QrcodeScanner(
+            "qr-scanner",
+            {
+              qrbox: {
+                width: 250,
+                height: 250,
+              },
+              fps: 5,
+              videoConstraints: {
+                deviceId: rearCamera?.deviceId,
+                facingMode: rearCamera ? undefined : "environment",
+                aspectRatio: 1,
+              },
+              showTorchButtonIfSupported: false, // Ocultar botón de flash
+              showZoomSliderIfSupported: false, // Ocultar slider de zoom
+              defaultZoomValueIfSupported: 1, // Zoom 1x por defecto
+            },
+            false // verbose
+          );
+
+          scanner.render(
+            (decodedText) => {
+              setToAddress(decodedText);
+              scanner.clear();
+              setShowScanner(false);
+            },
+            (error) => {
+              console.warn(error);
+            }
+          );
+
+          return () => {
+            scanner.clear();
+          };
+        } catch (error) {
+          console.error("Error accessing camera:", error);
+        }
+      };
+
+      startScanner();
+    }
+  }, [showScanner]);
 
   const shortAddress = address.slice(0, 10) + "..." + address.slice(-4);
 
   const handleQrScan = () => {
     setShowScanner(true);
-    const scanner = new Html5QrcodeScanner("qr-reader", {
-      qrbox: {
-        width: 250,
-        height: 250,
+    const scanner = new Html5QrcodeScanner(
+      "qr-reader",
+      {
+        qrbox: {
+          width: 250,
+          height: 250,
+        },
+        fps: 5,
       },
-      fps: 5,
-    });
+      false
+    );
 
     scanner.render(
       (decodedText) => {
@@ -130,7 +195,7 @@ export const SendTokensDialog = ({
                     <X />
                   </button>
                 </div>
-                <div id="qr-reader" className="w-full" />
+                <div ref={qrContainerRef} id="qr-scanner" className="w-full" />
               </div>
             </div>
           )}

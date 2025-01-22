@@ -37,8 +37,6 @@ function AccountsMockup() {
           onNetworkSelect={(networkId) =>
             console.log("Network selected:", networkId)
           }
-          onSend={() => console.log("Send")}
-          onImport={() => console.log("Import")}
         />
       </div>
     </div>
