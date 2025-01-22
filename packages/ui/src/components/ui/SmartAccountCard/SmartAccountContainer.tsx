@@ -11,8 +11,6 @@ interface SmartAccountCardProps {
   currentNetwork: SuperchainNetwork;
   networks: SuperchainNetwork[];
   onNetworkSelect: (networkId: number) => void;
-  onSend?: () => void;
-  onImport?: () => void;
 }
 
 export const SmartAccountCard = ({
@@ -21,7 +19,6 @@ export const SmartAccountCard = ({
   currentNetwork,
   networks,
   onNetworkSelect,
-  onSend,
 }: SmartAccountCardProps) => (
   <div className="w-full">
     <NetworkSelector
@@ -34,11 +31,7 @@ export const SmartAccountCard = ({
       <div className="mb-6">
         <AccountBalance points={points} network={currentNetwork} />
       </div>
-      <ActionButtons
-        network={currentNetwork}
-        address={address}
-        onSend={onSend}
-      />
+      <ActionButtons network={currentNetwork} address={address} />
     </div>
   </div>
 );

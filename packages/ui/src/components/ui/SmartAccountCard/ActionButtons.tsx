@@ -1,30 +1,27 @@
 // src/components/ui/ActionButtons.tsx
 import { useState } from "react";
 import { Send, Download, Import } from "lucide-react";
-import { ReceiveTokensDialog } from "@/components/ui/SmartAccountCard/ReceiveTokensDialog";
-import { ImportTokensDialog } from "@/components/ui/SmartAccountCard/ImportTokenDialog";
+import { ReceiveTokensDialog } from "./ReceiveTokensDialog";
+import { ImportTokensDialog } from "./ImportTokenDialog";
+import { SendTokensDialog } from "./SendTokenDialog";
 import { SuperchainNetwork } from "@/types";
 import { Address } from "viem";
 
 interface ActionButtonsProps {
-  onSend?: () => void;
   network: SuperchainNetwork;
   address: Address;
 }
 
-export const ActionButtons = ({
-  onSend,
-  network,
-  address,
-}: ActionButtonsProps) => {
+export const ActionButtons = ({ network, address }: ActionButtonsProps) => {
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isSendOpen, setIsSendOpen] = useState(false);
 
   return (
     <>
       <div className="flex gap-4">
         <button
-          onClick={onSend}
+          onClick={() => setIsSendOpen(true)}
           className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md hover:bg-gray-50 text-gray-700"
         >
           <Send className="w-4 h-4" />
@@ -47,6 +44,13 @@ export const ActionButtons = ({
           <span>Import tokens</span>
         </button>
       </div>
+
+      <SendTokensDialog
+        isOpen={isSendOpen}
+        onClose={() => setIsSendOpen(false)}
+        network={network}
+        address={address}
+      />
 
       <ReceiveTokensDialog
         isOpen={isReceiveOpen}
