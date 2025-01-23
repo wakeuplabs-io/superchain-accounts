@@ -25,39 +25,58 @@ export default $config({
     };
   },
   async run() {
-    // const vpc = new sst.aws.Vpc("bundler-vpc", {
-    //   transform: {
-    //     vpc(args, opts, name) {
-    //       args.cidrBlock = process.env.BUNDLER_VPC_CIDR_BLOCK;
-    //       opts.import = process.env.BUNDLER_VPC_ID;
-    //     },
-    //     internetGateway(args, opts, name) {
-    //       opts.import = process.env.BUNDLER_VPC_INTERNET_GATEWAY_ID;
-    //     },
-    //     privateSubnet(args, opts, name) {
-          
-    //     },
-    //     publicRouteTable(args, opts, name) {
-          
-    //     },
-    //   }
-    // });
+    const vpcId = process.env.BUNDLER_VPC_ID!
+    const subnets = process.env.BUNDLER_SUBNETS!.split(',')
+    const securityGroups = [process.env.BUNDLER_SECURITY_GROUPS!]
+    const cloudmapNamespaceId = process.env.BUNDLER_CLOUDMAP_NAMESPACE_ID!
+    const cloudmapNamespaceName = process.env.BUNDLER_CLOUDMAP_NAMESPACE_NAME!
 
-    const vpc = sst.aws.Vpc.get("bundler-vpc-default", process.env.BUNDLER_VPC_ID!)
+    const bundlerDomain = process.env.BUNDLER_SERVICE_DOMAIN!
+    const bundlerCertificate = process.env.BUNDLER_SERVICE_CERTIFICATE!
+
+    const vpc = {
+      id: vpcId,
+      // security group should allow http/https traffic inbound/outbound
+      // TODO: use a different security group for load balancer for better isolation
+      securityGroups,
+      // container and load balancer should point to the same subnets for routting traffic
+      containerSubnets: subnets,
+      loadBalancerSubnets: subnets,
+      cloudmapNamespaceId,
+      cloudmapNamespaceName,
+    }
 
     const cluster = new sst.aws.Cluster("bundler-cluster", { vpc });
 
     cluster.addService("bundler-service", {
+      transform: {
+        taskDefinition: (taskDefinition, opts) => {
+            // see: http://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerDefinition.html
+            const definitions = JSON.parse(taskDefinition.containerDefinitions.toString())
+
+            delete definitions[0].portMappings[0].containerPortRange;
+            definitions[0].portMappings[0].containerPort = BUNDLER_PORT;
+            definitions[0].portMappings[0].hostPort = BUNDLER_PORT;
+            
+            taskDefinition.containerDefinitions = JSON.stringify(definitions);
+        }
+      },
       loadBalancer: {
-        ports: [
-          { listen: "80/http", forward: BUNDLER_PORT_FORWARDING},
+        domain: {
+          name: bundlerDomain,
+          dns: false,
+          cert: bundlerCertificate
+        },
+        rules: [
+          { listen: "443/https", forward: BUNDLER_PORT_FORWARDING},
+          { listen: "80/http", redirect: "443/https"},
         ],
         health: {
           [BUNDLER_PORT_FORWARDING]: {
             path: "/health",
             interval: "10 seconds",
           }
-        }
+        },
       },
       image: {
         dockerfile: "Dockerfile",
