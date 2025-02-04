@@ -1,7 +1,7 @@
 import { Chain } from "viem";
 import { create } from "zustand";
 import envParsed from "@/envParsed";
-import { TorusAuthHandler } from "./auth";
+
 import {
   createPublicClient,
   getLocalDevNetwork,
@@ -12,11 +12,13 @@ import {
 } from "@/core/web3";
 import { ApiClient } from "@/lib/utils";
 
+import { Web3AuthHandler } from "./auth/web3-auth-handler";
+
 const environment = envParsed();
 
 type SuperChainStore = {
   chain: Chain;
-  authHandler: TorusAuthHandler;
+  authHandler: Web3AuthHandler; //TorusAuthHandler;
   smartAccountHandler: SmartAccountHandler;
   web3Client: Web3Client;
   web2Client: ApiClient;
@@ -42,7 +44,7 @@ const publicClient = createPublicClient(initialChain);
 
 export const useSuperChainStore = create<SuperChainStoreType>((set) => ({
   chain: initialChain,
-  authHandler: new TorusAuthHandler(initialChain, authMode),
+  authHandler: new Web3AuthHandler(initialChain, authMode), //new TorusAuthHandler(initialChain, authMode),
   smartAccountHandler: createSmartAccountHandler({
     publicClient,
     bundlerUrl: environment.BUNDLER_URL,

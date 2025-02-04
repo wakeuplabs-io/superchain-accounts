@@ -19,6 +19,7 @@ const env = {
   SMART_ACCOUNT_FACTORY_ADDRESS: import.meta.env
     .VITE_SMART_ACCOUNT_FACTORY_ADDRESS,
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+  WEB3_AUTH_CLIENT_ID: import.meta.env.VITE_WEB3_AUTH_CLIENT_ID,
 };
 
 const envSchema = z.object({
@@ -53,6 +54,12 @@ const envSchema = z.object({
       getAddress(x || "0x000000893A26168158fbeaDD9335Be5bC96592E2")
     ),
   API_BASE_URL: z.string().optional().default("https://api.example.com"),
+  WEB3_AUTH_CLIENT_ID: z
+    .string()
+    .optional()
+    .default(
+      "BE3cnnlzqOX-bgJzx7jCfDr6h0TkJK6Cp-uzy1kUHVaYdkLqyD1iXbSqb6ZuP84rJgSsr3PdWGjOVCX5dCkhJm8"
+    ),
 });
 
 const envParsed = () => envSchema.parse(env);
