@@ -31,7 +31,7 @@ export default $config({
         PROD: "false",
         DEV: "true",
         VITE_LOCAL_DEV: "false",
-        VITE_BUNDLER_URL: "/bundler-proxy",
+        VITE_BUNDLER_URL: "https://superchain-bundler.wakeuplabs.link",
         VITE_ENTRYPOINT_ADDRESS: "0x0000000071727De22E5E9d8BAf0edAc6f37da032",
         VITE_SMART_ACCOUNT_FACTORY_ADDRESS:
           "0x83605CCFFEeffEe29014F0f3D81F1640d3cFaCBE",

@@ -9,6 +9,7 @@ import {
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
 import { IncomingMessage, ServerResponse } from "http";
+import inject from "@rollup/plugin-inject";
 
 interface SecretResult {
   apiKey: string;
@@ -62,10 +63,26 @@ export default defineConfig(async ({ mode, command }) => {
 
   return {
     base: "./",
-    plugins: [react(), tsconfigPaths(), TanStackRouterVite()],
+    plugins: [
+      react(),
+      tsconfigPaths(),
+      TanStackRouterVite(),
+      inject({
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
+    build: {
+      rollupOptions: {
+        plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
+      },
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        buffer: "buffer/",
+        crypto: "crypto-browserify",
+        stream: "stream-browserify",
+        util: "util/",
       },
     },
     server: {
@@ -79,23 +96,6 @@ export default defineConfig(async ({ mode, command }) => {
               proxyReq.setHeader("x-api-key", secrets.apiKey);
             });
           },
-          "/bundler-proxy": {
-            target: "http://test-lb-153247287.us-west-1.elb.amazonaws.com:4337",
-            changeOrigin: true,
-            rewrite: (path: string) => path.replace(/^\/bundler-proxy/, ""),
-            secure: false,
-            ws: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-            bypass: (req: Connect.IncomingMessage): string | undefined => {
-              const accept = req.headers.accept;
-              if (typeof accept === "string" && accept.includes("text/html")) {
-                return req.url;
-              }
-              return undefined;
-            },
-          } as ExtendedProxyOptions,
         },
       },
     },
