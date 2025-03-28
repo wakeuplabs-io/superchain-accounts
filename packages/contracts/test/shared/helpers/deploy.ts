@@ -6,7 +6,7 @@ import { Clients, getClient } from "./client";
 import { ignition } from "hardhat";
 import entryPointMockModule from "../../../ignition/modules/EntryPointMock";
 import buildWakeUpPaymasterModule from "../../../ignition/modules/Paymaster";
-import { WakeUpPaymasterService } from "../../wakeUpPaymaster/service";
+import { WakeUpPaymasterService } from "../../paymaster/service";
 
 /**
  * Interface for the result of a token deployment.
