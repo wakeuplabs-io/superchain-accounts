@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { SuperchainNetwork } from "@/types";
 
 interface NetworkSelectorProps {
@@ -5,6 +6,9 @@ interface NetworkSelectorProps {
   currentNetwork: SuperchainNetwork;
   onNetworkSelect: (networkId: number) => void;
 }
+
+// TODO: use classNames (cn) for conditionally applying classes.
+// TODO: tailwind does not work well with conditionally applying classes without cn.
 
 export const NetworkSelector = ({
   networks,
@@ -16,19 +20,15 @@ export const NetworkSelector = ({
       <button
         key={network.id}
         onClick={() => onNetworkSelect(network.id)}
-        className={`
-         flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2
-         ${
-           network.id === currentNetwork.id
-             ? "bg-white shadow-sm"
-             : "text-gray-600 hover:bg-gray-50"
-         }
-       `}
+        className={cn("flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2", {
+          "bg-white shadow-sm": network.id === currentNetwork.id,
+          "text-gray-600 hover:bg-gray-50": network.id !== currentNetwork.id
+        })}
       >
         <div
           className={`h-2 w-2 rounded-full ${
             network.isConnected ? "bg-green-500" : "bg-gray-300"
-          }`}
+          }`} // TODO: apply same here
         />
         <span>{network.name}</span>
         <span className="text-sm text-gray-500">

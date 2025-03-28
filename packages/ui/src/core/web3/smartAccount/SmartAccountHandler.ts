@@ -10,6 +10,9 @@ import {
 } from "viem/account-abstraction";
 
 
+// TODO: what is the propose of this file??? could we use just some custom hooks for this?
+
+
 export class SmartAccountHandler {
   private bundlerClient: BundlerClient | null = null;
   private smartAccount: SmartAccount | null = null;
@@ -37,7 +40,7 @@ export class SmartAccountHandler {
       },
     });
 
-     if(!this.smartAccount) { 
+    if(!this.smartAccount) { 
       throw Error("Smart account not initialized");
     }
     
@@ -78,7 +81,7 @@ export class SmartAccountHandler {
       throw Error("Bundler client not initialized");
     }
 
-    //TODO: INVESTIGATE THOSE GAS MAGIC NUMBERS
+    // TODO: INVESTIGATE THOSE GAS MAGIC NUMBERS
     const hash = await this.bundlerClient.sendUserOperation({
       calls: [transaction],
       maxPriorityFeePerGas: 1000304n,

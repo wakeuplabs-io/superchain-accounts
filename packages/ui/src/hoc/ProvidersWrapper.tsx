@@ -10,3 +10,5 @@ interface ProvidersWrapperProps {
 export default function ProvidersWrapper({ children }: ProvidersWrapperProps) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
+
+// TODO: is this file necessary?

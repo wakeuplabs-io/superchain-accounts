@@ -6,6 +6,8 @@ const fullConfig = resolveConfig(tailwindConfig);
 
 const MOBILE_BREAKPOINT = Number(fullConfig.theme.screens.md.replace("px", ""));
 
+// TODO: do not use javascript for this, use tailwind!!!!!!
+
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
 

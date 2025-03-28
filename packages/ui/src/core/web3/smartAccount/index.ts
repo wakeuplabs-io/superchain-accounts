@@ -4,6 +4,8 @@ import { createPaymasterClient } from "viem/account-abstraction";
 
 export * from "./SmartAccountHandler";
 
+// TODO: what is the propose of this file???
+
 export function createSmartAccountHandler({
   publicClient,
   bundlerUrl, 

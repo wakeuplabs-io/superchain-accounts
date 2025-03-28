@@ -10,6 +10,8 @@ export const INITIAL_NETWORK = supportedChains["optimismSepolia"];
 
 console.log("envParsed", JSON.stringify(envParsed()));
 
+// TODO: do we really need this function? could we just use the chains from viem?
+
 export function getLocalDevNetwork(): Chain {
   const environment = envParsed();
 
@@ -24,7 +26,7 @@ export function getLocalDevNetwork(): Chain {
   return {
     id: environment.LOCAL_CHAIN_ID,
     name: environment.LOCAL_CHAIN_NAME,
-    nativeCurrency: {
+    nativeCurrency: { // TODO: this configuration should be by chain
       decimals: 18,
       name: "Ether",
       symbol: "ETH",

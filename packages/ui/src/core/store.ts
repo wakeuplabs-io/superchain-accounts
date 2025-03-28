@@ -40,6 +40,8 @@ const authMode = environment.LOCAL_DEV
 //instantiate the public client
 const publicClient = createPublicClient(initialChain);
 
+// TODO: why do we need a global store/state for this?
+
 export const useSuperChainStore = create<SuperChainStoreType>((set) => ({
   chain: initialChain,
   authHandler: new TorusAuthHandler(initialChain, authMode),

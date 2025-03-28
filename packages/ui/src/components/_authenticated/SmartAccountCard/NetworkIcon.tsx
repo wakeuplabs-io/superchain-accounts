@@ -8,10 +8,10 @@ interface NetworkIconProps {
 export const NetworkIcon = ({ network, className = "" }: NetworkIconProps) => (
   <div
     className={`flex h-8 w-8 items-center justify-center rounded-full ${className}`}
-    style={{ backgroundColor: network.id === 10 ? "#FF0420" : "#0052FF" }}
+    style={{ backgroundColor: network.id === 10 ? "#FF0420" : "#0052FF" }} // TODO: move to tailwind
   >
     <span className="text-sm font-bold text-white">
-      {network.id === 10 ? "OP" : "BASE"}
+      {network.id === 10 ? "OP" : "BASE"} {/* TODO: create an object to map network id to symbol} */}
     </span>
   </div>
 );

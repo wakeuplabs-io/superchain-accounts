@@ -1,4 +1,3 @@
-// src/components/ui/SuperchainCard.tsx
 import { SuperchainNetwork } from "@/types";
 import { NetworkSelector } from "./NetworkSelector";
 import { AccountBalance } from "./AccountBalance";

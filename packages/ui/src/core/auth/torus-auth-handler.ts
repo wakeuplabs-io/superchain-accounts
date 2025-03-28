@@ -1,6 +1,8 @@
 import { Chain } from "viem";
 import Torus from "@toruslabs/torus-embed";
 
+// TODO: is this really necessary if we are using web3auth?????
+
 export class TorusAuthHandler {
   private torus: Torus;
   
