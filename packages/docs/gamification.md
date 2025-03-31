@@ -4,21 +4,41 @@
 
 Our gamification system is designed to incentivize user activity across OP Mainnet, Base, and other OP Chains. Users earn points for various on-chain actions and can exchange them for rewards. Additionally, non-transferable badges recognize significant achievements and unlock exclusive benefits.
 
-## How It Works
-
-- Users perform on-chain activities such as transactions, DeFi interactions, governance participation, and NFT engagement.
-- These activities earn SC Points, a fungible ERC-20 token minted only by authorized contracts.
-- Points can be exchanged for ETH, NFTs, testnet tokens or other prizes.
-- Badges, which are non-transferable ERC-1155 NFTs, are awarded for reaching specific milestones and unlock special privileges.
-
 ## Points
 
-SC Points are ERC-20 tokens minted upon achieving specific actions or through raffles. They are transferable, allowing users to exchange them for valuable assets. However, spent points are burned to prevent reuse. These will be issued in the chain where the achievement was unlocked, or in optimism for ecosystem-wide badges. In particular we'll have a off-chain service monitoring events and submitting mint batches to the relevant chains.
+SC Points are ERC-20 tokens minted upon achieving specific actions or through raffles. They are transferable, allowing users to exchange them for valuable assets. Ideally points are used just once to redeem a reward and then taken out of circulation to further encourage engagement. These will be issued in the chain where the achievement was unlocked, or in optimism for ecosystem-wide badges. In particular we'll have a off-chain service monitoring events and submitting mint batches to the relevant chains.
 
 There can be multiple potential prizes, to kick it off we'll start with the following:
 - Exchange for eth
 - Redeemable for exclusive NFTs
 - Tradeable for testnet tokens
+
+### How it works
+
+An example flow could be:
+
+```mermaid
+sequenceDiagram
+    participant U as User;
+    participant NFTR as Nft Reward (OP);
+    participant SCP as SC Points Erc20 (OP);
+    participant OP;
+    participant S as Service;
+
+    U->>OP: Transact
+    S->>+OP: get user activity
+    OP->>-S: tx[]
+    S->>S: Classify txs, assign points
+    S->>+SCP: batchMint([user][points])
+    SCP->>-S: Ok
+    U->>SCP: approve(NftRewardContract)
+    U->>+NFTR: claimReward(id)
+    NFTR->>+SCP: transferFrom(user, amount)
+    SCP->>-NFTR: tokens to be locked forever
+    NFTR->>-U: Nft
+```
+
+**Note**: The SC Points are a standard ERC20, so we empower anybody to use them as they see fit, in here we're just selling an NFT and locking the tokens to further encourage chain engagement, but it's just an example, more applications can be build to give utility to the SC Points.
 
 ### Issuance
 
@@ -80,6 +100,34 @@ Some example use cases can be:
 
 Why non-transferable:
 - Badges provide exclusive benefits such as access to raffles, special NFTs, and promotional rates. Making them non-transferable prevents users from passing them around to exploit rewards. Only those who achieved these badges should be rewarded incentivizing this way the engagement of more users.
+
+### How it works
+
+An example flow could be:
+
+```mermaid
+sequenceDiagram
+    participant U as User;
+    participant ENFTR as Exclusive Nft Reward (OP);
+    participant SCB as SC Badges Erc1155 (OP);
+    participant OP;
+    participant S as Service;
+
+    U->>OP: Transact
+    S->>+OP: get user activity
+    OP->>-S: tx[]
+    S->>S: Classify txs, assign points
+    S->>+SCB: batchMint([user][points])
+    SCB->>-S: Ok
+
+    U->>+ENFTR: claimReward(id)
+    ENFTR->>+SCB: hasBadge(badgeId)
+    SCB->>-ENFTR: Yes
+    ENFTR->>ENFTR: Potential payment, etc.
+    ENFTR->>-U: Nft
+```
+
+**Note**: In this case we're giving the nft for free, for the simple fact of having the badge. This is optional, we could add on top payments, with points or any other token. Another important fact is Exclusive Nft Reward contract is not attached to the system itself, so anybody can build on top of the SC Badges Erc1155 contract.
 
 ### Issuance
 
