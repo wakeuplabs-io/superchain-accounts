@@ -13,7 +13,7 @@ Our gamification system is designed to incentivize user activity across OP Mainn
 
 ## Points
 
-SC Points are ERC-20 tokens minted upon achieving specific actions or through raffles. They are transferable, allowing users to exchange them for valuable assets. However, spent points are burned to prevent reuse.
+SC Points are ERC-20 tokens minted upon achieving specific actions or through raffles. They are transferable, allowing users to exchange them for valuable assets. However, spent points are burned to prevent reuse. These will be issued in the chain where the achievement was unlocked, or in optimism for ecosystem-wide badges. In particular we'll have a off-chain service monitoring events and submitting mint batches to the relevant chains.
 
 There can be multiple potential prizes, to kick it off we'll start with the following:
 - Exchange for eth
@@ -66,7 +66,7 @@ SC Points are awarded based on user engagement:
 
 ## Badges
 
-Badges are non-transferable ERC-1155 NFTs awarded for specific achievements. They serve as proof of engagement and unlock various blockchain benefits. These will be issued in the chain where the achievement was achieved, or in optimism for ecosystem-wide badges.
+Badges are non-transferable ERC-1155 NFTs awarded for specific achievements. They serve as proof of engagement and unlock various blockchain benefits. These will be issued in the chain where the achievement was unlocked, or in optimism for ecosystem-wide badges. In particular we'll have a off-chain service monitoring events and submitting mint batches to the relevant chains.
 
 Some example use cases can be:
 
