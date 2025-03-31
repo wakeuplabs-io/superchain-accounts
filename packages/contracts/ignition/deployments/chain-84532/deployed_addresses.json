@@ -1,0 +1,5 @@
+{
+  "WakeUpEntryPointModule#wakeup_entrypoint": "0x7fC0EF5BD4814180cC08bCAe930ff5c09F857baf",
+  "WakeUpAccountFactoryModule#wakeup_account_factory": "0x74BC1fb3002d3D90fe62cBcE22d4D9012358f84B",
+  "WakeUpPaymasterModule#wakeup_paymaster": "0xa225e12847956Ebcd40732e79268EAF3642ca3D5"
+}
