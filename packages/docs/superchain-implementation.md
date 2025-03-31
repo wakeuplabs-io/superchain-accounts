@@ -1,6 +1,5 @@
 ## Superchain Accounts Implementation
 
-
 #### Implementing the SmartAccount contract
 
 In the first iteration, we built a SmartAccount contract similar to the [SimpleAccount](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/samples/SimpleAccount.sol) example provided by eth-infinitism. It extends the [BaseAccount contract](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/core/BaseAccount.sol), and as a simplification, we implemented only the `Initializable` interface. It provides the following methods:
@@ -28,7 +27,7 @@ In order to make it easy to test we created an `EntryPoint` mock that simulates 
 - This is the format of a `UserOperation`:
 
 ```solidity
-   struct PackedUserOperation {
+struct PackedUserOperation {
     address sender;
     uint256 nonce;
     bytes initCode;
@@ -45,15 +44,15 @@ To test function that requires a `UserOperation` as parameter we need to encode 
 
 ```Typescript
 {
-sender: this._smartAccount,
-nonce: userOp.nonce,
-initCode: toHex(userOp.initCode),
-callData: toHex(userOp.callData),
-accountGasLimits: toHex(userOp.accountGasLimits, { size: 32 }),
-preVerificationGas: userOp.preVerificationGas,
-gasFees: toHex(userOp.gasFees, { size: 32 }),
-paymasterAndData: toHex(userOp.paymasterAndData),
-signature: userOp.signature,
+  sender: this._smartAccount,
+  nonce: userOp.nonce,
+  initCode: toHex(userOp.initCode),
+  callData: toHex(userOp.callData),
+  accountGasLimits: toHex(userOp.accountGasLimits, { size: 32 }),
+  preVerificationGas: userOp.preVerificationGas,
+  gasFees: toHex(userOp.gasFees, { size: 32 }),
+  paymasterAndData: toHex(userOp.paymasterAndData),
+  signature: userOp.signature,
 }
 ```
 
