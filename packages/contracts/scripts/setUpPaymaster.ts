@@ -17,7 +17,7 @@ const availableChains: Record<Networks, Chain> = {
   "optimism-sepolia": optimismSepolia,
   "base-sepolia": baseSepolia,
   "sepolia": sepolia,
-  "unichain_sepolia": unichainSepolia,
+  "unichain-sepolia": unichainSepolia,
 };
 
 function getNetworkConfig(): {chain: Chain, privateKey: Address} {
