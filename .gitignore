@@ -16,13 +16,13 @@ dist-ssr
 .env*
 !.env.sample
 
-# web3
-packages/web3/.dist
-packages/web3/node_modules
-packages/web3/.env
-packages/web3/cache
-packages/web3/artifacts
-packages/web3/ignition/deployments
+# contracts
+packages/contracts/.dist
+packages/contracts/node_modules
+packages/contracts/.env
+packages/contracts/cache
+packages/contracts/artifacts
+packages/contracts/ignition/deployments
 
 # UI
 packages/ui/.dist

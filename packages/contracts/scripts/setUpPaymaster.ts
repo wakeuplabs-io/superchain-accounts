@@ -1,6 +1,6 @@
 import { Address, Chain, createPublicClient, createWalletClient, http, parseAbi } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import {baseSepolia, optimism, optimismSepolia, sepolia} from "viem/chains";
+import {baseSepolia, optimism, optimismSepolia, sepolia, unichainSepolia} from "viem/chains";
 import { getLocalOpChain } from "./utils";
 import envParsed  from "../envParsed";
 import { Networks } from "../networks";
@@ -17,6 +17,7 @@ const availableChains: Record<Networks, Chain> = {
   "optimism-sepolia": optimismSepolia,
   "base-sepolia": baseSepolia,
   "sepolia": sepolia,
+  "unichain_sepolia": unichainSepolia,
 };
 
 function getNetworkConfig(): {chain: Chain, privateKey: Address} {

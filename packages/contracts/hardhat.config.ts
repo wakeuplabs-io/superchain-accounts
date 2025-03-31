@@ -22,7 +22,7 @@ const localNetwork =
 
 const config: HardhatUserConfig = {
   solidity: {
-    compilers: [{ version: "0.8.24", settings: {
+    compilers: [{ version: "0.8.29", settings: {
       optimizer: {
         enabled: true,
         runs: 100,
