@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.29;
 
 // Based on PimlicoEntryPointSimulations contract (address: 0xBbe8A301FbDb2a4CD58c4A37c262ecef8f889c47)
 

@@ -10,7 +10,7 @@ The following document provide steps to run the Superchain POC app in a local en
 
 Go to [getting-started](https://supersim.pages.dev/getting-started/installation) section part of the documentation and follow the steps to install it locally. Once installed run the command `supersim` in a new terminal to start it up, you should see something like this:
 
-![alt text](image.png)
+![alt text](./assets/local-environment-setup.png.png)
 
 Take note of these configuration from the output as they will be needed in the following steps:
 

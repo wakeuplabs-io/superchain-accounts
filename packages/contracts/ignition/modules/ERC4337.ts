@@ -1,7 +1,7 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import wakeUpEntrypointModule from "./wakeUpEntryPoint";
-import buildWakeUpPaymasterModule from "./wakeUpPaymaster";
-import buildWakeUpAccountFactoryModule from "./wakeUpAccountFactory";
+import wakeUpEntrypointModule from "./EntryPoint";
+import buildWakeUpPaymasterModule from "./Paymaster";
+import buildWakeUpAccountFactoryModule from "./AccountFactory";
 
 const wakeUpERC4337Module = buildModule("WakeUpERC4337", (m) => {
   //Deploy the entrypoint

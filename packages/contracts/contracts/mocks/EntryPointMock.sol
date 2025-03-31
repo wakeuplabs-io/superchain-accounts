@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.24;
+pragma solidity ^0.8.29;
 
 import {EntryPoint} from "@account-abstraction/contracts/core/EntryPoint.sol";
 import {IPaymaster} from "@account-abstraction/contracts/interfaces/IPaymaster.sol";
@@ -7,9 +7,8 @@ import {PackedUserOperation} from "@account-abstraction/contracts/interfaces/Pac
 import {SIG_VALIDATION_FAILED, SIG_VALIDATION_SUCCESS} from "@account-abstraction/contracts/core/Helpers.sol";
 
 contract EntryPointMock is EntryPoint {
-    /**
-     * This function is used for testing the Paymaster function `validatePaymasterUserOp` as it should be called from the Entrypoint only
-     */
+    
+    /// @notice This function is used for testing the Paymaster function `validatePaymasterUserOp` as it should be called from the Entrypoint only
     function testValidatePaymasterOp(
         address paymasterAddress,
         PackedUserOperation calldata userOp,

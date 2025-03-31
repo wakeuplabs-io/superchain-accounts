@@ -383,7 +383,7 @@ An implementation for representing the points in the blockchain will be implemen
 
 - SuperChain Points may be issued as non-transferable ERC-20 tokens, enhancing the amount of on-chain transactions and enabling their tracking on the blockchain.
 - Claimable Badges will be non-transferable ERC-721, enhancing the amount of on-chain transactions and enabling their tracking on the blockchain.
-- - SuperChain Accounts may be associated with dynamic ERC-721 NFTs, symbolizing the user's achievements and levels.
+- SuperChain Accounts may be associated with dynamic ERC-721 NFTs, symbolizing the user's achievements and levels.
 
 **Pros:**
 
