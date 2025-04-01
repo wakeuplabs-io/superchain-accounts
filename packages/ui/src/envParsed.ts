@@ -13,8 +13,15 @@ const env = {
   LOCAL_CHAIN_ID: import.meta.env.VITE_LOCAL_CHAIN_ID,
   LOCAL_CHAIN_NAME: import.meta.env.VITE_LOCAL_CHAIN_NAME,
   LOCAL_RPC_URL: import.meta.env.VITE_LOCAL_RPC_URL,
-  PIMLICO_URL: import.meta.env.VITE_PIMLICO_URL,
-  ENTRYPOINT_ADDRESS: import.meta.env.VITE_ENTRYPOINT_ADDRESS,
+  OPTIMISM_RPC_URL: import.meta.env.VITE_OPTIMISM_RPC_URL,
+  OPTIMISM_PIMLICO_URL: import.meta.env.VITE_OPTIMISM_PIMLICO_URL,
+  OPTIMISM_ENTRYPOINT_ADDRESS: import.meta.env.VITE_OPTIMISM_ENTRYPOINT_ADDRESS,
+  UNICHAIN_RPC_URL: import.meta.env.VITE_UNICHAIN_RPC_URL,
+  UNICHAIN_PIMLICO_URL: import.meta.env.VITE_UNICHAIN_PIMLICO_URL,
+  UNICHAIN_ENTRYPOINT_ADDRESS: import.meta.env.VITE_UNICHAIN_ENTRYPOINT_ADDRESS,
+  BASE_RPC_URL: import.meta.env.VITE_BASE_RPC_URL,
+  BASE_PIMLICO_URL: import.meta.env.VITE_BASE_PIMLICO_URL,
+  BASE_ENTRYPOINT_ADDRESS: import.meta.env.VITE_BASE_ENTRYPOINT_ADDRESS,
 };
 
 const envSchema = z
@@ -26,8 +33,15 @@ const envSchema = z
     LOCAL_CHAIN_ID: z.string().optional().transform((x) => Number(x)),
     LOCAL_CHAIN_NAME: z.string().optional(),
     LOCAL_RPC_URL: z.string().optional(),
-    PIMLICO_URL: z.string().url(),
-    ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
+    OPTIMISM_RPC_URL: z.string().url(),
+    OPTIMISM_PIMLICO_URL: z.string().url(),
+    OPTIMISM_ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
+    UNICHAIN_RPC_URL: z.string().url(),
+    UNICHAIN_PIMLICO_URL: z.string().url(),
+    UNICHAIN_ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
+    BASE_RPC_URL: z.string().url(),
+    BASE_PIMLICO_URL: z.string().url(),
+    BASE_ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
   });
 
 const envParsed = () => envSchema.parse(env);
