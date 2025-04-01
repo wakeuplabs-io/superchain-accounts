@@ -29,7 +29,7 @@ model Transaction {
   @@unique([hash, from])
 }
 
-// suggestive, will be further implemented later
+// It'll be further implemented later in OSA-80
 model PointEvent {
   id     Int     @id @default(autoincrement())
   minted Boolean
@@ -38,7 +38,7 @@ model PointEvent {
   transactionHash String
 }
 
-// suggestive, will be further implemented later
+// It'll be further implemented later in OSA-80
 model BadgeEvent {
   id     Int     @id @default(autoincrement())
   minted Boolean
