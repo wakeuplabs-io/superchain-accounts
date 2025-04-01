@@ -5,8 +5,8 @@ export * from "./SmartAccountHandler";
 
 export function createSmartAccountHandler({
   publicClient,
-  pimlicoUrl, 
-  entrypointAddress,
+  pimlicoUrl,
+  entrypointAddress
 }: { 
     publicClient: PublicClient,
     pimlicoUrl: string,

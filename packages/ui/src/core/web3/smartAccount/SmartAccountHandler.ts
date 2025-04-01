@@ -3,7 +3,6 @@ import { createSmartAccountClient, SmartAccountClient } from "permissionless";
 import { toSimpleSmartAccount, ToSimpleSmartAccountParameters } from "permissionless/accounts";
 import { createPimlicoClient } from "permissionless/clients/pimlico";
 import {
-  entryPoint07Address,
   EntryPointVersion,
   SmartAccount,
   UserOperationCall,
@@ -29,7 +28,7 @@ export class SmartAccountHandler {
       owner,
       client: this.publicClient,
       entryPoint: {
-        address: entryPoint07Address,
+        address: this.entryPointAddress,
         version: "0.7",
       }
     });
@@ -41,7 +40,7 @@ export class SmartAccountHandler {
     const pimlicoClient = createPimlicoClient({
       transport: http(this.pimlicoUrl),
       entryPoint: {
-        address: entryPoint07Address,
+        address: this.entryPointAddress,
         version: "0.7",
       },
     });
