@@ -1,25 +1,23 @@
-import { Address, http, PublicClient } from "viem";
+import { Address, Chain, Client, http, PublicClient, Transport } from "viem";
+import { createSmartAccountClient, SmartAccountClient } from "permissionless";
 import { toSimpleSmartAccount, ToSimpleSmartAccountParameters } from "permissionless/accounts";
+import { createPimlicoClient } from "permissionless/clients/pimlico";
 import {
-  BundlerClient,
-  createBundlerClient,
+  entryPoint07Address,
   EntryPointVersion,
-  PaymasterClient,
   SmartAccount,
   UserOperationCall,
 } from "viem/account-abstraction";
-
+import { supportedChains } from "../networks";
 
 export class SmartAccountHandler {
-  private bundlerClient: BundlerClient | null = null;
   private smartAccount: SmartAccount | null = null;
+  private smartAccountClient: SmartAccountClient<Transport, Chain, SmartAccount, Client, undefined> | null = null;
 
   constructor(
     private readonly publicClient: PublicClient,
+    private readonly pimlicoUrl: string,
     private readonly entryPointAddress: Address,
-    private readonly smartAccountFactoryAddress: Address,
-    private readonly bundlerUrl: string,
-    private readonly paymaster: PaymasterClient,
   ) {}
 
   getSmartAccount(): SmartAccount | null {
@@ -30,23 +28,34 @@ export class SmartAccountHandler {
     this.smartAccount = await toSimpleSmartAccount({
       owner,
       client: this.publicClient,
-      factoryAddress: this.smartAccountFactoryAddress,
       entryPoint: {
-        address: this.entryPointAddress,
+        address: entryPoint07Address,
+        version: "0.7",
+      }
+    });
+
+    if(!this.smartAccount) { 
+      throw Error("Smart account not initialized");
+    }
+
+    const pimlicoClient = createPimlicoClient({
+      transport: http(this.pimlicoUrl),
+      entryPoint: {
+        address: entryPoint07Address,
         version: "0.7",
       },
     });
 
-     if(!this.smartAccount) { 
-      throw Error("Smart account not initialized");
-    }
-    
-    //initialize bundler client
-    this.bundlerClient = createBundlerClient({
+    this.smartAccountClient = createSmartAccountClient({
       account: this.smartAccount,
-      chain: this.publicClient.chain,
-      transport: http(this.bundlerUrl),
-      paymaster: this.paymaster,
+      chain: supportedChains.optimismSepolia,
+      bundlerTransport: http(this.pimlicoUrl),
+      paymaster: pimlicoClient, // optional
+      userOperation: {
+        estimateFeesPerGas: async () => {
+          return (await pimlicoClient.getUserOperationGasPrice()).fast; // only when using pimlico bundler
+        },
+      }
     });
 
     return this.smartAccount;
@@ -63,7 +72,6 @@ export class SmartAccountHandler {
       return;
     }
 
-    console.log("Deploying smart account", this.smartAccount.address);
     // Send a user operation to the bundler to deploy the smart account
     const transaction = {
       to: this.smartAccount.address,
@@ -74,19 +82,11 @@ export class SmartAccountHandler {
   }
 
   async sendTransaction(transaction: UserOperationCall) {
-    if(!this.bundlerClient) {
-      throw Error("Bundler client not initialized");
+    if(!this.smartAccountClient ) {
+      throw Error("Smart account client not initialized");
     }
 
-    //TODO: INVESTIGATE THOSE GAS MAGIC NUMBERS
-    const hash = await this.bundlerClient.sendUserOperation({
-      calls: [transaction],
-      maxPriorityFeePerGas: 1000304n,
-      maxFeePerGas: 1000304n,
-      paymasterVerificationGasLimit: 1000304n,
-    });
-
-    const receipt = await this.bundlerClient.waitForUserOperationReceipt({ hash });
+    const receipt = await this.smartAccountClient.sendTransaction(transaction);
     
     console.log("Transaction receipt:", receipt);
   }

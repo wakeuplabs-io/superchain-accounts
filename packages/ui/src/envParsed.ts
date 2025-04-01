@@ -13,10 +13,8 @@ const env = {
   LOCAL_CHAIN_ID: import.meta.env.VITE_LOCAL_CHAIN_ID,
   LOCAL_CHAIN_NAME: import.meta.env.VITE_LOCAL_CHAIN_NAME,
   LOCAL_RPC_URL: import.meta.env.VITE_LOCAL_RPC_URL,
-  BUNDLER_URL: import.meta.env.VITE_BUNDLER_URL,
-  PAYMASTER_CLIENT_URL: import.meta.env.VITE_PAYMASTER_CLIENT_URL,
+  PIMLICO_URL: import.meta.env.VITE_PIMLICO_URL,
   ENTRYPOINT_ADDRESS: import.meta.env.VITE_ENTRYPOINT_ADDRESS,
-  SMART_ACCOUNT_FACTORY_ADDRESS: import.meta.env.VITE_SMART_ACCOUNT_FACTORY_ADDRESS,
 };
 
 const envSchema = z
@@ -28,10 +26,8 @@ const envSchema = z
     LOCAL_CHAIN_ID: z.string().optional().transform((x) => Number(x)),
     LOCAL_CHAIN_NAME: z.string().optional(),
     LOCAL_RPC_URL: z.string().optional(),
-    BUNDLER_URL: z.string().url(),
-    PAYMASTER_CLIENT_URL: z.string().url(),
+    PIMLICO_URL: z.string().url(),
     ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
-    SMART_ACCOUNT_FACTORY_ADDRESS: z.string().transform((x) => getAddress(x)),
   });
 
 const envParsed = () => envSchema.parse(env);
