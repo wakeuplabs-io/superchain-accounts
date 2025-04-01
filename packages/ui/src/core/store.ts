@@ -30,10 +30,8 @@ export const useSuperChainStore = create<SuperChainStoreType >((set) => ({
   authHandler: new TorusAuthHandler(initialChain, authMode),
   smartAccountHandler: createSmartAccountHandler({
     publicClient,
-    bundlerUrl: environment.BUNDLER_URL,
+    pimlicoUrl: environment.PIMLICO_URL,
     entrypointAddress: environment.ENTRYPOINT_ADDRESS,
-    smartAccountFactoryAddress: environment.SMART_ACCOUNT_FACTORY_ADDRESS,
-    paymasterClientUrl: environment.PAYMASTER_CLIENT_URL,
   }),
   web3Client: new Web3Client(publicClient),
   updateChain: (chain) => set({ chain }),

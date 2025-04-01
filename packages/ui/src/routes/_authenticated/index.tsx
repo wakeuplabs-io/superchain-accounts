@@ -24,8 +24,8 @@ function Index() {
       const isDeployed = await smartAccount.isDeployed();
       return { account: smartAccount, isDeployed };
     })
-    .then(setSmartAccount)
-    .finally(() => setIsInitializing(false));
+      .then(setSmartAccount)
+      .finally(() => setIsInitializing(false));
   }, []);
 
   useEffect(() => {
@@ -59,10 +59,10 @@ function Index() {
   //TODO: IMPROVE THIS CODE
   if(isInitializing) {
     return (
-    <div className="flex flex-col gap-3">
-      <p className="text-3xl font-bold">Account</p>
-      <p className="text-xl">Initializing smart account</p>
-     </div> 
+      <div className="flex flex-col gap-3">
+        <p className="text-3xl font-bold">Account</p>
+        <p className="text-xl">Initializing smart account</p>
+      </div> 
     );
   }
 
@@ -78,15 +78,15 @@ function Index() {
   return (
     <div className="flex flex-col gap-3">
       <p className="text-3xl font-bold">Accounts</p>
-        <p><b>Smart Account Address:</b> {smartAccount.account.address.toString()}</p>
-        {smartAccount.isDeployed && <p><b>Account Balance:</b> {accountBalance} ETH</p>}
-        {!smartAccount.isDeployed && (
-          <div className="flex flex-row gap-2 items-center">
-            <span>Smart account not deployed, click the next button to deploy it and confirm the transaction in your wallet.</span>
-            <Button size='sm' onClick={deploySmartAccount} loading={isDeploying}>Deploy Account</Button>
-          </div>
-        )}
-        {error && <div className="text-xl text-red-500">Error: {error}</div>}
+      <p><b>Smart Account Address:</b> {smartAccount.account.address.toString()}</p>
+      {smartAccount.isDeployed && <p><b>Account Balance:</b> {accountBalance} ETH</p>}
+      {!smartAccount.isDeployed && (
+        <div className="flex flex-row gap-2 items-center">
+          <span>Smart account not deployed, click the next button to deploy it and confirm the transaction in your wallet.</span>
+          <Button size='sm' onClick={deploySmartAccount} loading={isDeploying}>Deploy Account</Button>
+        </div>
+      )}
+      {error && <div className="text-xl text-red-500">Error: {error}</div>}
     </div>
   );
 }

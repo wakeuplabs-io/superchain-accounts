@@ -1,26 +1,17 @@
-import { Address, http, PublicClient } from "viem";
+import { Address, PublicClient } from "viem";
 import { SmartAccountHandler } from "./SmartAccountHandler";
-import { createPaymasterClient } from "viem/account-abstraction";
 
 export * from "./SmartAccountHandler";
 
 export function createSmartAccountHandler({
   publicClient,
-  bundlerUrl, 
-  entrypointAddress, 
-  smartAccountFactoryAddress, 
-  paymasterClientUrl
+  pimlicoUrl,
+  entrypointAddress
 }: { 
     publicClient: PublicClient,
-    bundlerUrl: string, 
-    entrypointAddress: Address, 
-    smartAccountFactoryAddress: Address, 
-    paymasterClientUrl: string
+    pimlicoUrl: string,
+    entrypointAddress: Address,
 }): SmartAccountHandler {
-  // instantiate the paymaster client
-  const paymasterClient = createPaymasterClient({
-    transport: http(paymasterClientUrl),
-  });
 
-  return new SmartAccountHandler(publicClient, entrypointAddress, smartAccountFactoryAddress, bundlerUrl, paymasterClient);
+  return new SmartAccountHandler(publicClient, pimlicoUrl, entrypointAddress);
 }

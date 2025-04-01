@@ -31,10 +31,8 @@ export default $config({
       },
       domain: `${PROJECT_NAME}.wakeuplabs.link`,
       environment: {
-        VITE_BUNDLER_URL: process.env.VITE_BUNDLER_URL as string,
-        VITE_PAYMASTER_CLIENT_URL: process.env.VITE_PAYMASTER_CLIENT_URL as string,
+        VITE_PIMLICO_URL: process.env.VITE_PIMLICO_URL as string,
         VITE_ENTRYPOINT_ADDRESS: process.env.VITE_ENTRYPOINT_ADDRESS as string,
-        VITE_SMART_ACCOUNT_FACTORY_ADDRESS: process.env.VITE_SMART_ACCOUNT_FACTORY_ADDRESS as string,
       },
     });
 
