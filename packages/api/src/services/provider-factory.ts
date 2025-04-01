@@ -16,13 +16,13 @@ export class ProviderFactory {
 
   static getProvider(chainId: number): PublicClient {
     if (this.clients[chainId]) {
-      return this.clients[chainId];
+      return this.clients[chainId] as PublicClient;
     }
 
     this.clients[chainId] = createPublicClient({
       transport: http(TRANSPORTS_URLS[chainId]),
     });
 
-    return this.clients[chainId];
+    return this.clients[chainId] as PublicClient;
   }
 }

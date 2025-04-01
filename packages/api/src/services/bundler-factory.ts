@@ -18,7 +18,7 @@ export class BundlerFactory {
 
   static getBundler(chainId: number): BundlerClient {
     if (this.clients[chainId]) {
-      return this.clients[chainId];
+      return this.clients[chainId] as BundlerClient;
     }
 
     this.clients[chainId] = createBundlerClient({
@@ -26,6 +26,6 @@ export class BundlerFactory {
       transport: http(TRANSPORTS_URLS[chainId]),
     });
 
-    return this.clients[chainId];
+    return this.clients[chainId] as BundlerClient;
   }
 }
