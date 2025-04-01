@@ -15,7 +15,7 @@ interface SmartAccountChain {
     entryPointAddress: Address;
 }
 
-const supportedChains: Record<number, SmartAccountChain> = {
+export const supportedChains: Record<number, SmartAccountChain> = {
   11155420: {
     name: "Optimism Sepolia",
     chainId: 11155420,
@@ -39,13 +39,15 @@ const supportedChains: Record<number, SmartAccountChain> = {
   },
 };
 
+export type SupportedChainOptions = typeof supportedChains;
+
 interface Web3Data {
     publicClient: PublicClient;
     pimlicoClient: PimlicoClient;
 } 
 
 interface Web3ContextType {
-  chainId: number | null;
+  chainId: number;
   updateChain: (chainId: number) => void;
 }
 

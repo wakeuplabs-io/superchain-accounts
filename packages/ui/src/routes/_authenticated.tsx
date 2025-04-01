@@ -17,6 +17,8 @@ import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { ActionButton, AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
 import { useSuperChainStore } from "@/core/store";
+import { ChainSelector } from "@/components/_authenticated/chain-selector";
+import { useWeb3 } from "@/context/Web3Context";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -51,6 +53,7 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthenticatedLayout() {
   const router = useRouter();
   const authHandler = useSuperChainStore((state => state.authHandler));
+  const {chainId, updateChain} = useWeb3();
 
   const onLogout = async() => {
     await authHandler.logout();
@@ -101,8 +104,9 @@ function AuthenticatedLayout() {
           </SidebarFooter>
         </Sidebar>
         <main className="flex flex-1 overflow-auto p-8">
-          <div className="w-full">
+          <div className="w-full flex flex-col gap-4">
             <SidebarTrigger className="mb-4"/>
+            <ChainSelector onChainSelect={updateChain} selectedChain={chainId}/>
             <Outlet />
           </div>
         </main>
