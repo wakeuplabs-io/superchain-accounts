@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionAction {
+  TRANSFER
+  SWAP
+  UNKNOWN
+}
+
+model Transaction {
+  hash  String @id
+  from  String
+  to    String
+  value String
+  data  String
+
+  action    TransactionAction
+  timestamp DateTime          @default(now())
+
+  pointEvents PointEvent[]
+  badgeEvents BadgeEvent[]
+
+  @@unique([hash, from])
+}
+
+// suggestive, will be further implemented later
+model PointEvent {
+  id     Int     @id @default(autoincrement())
+  minted Boolean
+
+  transaction     Transaction @relation(fields: [transactionHash], references: [hash])
+  transactionHash String
+}
+
+// suggestive, will be further implemented later
+model BadgeEvent {
+  id     Int     @id @default(autoincrement())
+  minted Boolean
+
+  transactions Transaction[]
+}
