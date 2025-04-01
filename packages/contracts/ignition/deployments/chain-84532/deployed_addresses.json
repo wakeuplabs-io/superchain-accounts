@@ -1,5 +1,5 @@
 {
-  "WakeUpEntryPointModule#wakeup_entrypoint": "0x7fC0EF5BD4814180cC08bCAe930ff5c09F857baf",
-  "WakeUpAccountFactoryModule#wakeup_account_factory": "0x74BC1fb3002d3D90fe62cBcE22d4D9012358f84B",
-  "WakeUpPaymasterModule#wakeup_paymaster": "0xa225e12847956Ebcd40732e79268EAF3642ca3D5"
+  "WakeUpEntryPointModule#wakeup_entrypoint": "0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335",
+  "WakeUpAccountFactoryModule#wakeup_account_factory": "0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2",
+  "WakeUpPaymasterModule#wakeup_paymaster": "0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543"
 }

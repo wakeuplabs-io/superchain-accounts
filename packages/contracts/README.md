@@ -10,21 +10,21 @@ All the contracts are located in the `contracts` folder. They extend from the [W
 
 ### Optimism Sepolia
 
- - Wakeup_entrypoint - 0x235701BF31d1aA745207fD925d142073a779B76B
- - Wakeup_account_factory - 0x54fD162d4BbCA7d1820f8eb210507e785c737029
- - WakeUp_paymaster - 0x8c163abf64A1AAA589632Eb42a2819A57Da42317
+ - Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
+ - Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
+ - WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
 
 ### Unichain Sepolia
 
- - Wakeup_entrypoint - 0x4C4a2f8c81640e47606d3fd77B353E87Ba015584
- - Wakeup_account_factory - 0x21dF544947ba3E8b3c32561399E88B52Dc8b2823
- - WakeUp_paymaster - 0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2
+ - Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
+ - Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
+ - WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
 
 ### Base Sepolia
 
- - Wakeup_entrypoint - 0x7fC0EF5BD4814180cC08bCAe930ff5c09F857baf
- - Wakeup_account_factory - 0x74BC1fb3002d3D90fe62cBcE22d4D9012358f84B
- - WakeUp_paymaster - 0xa225e12847956Ebcd40732e79268EAF3642ca3D5
+ - Wakeup_entrypoint - 0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335
+ - Wakeup_account_factory - 0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2
+ - WakeUp_paymaster - 0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543
   
 
 ### WakeUp Entrypoint
