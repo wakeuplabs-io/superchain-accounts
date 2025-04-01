@@ -6,12 +6,7 @@ Our gamification system is designed to incentivize user activity across OP Chain
 
 ## Points
 
-SC Points are ERC-20 tokens minted upon achieving specific actions or through raffles. They are transferable, allowing users to exchange them for valuable assets. Ideally points are used just once to redeem a reward and then taken out of circulation to further encourage engagement. The SC Points will be a [Superchain ERC20](https://docs.optimism.io/stack/interop/tutorials/deploy-superchain-erc20) so they can be easily used across chains, initially issued in the chain where the achievement was unlocked, or in optimism mainnet for ecosystem-wide badges. In particular we'll have a off-chain service monitoring events and submitting mint batches to the relevant chains.
-
-There can be multiple potential prizes, to kick it off we'll start with the following:
-- Exchange for eth
-- Redeemable for exclusive NFTs
-- Tradeable for testnet tokens
+SC Points are ERC-20 tokens minted upon achieving specific actions or through raffles. They are transferable, allowing users to exchange them for valuable assets. Ideally points are used just once to redeem a reward and then taken out of circulation to further encourage engagement. The SC Points will be a [Superchain ERC20](https://docs.optimism.io/stack/interop/tutorials/deploy-superchain-erc20) so they can be easily used across chains, initially issued in the chain where the achievement was unlocked, or in optimism mainnet for ecosystem-wide badges. In particular we'll have a off-chain service monitoring events and submitting mint batches to the relevant chains. There can be multiple potential prizes, to kick it off we'll start by offering an exclusive collection of NFTs.
 
 ### How it works
 
