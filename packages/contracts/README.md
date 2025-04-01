@@ -6,6 +6,27 @@ Project that contains all the necessary contracts for implementing the ERC-4337 
 
 All the contracts are located in the `contracts` folder. They extend from the [WakeUp Account Abstraction](https://github.com/wakeuplabs-io/wakeup-account-abstraction) ERC-4337 contract implementations.
 
+## Deployed Addresses
+
+### Optimism Sepolia
+
+ - Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
+ - Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
+ - WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
+
+### Unichain Sepolia
+
+ - Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
+ - Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
+ - WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
+
+### Base Sepolia
+
+ - Wakeup_entrypoint - 0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335
+ - Wakeup_account_factory - 0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2
+ - WakeUp_paymaster - 0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543
+  
+
 ### WakeUp Entrypoint
 
 Core component of the ERC-4337 standard. It's in charge of:

@@ -40,11 +40,22 @@ const optimism = {
   },
 };
 
+const unichain_sepolia = {
+  url: "https://unichain-sepolia-rpc.publicnode.com",
+  chainId: 1301,
+  urls: {
+    apiURL: "https://unichain-sepolia.blockscout.com/api",
+    browserURL: "https://unichain-sepolia.blockscout.com/",
+  },
+};
+
+
 const networks = {
   sepolia,
   ["optimism-sepolia"]: optimism_sepolia,
   ["base-sepolia"]: base_sepolia,
   optimism,
+  ["unichain-sepolia"]: unichain_sepolia
 } as const;
 
 export type Networks = keyof typeof networks;

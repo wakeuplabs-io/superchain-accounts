@@ -12,7 +12,7 @@
     "deploy:mainnet": "npm run deploy -- --network mainnet --verify",
     "deploy:local": "npm run deploy -- --network local",
     "test": "npx hardhat test",
-    "setup-paymaster": "ts-node ./scripts/setUpPaymaster",
+    "setup-paymaster": "ts-node ./scripts/setUpPaymaster.ts",
     "setup-paymaster:mainnet": "npm run setup-paymaster -- --network mainnet",
     "setup-paymaster:testnet": "npm run setup-paymaster -- --network testnet",
     "setup-paymaster:local": "npm run setup-paymaster -- --network local"
