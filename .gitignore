@@ -21,7 +21,7 @@ packages/contracts/.dist
 packages/contracts/node_modules
 packages/contracts/.env
 packages/contracts/cache
-# packages/contracts/artifacts
+packages/contracts/artifacts
 # packages/contracts/ignition/deployments
 
 # UI
