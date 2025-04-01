@@ -1,8 +1,8 @@
 
-import { TorusAuthHandler } from "@/core/auth";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import React from "react";
 import envParsed from "@/envParsed";
+import { AuthContextType } from "@/context/AuthContext";
 
 const TanStackRouterDevtools =
   envParsed().PROD
@@ -13,7 +13,7 @@ const TanStackRouterDevtools =
       }))
     );
 
-export const Route = createRootRouteWithContext<{authHandler: TorusAuthHandler | null}>()({
+export const Route = createRootRouteWithContext<{auth: AuthContextType | null}>()({
   component: () => (
     <div className="w-screen h-screen">
       <main className="min-h-screen bg-gray-100">

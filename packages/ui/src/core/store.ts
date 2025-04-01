@@ -1,7 +1,7 @@
 import { Chain } from "viem";
 import { create } from "zustand";
 import envParsed from "@/envParsed";
-import { TorusAuthHandler } from "./auth";
+import { TorusAuthHandler } from "./auth/torus-auth-handler";
 import { createPublicClient, getLocalDevNetwork, INITIAL_NETWORK, Web3Client, createSmartAccountHandler, SmartAccountHandler } from "@/core/web3";
 
 const environment = envParsed();

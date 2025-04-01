@@ -9,7 +9,7 @@ const DEFAULT_CHAIN_ID = 11155420; // Optimism Sepolia
 
 interface SmartAccountChain {
     name: string;
-    chainId: number;
+    id: number;
     rpcUrl: string;
     pimlicoUrl: string;
     entryPointAddress: Address;
@@ -18,21 +18,21 @@ interface SmartAccountChain {
 export const supportedChains: Record<number, SmartAccountChain> = {
   11155420: {
     name: "Optimism Sepolia",
-    chainId: 11155420,
+    id: 11155420,
     rpcUrl: envVars.OPTIMISM_RPC_URL,
     pimlicoUrl: envVars.OPTIMISM_PIMLICO_URL,
     entryPointAddress: envVars.OPTIMISM_ENTRYPOINT_ADDRESS,
   },
   84532: {
     name: "Base Sepolia",
-    chainId: 84532,
+    id: 84532,
     rpcUrl: envVars.BASE_RPC_URL,
     pimlicoUrl: envVars.BASE_PIMLICO_URL,
     entryPointAddress: envVars.BASE_ENTRYPOINT_ADDRESS,
   },
   1301: {
     name: "Unichain Sepolia",
-    chainId: 1301,
+    id: 1301,
     rpcUrl: envVars.UNICHAIN_RPC_URL,
     pimlicoUrl: envVars.UNICHAIN_PIMLICO_URL,
     entryPointAddress: envVars.UNICHAIN_ENTRYPOINT_ADDRESS,
@@ -47,7 +47,7 @@ interface Web3Data {
 } 
 
 interface Web3ContextType {
-  chainId: number;
+  chain: SmartAccountChain;
   updateChain: (chainId: number) => void;
 }
 
@@ -55,23 +55,25 @@ const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   const web3Data = useRef(new Map<number, Web3Data>());
-  const [chainId, setChainId] = useState<number>(DEFAULT_CHAIN_ID);
+  const [chain, setChain] = useState<SmartAccountChain>(supportedChains[DEFAULT_CHAIN_ID]);
 
   const updateChain = (chainId: number) => {
-    if (!supportedChains[chainId]) {
+    const newChain = supportedChains[chainId];
+
+    if (!newChain) {
       console.error(`Chain ID ${chainId} is not supported`);
       return;
     }
     
     if (!web3Data.current.has(chainId)) {
       const publicClient = createPublicClient({ 
-        transport: http(supportedChains[chainId].rpcUrl),
+        transport: http(newChain.rpcUrl),
       });
 
       const pimlicoClient = createPimlicoClient({
-        transport: http(supportedChains[chainId].pimlicoUrl),
+        transport: http(newChain.pimlicoUrl),
         entryPoint: {
-          address: supportedChains[chainId].entryPointAddress,
+          address: chain.entryPointAddress,
           version: "0.7",
         }
       });
@@ -82,16 +84,17 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       });
     }
 
-    setChainId(chainId);
+    setChain(newChain);
   };
 
+
   useEffect(() => {
-    updateChain(chainId);
+    updateChain(DEFAULT_CHAIN_ID);
   },[]);
 
   return (
     <Web3Context.Provider value={{
-      chainId,
+      chain,
       updateChain,
     }}>
       {children}
