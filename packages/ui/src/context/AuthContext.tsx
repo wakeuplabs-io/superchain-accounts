@@ -29,8 +29,8 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
         showTorusButton: showTorusButton,
         network: {
           host: chain.rpcUrl,
-          chainId: chain.id,
-          networkName: chain.name,
+          chainId: chain.data.id,
+          networkName: chain.data.name,
         },
         enableLogging: testEnvironment,
         buildEnv: testEnvironment ? "testing" : "production",
@@ -65,14 +65,14 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
 
     const torusCurrentProvider = hexToNumber(torus.current.provider.chainId as Hex ?? "");
 
-    if(torusCurrentProvider === chain.id) {
+    if(torusCurrentProvider === chain.data.id) {
       return;
     }
 
     torus.current.setProvider({
       host: chain.rpcUrl,
-      chainId: chain.id,
-      networkName: chain.name,
+      chainId: chain.data.id,
+      networkName: chain.data.name,
     });
     //TODO: handle case when user rejects changing the chain in torus auth, in this case we should revert to the previous chain
   }, [chain]);

@@ -15,12 +15,12 @@ export function ChainSelector({
       {Object.values(supportedChains).map((chain) => (
         <Button
           variant={
-            selectedChain === chain.id ? "default" : "secondary"
+            selectedChain === chain.data.id ? "default" : "secondary"
           }
-          key={chain.id}
-          onClick={() => onChainSelect(chain.id)}
+          key={chain.data.id}
+          onClick={() => onChainSelect(chain.data.id)}
         >
-          {chain.name}
+          {chain.data.name}
         </Button>
       ))}
     </div>
