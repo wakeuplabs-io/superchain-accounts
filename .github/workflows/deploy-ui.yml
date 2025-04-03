@@ -3,24 +3,6 @@ name: Deploy ui
 on:
   workflow_call:
     inputs:
-      # OPTIMISM_RPC_URL:
-      #   required: true
-      #   type: string
-      # OPTIMISM_ENTRYPOINT_ADDRESS:
-      #   required: true
-      #   type: string
-      # UNICHAIN_RPC_URL:
-      #   required: true
-      #   type: string
-      # UNICHAIN_ENTRYPOINT_ADDRESS:
-      #   required: true
-      #   type: string
-      # BASE_RPC_URL:
-      #   required: true
-      #   type: string
-      # BASE_ENTRYPOINT_ADDRESS:
-      #   required: true
-      #   type: string
       environment:
         required: true
         type: string
