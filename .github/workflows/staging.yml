@@ -17,7 +17,6 @@ jobs:
    # Job to deploy the UI
   call-deploy-ui-workflow:
     uses: ./.github/workflows/deploy-ui.yml
-    needs: call-deploy-api-workflow
     with:
       environment: staging
     secrets:
