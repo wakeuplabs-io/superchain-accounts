@@ -1,0 +1,10 @@
+{
+  "SuperchainBadgesModule": {
+    "Owner": "0xF754D0f4de0e815b391D997Eeec5cD07E59858F0"
+  },
+  "SuperchainPointsModule": {
+    "Owner": "0xF754D0f4de0e815b391D997Eeec5cD07E59858F0",
+    "Name": "Superchain Points",
+    "Symbol": "SCP"
+  }
+}
