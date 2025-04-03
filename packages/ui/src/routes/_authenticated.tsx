@@ -111,7 +111,7 @@ function AuthenticatedLayout() {
           <main className="flex flex-1 overflow-auto p-8">
             <div className="w-full flex flex-col gap-4">
               <SidebarTrigger className="mb-4"/>
-              <ChainSelector onChainSelect={updateChain} selectedChain={chain.id}/>
+              <ChainSelector onChainSelect={updateChain} selectedChain={chain.data.id}/>
               <Outlet />
             </div>
           </main>

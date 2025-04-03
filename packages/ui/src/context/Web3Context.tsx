@@ -1,38 +1,35 @@
 import envParsed from "@/envParsed";
 import { createPimlicoClient, PimlicoClient } from "permissionless/clients/pimlico";
 import { createContext, useContext, ReactNode, useState, useRef, useEffect, useCallback } from "react";
-import { Address, createPublicClient, http, PublicClient } from "viem";
+import { Address, Chain, createPublicClient, http, PublicClient } from "viem";
+import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
 
 const envVars = envParsed();
 
 const DEFAULT_CHAIN_ID = 11155420; // Optimism Sepolia
 
 interface SmartAccountChain {
-    name: string;
-    id: number;
+    data: Chain,
     rpcUrl: string;
     pimlicoUrl: string;
     entryPointAddress: Address;
 }
 
 export const supportedChains: Record<number, SmartAccountChain> = {
-  11155420: {
-    name: "Optimism Sepolia",
-    id: 11155420,
+  [optimismSepolia.id]: {
+    data: optimismSepolia,
     rpcUrl: envVars.OPTIMISM_RPC_URL,
     pimlicoUrl: envVars.OPTIMISM_PIMLICO_URL,
     entryPointAddress: envVars.OPTIMISM_ENTRYPOINT_ADDRESS,
   },
-  84532: {
-    name: "Base Sepolia",
-    id: 84532,
+  [baseSepolia.id]: {
+    data: baseSepolia,
     rpcUrl: envVars.BASE_RPC_URL,
     pimlicoUrl: envVars.BASE_PIMLICO_URL,
     entryPointAddress: envVars.BASE_ENTRYPOINT_ADDRESS,
   },
-  1301: {
-    name: "Unichain Sepolia",
-    id: 1301,
+  [unichainSepolia.id]: {
+    data: unichainSepolia,
     rpcUrl: envVars.UNICHAIN_RPC_URL,
     pimlicoUrl: envVars.UNICHAIN_PIMLICO_URL,
     entryPointAddress: envVars.UNICHAIN_ENTRYPOINT_ADDRESS,
@@ -48,8 +45,8 @@ interface Web3Data {
 
 interface Web3ContextType {
   chain: SmartAccountChain;
+  web3Data: Web3Data | null;
   updateChain: (chainId: number) => void;
-  getWeb3Data: () => Web3Data; 
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
@@ -67,7 +64,8 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     }
     
     if (!web3Data.current.has(chainId)) {
-      const publicClient = createPublicClient({ 
+      const publicClient = createPublicClient({
+        chain: newChain.data,
         transport: http(newChain.rpcUrl),
       });
 
@@ -89,12 +87,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   };
 
   const getWeb3Data = useCallback(() => {
-    if (!web3Data.current.has(chain.id)) {
-      throw new Error(`Web3Data for chain ID ${chain.id} has not been initialized`);
+    if (!web3Data.current.has(chain.data.id)) {
+      return null;
     }
 
-    return web3Data.current.get(chain.id)!;
+    return web3Data.current.get(chain.data.id)!;
   },[chain]);
+
 
   useEffect(() => {
     updateChain(DEFAULT_CHAIN_ID);
@@ -104,7 +103,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     <Web3Context.Provider value={{
       chain,
       updateChain,
-      getWeb3Data,
+      web3Data: getWeb3Data(),
     }}>
       {children}
     </Web3Context.Provider>
