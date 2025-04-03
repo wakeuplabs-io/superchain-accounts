@@ -43,7 +43,7 @@ contract SuperchainPoints is ERC20, IERC7802, Ownable {
     /// @param _to     Address to mint tokens to.
     /// @param _amount Amount of tokens to mint.
     function crosschainMint(address _to, uint256 _amount) external {
-        if (msg.sender == PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
+        if (msg.sender != PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
             revert Unauthorized();
         }
 
@@ -56,7 +56,7 @@ contract SuperchainPoints is ERC20, IERC7802, Ownable {
     /// @param _from   Address to burn tokens from.
     /// @param _amount Amount of tokens to burn.
     function crosschainBurn(address _from, uint256 _amount) external {
-        if (msg.sender == PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
+        if (msg.sender != PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
             revert Unauthorized();
         }
         
