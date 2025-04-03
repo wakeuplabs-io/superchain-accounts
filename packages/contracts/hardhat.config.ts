@@ -1,7 +1,11 @@
 import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox-viem";
+import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "solidity-coverage";
+
+import "./tasks/badges"
+import "./tasks/paymaster"
+import "./tasks/points"
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -49,12 +53,12 @@ const config: HardhatUserConfig = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
-  },
-  sourcify: {
-    enabled: false,
-  },
+  // etherscan: {
+  //   apiKey: process.env.ETHERSCAN_API_KEY,
+  // },
+  // sourcify: {
+  //   enabled: false,
+  // },
 };
 
 export default config;
