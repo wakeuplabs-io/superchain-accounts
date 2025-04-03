@@ -3,75 +3,151 @@ pragma solidity ^0.8.29;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
+import {IERC1155} from "@openzeppelin/contracts/interfaces/IERC1155.sol";
 import {ISuperchainPointsRaffle} from "./interfaces/ISuperchainPointsRaffle.sol";
 
 contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
-    bytes32 sealedSeed;
-    bool seedSet = false;
-    bool finished = false;
-    uint storedBlockNumber;
+    bytes32 public sealedSeed;
+    bool internal initialized = false;
+    bool public finished = false;
+    uint256 public storedBlockNumber;
 
-    address public superchainPoints;
     uint256 public raffleAmount;
+    address public superchainPoints;
+    address public superchainBadges;
 
     uint256 public ticketCount;
     mapping(uint256 => address) public tickets;
     mapping(address => bool) public ticketsClaimed;
+    uint256[] public eligibleBadges;
+    mapping(uint256 => uint256) public badgeAllocations;
 
+    /// @dev Explain to a developer any extra details
+    /// @param _initialOwner The initial owner of the contract
+    /// @param _superchainPoints The address of the SuperchainPoints contract
+    /// @param _superchainBadges The address of the SuperchainBadges contract
     constructor(
-        address initialOwner,
-        address _superchainPoints
-    ) Ownable(initialOwner) {
+        address _initialOwner,
+        address _superchainPoints,
+        address _superchainBadges
+    ) Ownable(_initialOwner) {
         superchainPoints = _superchainPoints;
+        superchainBadges = _superchainBadges;
     }
 
-    function initiate(bytes32 _sealedSeed, uint256 _amount) public onlyOwner {
-        // TODO: badge requirements
-        require(!seedSet);
-        finished = false;
+    function initialize(
+        bytes32 _sealedSeed,
+        uint256 _amount,
+        uint256[] memory _badges,
+        uint256[] memory _badgeAllocation
+    ) public onlyOwner {
+        // Verify raffle is not initialized
+        if (initialized) {
+            revert RaffleAlreadyStarted();
+        }
+        initialized = true;
+
+        // Store raffle details
+        raffleAmount = _amount;
         sealedSeed = _sealedSeed;
         storedBlockNumber = block.number + 1;
-        seedSet = true;
 
-        raffleAmount = _amount;
+        // Store badge details
+        for (uint256 i = 0; i < _badges.length; i++) {
+            badgeAllocations[_badges[i]] = _badgeAllocation[i];
+            eligibleBadges.push(_badges[i]);
+        }
 
-        // pull points from sender
+        // Pull points from sender
         bool success = IERC20(superchainPoints).transferFrom(
             msg.sender,
             address(this),
             raffleAmount
         );
-        require(success);
+        if (!success) {
+            revert TransferFailed();
+        }
+
+        emit RaffleStarted(_sealedSeed, raffleAmount);
     }
 
     function reveal(bytes32 _seed) public onlyOwner {
-        require(!finished);
-        require(seedSet);
-        require(storedBlockNumber < block.number);
-        require(keccak256(abi.encodePacked(msg.sender, _seed)) == sealedSeed);
-        uint random = uint(keccak256(abi.encodePacked(_seed, blockhash(storedBlockNumber))));
-        // Insert logic for usage of random number here;
-        seedSet = false;
-        finished = false;
+        // Verify raffle is ongoing
+        if (finished || !initialized) {
+            revert NoOngoingRaffle();
+        }
 
-        // TODO: transfer to winner
+        // If we reveal in same block we can know block hash
+        if (storedBlockNumber > block.number) {
+            revert CannotRevealBeforeBlock(storedBlockNumber);
+        }
+
+        // Prevent owner from changing seed
+        if (keccak256(abi.encodePacked(msg.sender, _seed)) != sealedSeed) {
+            revert InvalidSeed();
+        }
+
+        // Select winner from ticket pool
+        uint256 random = uint256(
+            keccak256(abi.encodePacked(_seed, blockhash(storedBlockNumber)))
+        );
+        address winner = tickets[random % ticketCount];
+        if (winner == address(0)) {
+            revert TicketNotFound();
+        }
+
+        // Mark raffle as finished before transfer to prevent reentrancy
+        finished = true;
+
+        // Transfer points to winner
+        bool success = IERC20(superchainPoints).transfer(winner, raffleAmount);
+        if (!success) {
+            revert TransferFailed();
+        }
+
+        emit RaffleRevealed(winner);
     }
 
     function claimTicket() public {
-        // TODO: badge requirements
-
-        // TODO: check if user has already claimed a ticket
-
-        // TODO: determine allocation based on badges
-        uint256 ticketsAllocation = 10;
-
-        // allocate tickets to user
-        for (uint256 i = ticketCount; i < ticketCount + ticketsAllocation; i++) {
-            tickets[i] = msg.sender;
+        // Verify raffle is ongoing
+        if (finished || !initialized) {
+            revert NoOngoingRaffle();
         }
-        
-        ticketCount += ticketsAllocation;
+
+        // Check if tickets have already been claimed
+        if (ticketsClaimed[msg.sender]) {
+            revert TicketAlreadyClaimed();
+        }
         ticketsClaimed[msg.sender] = true;
 
+        // Calculate tickets allocation
+        uint256 ticketsAllocation = 0;
+        for (uint256 i = 0; i < eligibleBadges.length; i++) {
+            if (
+                IERC1155(superchainBadges).balanceOf(
+                    msg.sender,
+                    eligibleBadges[i]
+                ) > 0
+            ) {
+                ticketsAllocation += badgeAllocations[eligibleBadges[i]];
+            }
+        }
+
+        // Check if user has eligible badges
+        if (ticketsAllocation == 0) {
+            revert NoEligibleBadges();
+        }
+
+        // Allocate tickets to user
+        for (
+            uint256 i = ticketCount;
+            i < ticketCount + ticketsAllocation;
+            i++
+        ) {
+            tickets[i] = msg.sender;
+        }
+        ticketCount += ticketsAllocation;
+
+        emit TicketClaimed(msg.sender);
     }
 }

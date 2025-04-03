@@ -6,13 +6,6 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "incremental": false,
-    "rootDir": ".",
-    "outDir": ".dist",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-  },
-  "include": ["./**/*", "./**/*.json"],
-  "exclude": ["node_modules", ".dist"]
+    "resolveJsonModule": true
+  }
 }
