@@ -1,8 +1,8 @@
-import { PrismaClient, Transaction, TransactionAction } from "@prisma/client";
-import { BundlerClient, UserOperation } from "viem/account-abstraction";
+import { zeroAddress } from "viem";
+import { PrismaClient, Transaction } from "@prisma/client";
+import { UserOperation } from "viem/account-abstraction";
 import { BundlerFactory } from "./bundler-factory.js";
 import { ProviderFactory } from "./provider-factory.js";
-import { zeroAddress } from "viem";
 import { Transaction as DomainTransaction } from "../domain/transaction.js";
 
 export class TransactionService {

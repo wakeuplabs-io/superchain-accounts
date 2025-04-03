@@ -8,7 +8,9 @@
     "build": "rimraf dist && tsc",
     "dev": "tsx watch src/app.ts",
     "start": "node dist/app.js",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
