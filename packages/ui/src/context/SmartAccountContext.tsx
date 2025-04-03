@@ -11,10 +11,12 @@ type SuperChainAccountStatus = "pending" | "initialized" | "deployed";
 type SuperChainAccount = {
     instance: SmartAccount | null;
     client: SmartAccountClient | null;
+    balance: 0;
     status: "pending";
   } | {
     instance: SmartAccount;
     client: SmartAccountClient;
+    balance: bigint;
     status: Exclude<SuperChainAccountStatus, "pending">;
   };
 
@@ -31,12 +33,13 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
     client: null,
+    balance: 0,
     status: "pending",
   });
 
+
   useEffect(() => {
     async function initialize() {
-      console.log("Initializing smart account");
       const web3Data = getWeb3Data();
       const provider = getProvider();
       const newSmartAccount = await toSimpleSmartAccount({
@@ -67,7 +70,12 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
 
       const isDeployed = await newSmartAccount.isDeployed();
 
+      const balance = await web3Data.publicClient.getBalance({
+        address: newSmartAccount.address,
+      });
+
       setAccount({
+        balance,
         instance: newSmartAccount,
         client: newSmartAccountClient,
         status: isDeployed ? "deployed" : "initialized",
@@ -77,6 +85,7 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
     setAccount({
       instance: null,
       client: null,
+      balance: 0,
       status: "pending",
     });
     
