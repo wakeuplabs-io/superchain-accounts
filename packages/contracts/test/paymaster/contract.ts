@@ -3,6 +3,7 @@ import { getAddress } from "viem";
 import { generateTestEnv, TestEnv } from "../shared/helpers/deploy";
 import { ZERO_ADDRESS } from "../shared/constants";
 
+// TODO: skip as it should use hardhat network OSA-63
 describe.skip("WakeUpPaymaster", () => {
   let testEnv: TestEnv;
 

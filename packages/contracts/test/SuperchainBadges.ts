@@ -1,30 +1,27 @@
 import hre from "hardhat";
 import { expect } from "chai";
-import {
-  time,
-  loadFixture,
-} from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+
+async function deploySuperchainBadgesFixture() {
+  const [owner, other] = await hre.ethers.getSigners();
+
+  const SuperchainBadges =
+    await hre.ethers.getContractFactory("SuperchainBadges");
+  const superchainBadges = await SuperchainBadges.deploy(owner);
+  const superchainBadgesAddress = await superchainBadges.getAddress();
+
+  return {
+    superchainBadges,
+    superchainBadgesAddress,
+    owner,
+    other,
+  };
+}
 
 describe("SuperchainBadges", function () {
-  async function deployMarketplaceFixture() {
-    const [owner, other] = await hre.ethers.getSigners();
-
-    const SuperchainBadges =
-      await hre.ethers.getContractFactory("SuperchainBadges");
-    const superchainBadges = await SuperchainBadges.deploy(owner);
-    const superchainBadgesAddress = await superchainBadges.getAddress();
-
-    return {
-      superchainBadges,
-      superchainBadgesAddress,
-      owner,
-      other,
-    };
-  }
-
   it("should deploy and set the correct owner", async function () {
     const { superchainBadges, owner } = await loadFixture(
-      deployMarketplaceFixture
+      deploySuperchainBadgesFixture
     );
 
     expect(await superchainBadges.owner()).to.equal(owner.address);
@@ -32,7 +29,7 @@ describe("SuperchainBadges", function () {
 
   it("should allow owner to mint a badge", async function () {
     const { superchainBadges, owner } = await loadFixture(
-      deployMarketplaceFixture
+      deploySuperchainBadgesFixture
     );
 
     await superchainBadges.connect(owner).mint(owner.address, 1);
@@ -41,7 +38,7 @@ describe("SuperchainBadges", function () {
 
   it("should prevent minting the same badge twice for the same user", async function () {
     const { superchainBadges, owner: addr1 } = await loadFixture(
-      deployMarketplaceFixture
+      deploySuperchainBadgesFixture
     );
 
     await superchainBadges.mint(addr1.address, 1);
@@ -58,7 +55,7 @@ describe("SuperchainBadges", function () {
       superchainBadges,
       owner: addr1,
       other: addr2,
-    } = await loadFixture(deployMarketplaceFixture);
+    } = await loadFixture(deploySuperchainBadgesFixture);
 
     await superchainBadges.mintBatch([addr1.address, addr2.address], [1, 2]);
     expect(await superchainBadges.balanceOf(addr1.address, 1)).to.equal(1);
@@ -67,7 +64,7 @@ describe("SuperchainBadges", function () {
 
   it("should allow the owner to set a URI for a token", async function () {
     const { superchainBadges, owner } = await loadFixture(
-      deployMarketplaceFixture
+      deploySuperchainBadgesFixture
     );
 
     await superchainBadges.connect(owner).setURI(1, "ipfs://new-uri");
@@ -76,7 +73,7 @@ describe("SuperchainBadges", function () {
 
   it("should prevent non-owner from minting", async function () {
     const { superchainBadges, other } = await loadFixture(
-      deployMarketplaceFixture
+      deploySuperchainBadgesFixture
     );
 
     await expect(superchainBadges.connect(other).mint(other.address, 1)).to.be
@@ -85,7 +82,7 @@ describe("SuperchainBadges", function () {
 
   it("should prevent non-owner from setting URI", async function () {
     const { superchainBadges, other } = await loadFixture(
-      deployMarketplaceFixture
+      deploySuperchainBadgesFixture
     );
 
     await expect(
