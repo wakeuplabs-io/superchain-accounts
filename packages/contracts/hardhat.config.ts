@@ -3,41 +3,54 @@ import "@nomicfoundation/hardhat-toolbox-viem";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "solidity-coverage";
 
-import { getNetwork } from "./networks";
-import envParsed from "./envParsed";
-
-const NETWORK_TESTNET = envParsed().NETWORK_TESTNET;
-const NETWORK_MAINNET = envParsed().NETWORK_MAINNET;
-
-const networkTestnet = getNetwork(NETWORK_TESTNET, true);
-const networkMainnet = getNetwork(NETWORK_MAINNET, false);
-
-const localNetwork =
-  envParsed().LOCAL_RPC_URL && envParsed().LOCAL_PRIVATE_KEY
-    ? {
-      url: envParsed().LOCAL_RPC_URL,
-      accounts: [envParsed().LOCAL_PRIVATE_KEY],
-    }
-    : undefined;
-
 const config: HardhatUserConfig = {
   solidity: {
-    compilers: [{ version: "0.8.29", settings: {
-      optimizer: {
-        enabled: true,
-        runs: 100,
+    compilers: [
+      {
+        version: "0.8.29",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 100,
+          },
+        },
       },
-    }}],
+    ],
   },
   networks: {
-    testnet: networkTestnet ? networkTestnet.network : undefined,
-    mainnet: networkMainnet ? networkMainnet.network : undefined,
-    ...(localNetwork ? { local: localNetwork } : {}),
+    local: {
+      chainId: 31337,
+      url: "http://localhost:8545",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
+    "ethereum-sepolia": {
+      chainId: 11155111,
+      url: process.env.ETHEREUM_SEPOLIA_RPC_URL || "https://sepolia.drpc.org",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
+    "optimism-sepolia": {
+      chainId: 11155420,
+      url:
+        process.env.OPTIMISM_SEPOLIA_RPC_RUL || "https://sepolia.optimism.io",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
+    "base-sepolia": {
+      chainId: 84531,
+      url:
+        process.env.BASE_SEPOLIA_RPC_URL ||
+        "https://base-sepolia.public.blastapi.io",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
+    "unichain-sepolia": {
+      chainId: 1301,
+      url:
+        process.env.UNICHAIN_SEPOLIA_RPC_URL ||
+        "https://unichain-sepolia-rpc.publicnode.com",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
   },
-
   etherscan: {
-    apiKey: networkTestnet ? networkTestnet.apiKeys : undefined,
-    customChains: networkTestnet ? networkTestnet.customChains : undefined,
+    apiKey: process.env.ETHERSCAN_API_KEY,
   },
   sourcify: {
     enabled: false,
