@@ -26,7 +26,7 @@ describe("SuperchainPoints", function () {
     });
   });
 
-  describe("Minting", function () {
+  describe("Contract", function () {
     it("Should allow owner to mint tokens", async function () {
       const { superchainPoints, owner, addr1 } = await loadFixture(
         deploySuperchainPointsFixture
