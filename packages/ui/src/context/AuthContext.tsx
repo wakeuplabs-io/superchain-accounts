@@ -18,13 +18,12 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
     buttonPosition: "bottom-right",
   }));
 
-  const { chain } = useWeb3();
+  const { chain, updateChain } = useWeb3();
 
   const initialize = async () => {
     const testEnvironment = mode === "development" || mode === "local";
     const showTorusButton = mode === "local";
     if (!torus.current.isInitialized) {
-      console.log("initializing torus");
       await torus.current.init({
         showTorusButton: showTorusButton,
         network: {
@@ -59,22 +58,30 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
   };
 
   useEffect(() => {
-    if(!torus.current.isInitialized) {
-      return;
+    async function handleChainChanged() {
+      if(!torus.current.isInitialized) {
+        return;
+      }
+
+      const currentTorusChainId = hexToNumber(torus.current.provider.chainId as Hex ?? "");
+
+      if(currentTorusChainId === chain.data.id) {
+        return;
+      }
+
+      try {
+        await torus.current.setProvider({
+          host: chain.rpcUrl,
+          chainId: chain.data.id,
+          networkName: chain.data.name,
+        });
+      } catch (e) {
+        //revert to previous chain
+        updateChain(currentTorusChainId);
+      }
     }
 
-    const torusCurrentProvider = hexToNumber(torus.current.provider.chainId as Hex ?? "");
-
-    if(torusCurrentProvider === chain.data.id) {
-      return;
-    }
-
-    torus.current.setProvider({
-      host: chain.rpcUrl,
-      chainId: chain.data.id,
-      networkName: chain.data.name,
-    });
-    //TODO: handle case when user rejects changing the chain in torus auth, in this case we should revert to the previous chain
+    handleChainChanged();
   }, [chain]);
 
 
