@@ -31,8 +31,15 @@ export default $config({
       },
       domain: `${PROJECT_NAME}.wakeuplabs.link`,
       environment: {
-        VITE_PIMLICO_URL: process.env.VITE_PIMLICO_URL as string,
-        VITE_ENTRYPOINT_ADDRESS: process.env.VITE_ENTRYPOINT_ADDRESS as string,
+        VITE_OPTIMISM_RPC_URL:process.env.OPTIMISM_RPC_URL as string,
+        VITE_OPTIMISM_PIMLICO_URL:process.env.OPTIMISM_PIMLICO_URL as string,
+        VITE_OPTIMISM_ENTRYPOINT_ADDRESS:process.env.OPTIMISM_ENTRYPOINT_ADDRESS as string,
+        VITE_UNICHAIN_RPC_URL:process.env.UNICHAIN_RPC_URL as string,
+        VITE_UNICHAIN_PIMLICO_URL:process.env.UNICHAIN_PIMLICO_URL as string,
+        VITE_UNICHAIN_ENTRYPOINT_ADDRESS:process.env.UNICHAIN_ENTRYPOINT_ADDRESS as string,
+        VITE_BASE_RPC_URL:process.env.BASE_RPC_URL as string,
+        VITE_BASE_PIMLICO_URL:process.env.BASE_PIMLICO_URL as string,
+        VITE_BASE_ENTRYPOINT_ADDRESS:process.env.BASE_ENTRYPOINT_ADDRESS as string,
       },
     });
 
