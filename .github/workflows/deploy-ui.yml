@@ -2,6 +2,29 @@ name: Deploy ui
 
 on:
   workflow_call:
+    inputs:
+      # OPTIMISM_RPC_URL:
+      #   required: true
+      #   type: string
+      # OPTIMISM_ENTRYPOINT_ADDRESS:
+      #   required: true
+      #   type: string
+      # UNICHAIN_RPC_URL:
+      #   required: true
+      #   type: string
+      # UNICHAIN_ENTRYPOINT_ADDRESS:
+      #   required: true
+      #   type: string
+      # BASE_RPC_URL:
+      #   required: true
+      #   type: string
+      # BASE_ENTRYPOINT_ADDRESS:
+      #   required: true
+      #   type: string
+      environment:
+        required: true
+        type: string
+      
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -9,12 +32,18 @@ on:
         required: true
       AWS_REGION:
         required: true
+      OPTIMISM_PIMLICO_URL:
+        required: true
+      BASE_PIMLICO_URL:
+        required: true
+      UNICHAIN_PIMLICO_URL:
+        required: true  
 
 jobs:
   # Job to Deploy the UI
   deploy:
     runs-on: ubuntu-latest
-
+    environment: ${{ inputs.environment }}
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -47,11 +76,19 @@ jobs:
       # Run the build for the UI
       - name: Deploy
         run: |
-          echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}"
-          echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}"
-          echo "AWS_REGION=${{ env.AWS_REGION }}"
+          echo "OPTIMISM_RPC_URL=${{ env.OPTIMISM_RPC_URL }}"
           pnpm deploy:app:staging
+        
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          # OPTIMISM_RPC_URL: ${{ inputs.OPTIMISM_RPC_URL }}
+          OPTIMISM_PIMLICO_URL: ${{ secrets.OPTIMISM_PIMLICO_URL }}
+          # OPTIMISM_ENTRYPOINT_ADDRESS: ${{ inputs.OPTIMISM_ENTRYPOINT_ADDRESS }}
+          # UNICHAIN_RPC_URL: ${{ inputs.UNICHAIN_RPC_URL }}
+          UNICHAIN_PIMLICO_URL: ${{ secrets.UNICHAIN_PIMLICO_URL }}
+          # UNICHAIN_ENTRYPOINT_ADDRESS: ${{ inputs.UNICHAIN_ENTRYPOINT_ADDRESS }}
+          # BASE_RPC_URL: ${{ inputs.BASE_RPC_URL }}
+          BASE_PIMLICO_URL: ${{ secrets.BASE_PIMLICO_URL }}
+          # BASE_ENTRYPOINT_ADDRESS: ${{ inputs.BASE_ENTRYPOINT_ADDRESS }}
