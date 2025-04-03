@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "dev": "concurrently --kill-others \"pnpm --filter api run dev\" \"pnpm --filter ui run dev\"",
+    "dev": "concurrently --kill-others \"npm run dev --workspace=packages/api\" \"npm run dev --workspace=packages/ui\"",
     "deploy:api:staging": "npm --prefix packages/api run build && serverless deploy --config serverless-api.yml --verbose ",
     "package:api": "npm --prefix packages/api run build && serverless package --config serverless-api.yml",
     "build": "pnpm -r run build",
@@ -29,6 +29,7 @@
     "serverless-plugin-common-excludes": "4.0.0",
     "serverless-plugin-include-dependencies": "6.0.0",
     "serverless-s3-sync": "3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {

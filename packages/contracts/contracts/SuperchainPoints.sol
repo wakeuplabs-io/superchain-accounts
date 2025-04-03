@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
+import {IERC7802, IERC165} from "./interfaces/IERC7802.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {PredeployAddresses} from "./libraries/SuperchainPredeployAddresses.sol";
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {IERC7802, IERC165} from "./interfaces/IERC7802.sol";
+import {PredeployAddresses} from "./libraries/SuperchainPredeployAddresses.sol";
 
 /// @title SuperchainERC20
 /// @notice A standard ERC20 extension implementing IERC7802 for unified cross-chain fungibility across
