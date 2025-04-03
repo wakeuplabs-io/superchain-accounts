@@ -1,6 +1,6 @@
 import envParsed from "@/envParsed";
 import { createPimlicoClient, PimlicoClient } from "permissionless/clients/pimlico";
-import { createContext, useContext, ReactNode, useState, useRef, useEffect } from "react";
+import { createContext, useContext, ReactNode, useState, useRef, useEffect, useCallback } from "react";
 import { Address, createPublicClient, http, PublicClient } from "viem";
 
 const envVars = envParsed();
@@ -49,6 +49,7 @@ interface Web3Data {
 interface Web3ContextType {
   chain: SmartAccountChain;
   updateChain: (chainId: number) => void;
+  getWeb3Data: () => Web3Data; 
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
@@ -87,6 +88,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     setChain(newChain);
   };
 
+  const getWeb3Data = useCallback(() => {
+    if (!web3Data.current.has(chain.id)) {
+      throw new Error(`Web3Data for chain ID ${chain.id} has not been initialized`);
+    }
+
+    return web3Data.current.get(chain.id)!;
+  },[chain]);
 
   useEffect(() => {
     updateChain(DEFAULT_CHAIN_ID);
@@ -96,6 +104,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     <Web3Context.Provider value={{
       chain,
       updateChain,
+      getWeb3Data,
     }}>
       {children}
     </Web3Context.Provider>

@@ -15,10 +15,12 @@ import {
 
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
-import { ActionButton, AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar";
+import { ActionButton} from "@/components/_authenticated/sidebar/action-button";
+import { AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar/authenticated-sidebar-menu-button";
 import { ChainSelector } from "@/components/_authenticated/chain-selector";
 import { useWeb3 } from "@/context/Web3Context";
 import { useAuth } from "@/context/AuthContext";
+import { SuperChainAccountProvider } from "@/context/SmartAccountContext";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -49,7 +51,7 @@ export const Route = createFileRoute("/_authenticated")({
   },
   component: AuthenticatedLayout,
   // TODO: Add a pending component
-  // pendingComponent: () => <span>Loading...</span>,
+  pendingComponent: () => <span>Loading...</span>,
 });
 
 function AuthenticatedLayout() {
@@ -63,56 +65,58 @@ function AuthenticatedLayout() {
   };
 
   return (
-    <SidebarProvider style={{
-      "--sidebar-width": "20rem",
-      "--sidebar-width-mobile": "20rem",
-    } as React.CSSProperties}>
-      <div className="flex w-full h-screen">
-        <Sidebar className="w-80">
-          <SidebarHeader className="px-8 py-14">
-            <SidebarMenu>
-              <SidebarMenuItem className="flex justify-center">
-                <img src={optimismLogo} className="w-[135px]" />
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarHeader>
-          <SidebarContent className="px-8">
-            <SidebarMenu>
-              <SidebarMenuItem>
-                {/* <AuthenticatedSidebarMenuButton
+    <SuperChainAccountProvider>
+      <SidebarProvider style={{
+        "--sidebar-width": "20rem",
+        "--sidebar-width-mobile": "20rem",
+      } as React.CSSProperties}>
+        <div className="flex w-full h-screen">
+          <Sidebar className="w-80">
+            <SidebarHeader className="px-8 py-14">
+              <SidebarMenu>
+                <SidebarMenuItem className="flex justify-center">
+                  <img src={optimismLogo} className="w-[135px]" />
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarHeader>
+            <SidebarContent className="px-8">
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  {/* <AuthenticatedSidebarMenuButton
                   Icon={User}
                   text="Profile"
                   route="/profile"
                 /> */}
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <AuthenticatedSidebarMenuButton
-                  Icon={ScrollText}
-                  text="Accounts"
-                  route="/"
-                  isActive={router.state.location.pathname === "/"}
-                />
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <div className="flex flex-col px-8 py-14 gap-9">
-              <div className="flex gap-4">
-                <ActionButton icon={LogOut} onClick={onLogout}/>
-                <ActionButton variant='slate' icon={Lock} onClick={() => console.log("locking")}/>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <AuthenticatedSidebarMenuButton
+                    Icon={ScrollText}
+                    text="Accounts"
+                    route="/"
+                    isActive={router.state.location.pathname === "/"}
+                  />
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarContent>
+            <SidebarFooter>
+              <div className="flex flex-col px-8 py-14 gap-9">
+                <div className="flex gap-4">
+                  <ActionButton icon={LogOut} onClick={onLogout}/>
+                  <ActionButton variant='slate' icon={Lock} onClick={() => console.log("locking")}/>
+                </div>
+                <img className="w-[124px]" src={wakeUpPowered} />
               </div>
-              <img className="w-[124px]" src={wakeUpPowered} />
+            </SidebarFooter>
+          </Sidebar>
+          <main className="flex flex-1 overflow-auto p-8">
+            <div className="w-full flex flex-col gap-4">
+              <SidebarTrigger className="mb-4"/>
+              <ChainSelector onChainSelect={updateChain} selectedChain={chain.id}/>
+              <Outlet />
             </div>
-          </SidebarFooter>
-        </Sidebar>
-        <main className="flex flex-1 overflow-auto p-8">
-          <div className="w-full flex flex-col gap-4">
-            <SidebarTrigger className="mb-4"/>
-            <ChainSelector onChainSelect={updateChain} selectedChain={chain.id}/>
-            <Outlet />
-          </div>
-        </main>
-      </div>
-    </SidebarProvider>
+          </main>
+        </div>
+      </SidebarProvider>
+    </SuperChainAccountProvider>
   );
 }

@@ -1,4 +1,4 @@
-import Torus from "@toruslabs/torus-embed";
+import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
 import { createContext, useContext, ReactNode, useRef, useEffect } from "react";
 import { useWeb3 } from "./Web3Context";
 import { Hex, hexToNumber } from "viem";
@@ -8,6 +8,7 @@ export interface AuthContextType {
   initialize: () => Promise<boolean>;
   login: () => Promise<void>;
   logout: () => Promise<void>;
+  getProvider: () => TorusInpageProvider;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,6 +54,10 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
     await torus.current.logout();
   };
 
+  const getProvider = () => {
+    return torus.current.provider;
+  };
+
   useEffect(() => {
     if(!torus.current.isInitialized) {
       return;
@@ -73,14 +78,17 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
   }, [chain]);
 
 
+  const value = {
+    isAuthenticated: torus.current.isLoggedIn,
+    initialize,
+    login,
+    logout,
+    getProvider,
+  };
+
   return (
     <AuthContext.Provider
-      value={{
-        isAuthenticated: torus.current.isLoggedIn,
-        initialize,
-        login,
-        logout,
-      }}
+      value={value}
     >
       {children}
     </AuthContext.Provider>
