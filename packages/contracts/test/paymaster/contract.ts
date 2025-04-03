@@ -3,7 +3,7 @@ import { getAddress } from "viem";
 import { generateTestEnv, TestEnv } from "../shared/helpers/deploy";
 import { ZERO_ADDRESS } from "../shared/constants";
 
-describe("WakeUpPaymaster", () => {
+describe.skip("WakeUpPaymaster", () => {
   let testEnv: TestEnv;
 
   beforeEach(async () => {

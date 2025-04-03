@@ -5,7 +5,7 @@ import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC1155Supply} from "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
-contract SuperchainBadge is ERC1155, Ownable, ERC1155Supply {
+contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
     /// @dev Token id to URI
     mapping(uint256 => string) private _tokenURIs;
 
@@ -21,7 +21,7 @@ contract SuperchainBadge is ERC1155, Ownable, ERC1155Supply {
     /// @param id token id
     function mint(address account, uint256 id) public onlyOwner {
         // verify account doesn't have it already
-        if (balanceOf(account, id) == 0) {
+        if (balanceOf(account, id) == 1) {
             revert AccountAlreadyHasThisBadge(account, id);
         }
 
