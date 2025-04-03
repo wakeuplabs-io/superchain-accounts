@@ -1,6 +1,6 @@
 import envParsed from "@/envParsed";
 import { createPimlicoClient, PimlicoClient } from "permissionless/clients/pimlico";
-import { createContext, useContext, ReactNode, useState, useRef, useEffect, useCallback } from "react";
+import { createContext, useContext, ReactNode, useState, useRef, useEffect, useMemo } from "react";
 import { Address, Chain, createPublicClient, http, PublicClient } from "viem";
 import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
 
@@ -13,6 +13,7 @@ interface SmartAccountChain {
     rpcUrl: string;
     pimlicoUrl: string;
     entryPointAddress: Address;
+    order: number;
 }
 
 export const supportedChains: Record<number, SmartAccountChain> = {
@@ -21,18 +22,21 @@ export const supportedChains: Record<number, SmartAccountChain> = {
     rpcUrl: envVars.OPTIMISM_RPC_URL,
     pimlicoUrl: envVars.OPTIMISM_PIMLICO_URL,
     entryPointAddress: envVars.OPTIMISM_ENTRYPOINT_ADDRESS,
+    order: 1,
   },
   [baseSepolia.id]: {
     data: baseSepolia,
     rpcUrl: envVars.BASE_RPC_URL,
     pimlicoUrl: envVars.BASE_PIMLICO_URL,
     entryPointAddress: envVars.BASE_ENTRYPOINT_ADDRESS,
+    order: 2,
   },
   [unichainSepolia.id]: {
     data: unichainSepolia,
     rpcUrl: envVars.UNICHAIN_RPC_URL,
     pimlicoUrl: envVars.UNICHAIN_PIMLICO_URL,
     entryPointAddress: envVars.UNICHAIN_ENTRYPOINT_ADDRESS,
+    order: 3,
   },
 };
 
@@ -54,6 +58,7 @@ const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 export function Web3Provider({ children }: { children: ReactNode }) {
   const web3Data = useRef(new Map<number, Web3Data>());
   const [chain, setChain] = useState<SmartAccountChain>(supportedChains[DEFAULT_CHAIN_ID]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const updateChain = (chainId: number) => {
     const newChain = supportedChains[chainId];
@@ -86,24 +91,25 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     setChain(newChain);
   };
 
-  const getWeb3Data = useCallback(() => {
+  const chainWeb3Data = useMemo(() => {
     if (!web3Data.current.has(chain.data.id)) {
       return null;
     }
 
     return web3Data.current.get(chain.data.id)!;
-  },[chain]);
+  },[isInitialized, chain]);
 
 
   useEffect(() => {
     updateChain(DEFAULT_CHAIN_ID);
+    setIsInitialized(true);
   },[]);
 
   return (
     <Web3Context.Provider value={{
       chain,
       updateChain,
-      web3Data: getWeb3Data(),
+      web3Data: chainWeb3Data,
     }}>
       {children}
     </Web3Context.Provider>

@@ -12,7 +12,7 @@ export function ChainSelector({
 }: ChainSelectorProps) {
   return (
     <div className='flex flex-row gap-4'>
-      {Object.values(supportedChains).map((chain) => (
+      {Object.values(supportedChains).sort((a,b) => a.order - b.order).map((chain) => (
         <Button
           variant={
             selectedChain === chain.data.id ? "default" : "secondary"
