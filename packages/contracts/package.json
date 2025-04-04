@@ -18,7 +18,8 @@
     "deploy:superchain-points:unichain-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPoints.ts --parameters ignition/parameters/unichain-sepolia.json --network unichain-sepolia",
     "deploy:superchain-badges:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia",
     "deploy:superchain-badges:base-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/base-sepolia.json --network base-sepolia",
-    "deploy:superchain-badges:unichain-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/unichain-sepolia.json --network unichain-sepolia"
+    "deploy:superchain-badges:unichain-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/unichain-sepolia.json --network unichain-sepolia",
+    "deploy:superchain-points-raffle:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPointsRaffle.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia"
   },
   "repository": {
     "type": "git",
