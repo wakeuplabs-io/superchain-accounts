@@ -11,12 +11,13 @@ interface ISuperchainPointsRaffleErrors {
     error TicketNotFound();
     error TicketAlreadyClaimed();
     error NoEligibleBadges();
+    error SeedAlreadyUsed();
 }
 
 interface ISuperchainPointsRaffleEvents {
-    event RaffleStarted(bytes32 seed, uint256 amount);
-    event RaffleWinner(address winner);
-    event TicketsClaimed(address claimer, uint256 amount);
+    event RaffleStarted(uint256 raffleId, bytes32 seed, uint256 amount);
+    event RaffleWinner(uint256 raffleId, address winner, uint256 amount);
+    event TicketsClaimed(uint256 raffleId, address claimer, uint256 amount);
 }
 
 interface ISuperchainPointsRaffle is ISuperchainPointsRaffleErrors, ISuperchainPointsRaffleEvents {

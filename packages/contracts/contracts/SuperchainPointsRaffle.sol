@@ -7,23 +7,27 @@ import {IERC1155} from "@openzeppelin/contracts/interfaces/IERC1155.sol";
 import {ISuperchainPointsRaffle} from "./interfaces/ISuperchainPointsRaffle.sol";
 
 contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
-    bytes32 public sealedSeed;
-    bool internal initialized = false;
     bool public finished = false;
-    uint256 public storedBlockNumber;
-    address public winner;
+    bool internal initialized = false;
 
-    uint256 public raffleAmount;
+    bytes32 public sealedSeed;
+    uint256 public storedBlockNumber;
+    mapping(bytes32 => bool) public sealedSeeds;
+
     address public superchainPoints;
     address public superchainBadges;
+
+    uint256 public raffleId = 0;
+    mapping(uint256 => uint256) public prize;
+    mapping(uint256 => address) public winners;
 
     uint256 public ticketCount;
     mapping(uint256 => address) public tickets;
     mapping(address => bool) public ticketsClaimed;
+
     uint256[] public eligibleBadges;
     mapping(uint256 => uint256) public badgeAllocations;
 
-    /// @dev Explain to a developer any extra details
     /// @param _initialOwner The initial owner of the contract
     /// @param _superchainPoints The address of the SuperchainPoints contract
     /// @param _superchainBadges The address of the SuperchainBadges contract
@@ -42,34 +46,51 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         uint256[] memory _badges,
         uint256[] memory _badgeAllocation
     ) public onlyOwner {
-        // Verify raffle is not initialized
         if (initialized) {
             revert RaffleAlreadyStarted();
         }
-        initialized = true;
 
-        // Store raffle details
-        raffleAmount = _amount;
-        sealedSeed = _sealedSeed;
-        storedBlockNumber = block.number + 1;
-
-        // Store badge details
-        for (uint256 i = 0; i < _badges.length; i++) {
-            badgeAllocations[_badges[i]] = _badgeAllocation[i];
-            eligibleBadges.push(_badges[i]);
+        if (sealedSeeds[_sealedSeed]) {
+            revert SeedAlreadyUsed();
         }
 
-        // Pull points from sender
+        // Mark raffle as initialized
+        initialized = true;
+        finished = false;
+
+        // Store seed
+        sealedSeed = _sealedSeed;
+        sealedSeeds[_sealedSeed] = true;
+        storedBlockNumber = block.number + 1;
+        
+        // Store raffle details
+        raffleId += 1;
+        prize[raffleId] = _amount;
+
+        // Cleanup tickets
+        for (uint256 i = 0; i < ticketCount; i++) {
+            tickets[i] = address(0);
+        }
+        ticketCount = 0;
+
+        // Store badge details
+        eligibleBadges = new uint256[](_badges.length);
+        for (uint256 i = 0; i < _badges.length; i++) {
+            badgeAllocations[_badges[i]] = _badgeAllocation[i];
+            eligibleBadges[i] = _badges[i];
+        }
+
+        // Pull points for prize
         bool success = IERC20(superchainPoints).transferFrom(
             msg.sender,
             address(this),
-            raffleAmount
+            prize[raffleId]
         );
         if (!success) {
             revert TransferFailed();
         }
 
-        emit RaffleStarted(_sealedSeed, raffleAmount);
+        emit RaffleStarted(raffleId, sealedSeed, prize[raffleId]);
     }
 
     function reveal(bytes32 _seed) public onlyOwner {
@@ -77,6 +98,10 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         if (finished || !initialized) {
             revert NoOngoingRaffle();
         }
+
+        // Mark raffle as finished right away to prevent reentrancy
+        finished = true;
+        initialized = false;
 
         // If we reveal in same block we can know block hash
         if (storedBlockNumber > block.number) {
@@ -92,24 +117,24 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         uint256 random = uint256(
             keccak256(abi.encodePacked(_seed, blockhash(storedBlockNumber)))
         );
-        winner = tickets[random % ticketCount];
-        if (winner == address(0)) {
+        winners[raffleId] = tickets[random % ticketCount];
+        if (winners[raffleId] == address(0)) {
             revert TicketNotFound();
         }
 
-        // Mark raffle as finished before transfer to prevent reentrancy
-        finished = true;
-
         // Transfer points to winner
-        bool success = IERC20(superchainPoints).transfer(winner, raffleAmount);
+        bool success = IERC20(superchainPoints).transfer(
+            winners[raffleId],
+            prize[raffleId]
+        );
         if (!success) {
             revert TransferFailed();
         }
 
-        emit RaffleWinner(winner);
+        emit RaffleWinner(raffleId, winners[raffleId], prize[raffleId]);
     }
 
-    function claimTicket() public {
+    function claim() public {
         // Verify raffle is ongoing
         if (finished || !initialized) {
             revert NoOngoingRaffle();
@@ -151,6 +176,10 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         }
         ticketCount += ticketsAllocation;
 
-        emit TicketsClaimed(msg.sender, ticketsAllocation);
+        emit TicketsClaimed(raffleId, msg.sender, ticketsAllocation);
+    }
+
+    function getEligibleBadges() external view returns (uint256[] memory) {
+        return eligibleBadges;
     }
 }
