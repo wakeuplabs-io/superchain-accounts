@@ -66,7 +66,7 @@ describe("SuperchainPointsRaffle", function () {
         superchainPointsRaffle
           .connect(owner)
           .initialize(
-            ethers.encodeBytes32String("demo"),
+            sealSeed(ethers.encodeBytes32String("demo"), owner.address),
             prize,
             badges,
             badgesAllocations
@@ -90,7 +90,7 @@ describe("SuperchainPointsRaffle", function () {
       const prize = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
-      
+
       //  initialize raffle
       const seed = ethers.encodeBytes32String("demo");
       await expect(
@@ -111,13 +111,12 @@ describe("SuperchainPointsRaffle", function () {
       await superchainPointsRaffle.connect(addr2).claimTickets();
 
       // select winner
-      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).to.emit(
-        superchainPointsRaffle,
-        "RaffleWinner"
-      );
+      await expect(
+        superchainPointsRaffle.connect(owner).revealWinner(seed)
+      ).to.emit(superchainPointsRaffle, "RaffleWinner");
 
       // check winner balance
-      const winner = await superchainPointsRaffle.winners(1);
+      const winner = await superchainPointsRaffle.winner();
       expect(await superchainPoints.balanceOf(winner)).to.equal(prize);
     });
 
@@ -182,12 +181,12 @@ describe("SuperchainPointsRaffle", function () {
       await superchainPointsRaffle.connect(addr1).claimTickets();
 
       // reveal raffle addr1
-      await expect(superchainPointsRaffle.connect(addr1).revealWinner(seed)).to.be
-        .reverted;
+      await expect(superchainPointsRaffle.connect(addr1).revealWinner(seed)).to
+        .be.reverted;
 
       // reveal raffle owner
-      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not.to.be
-        .reverted;
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not
+        .to.be.reverted;
     });
 
     it("Should assign points based on badge", async function () {
@@ -215,134 +214,13 @@ describe("SuperchainPointsRaffle", function () {
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await expect(superchainPointsRaffle.connect(addr1).claimTickets())
         .to.emit(superchainPointsRaffle, "TicketsClaimed")
-        .withArgs(1, addr1.address, 10n);
+        .withArgs(addr1.address, 10n);
 
       // addr2 has badge 2n so should receive 100 points
       await superchainBadges.connect(owner).mint(addr2.address, 2n);
       await expect(superchainPointsRaffle.connect(addr2).claimTickets())
         .to.emit(superchainPointsRaffle, "TicketsClaimed")
-        .withArgs(1, addr2.address, 100n);
-    });
-
-    it("Can be reinitialized once finished", async function () {
-      const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
-        await loadFixture(deploySuperchainPointsRaffleFixture);
-
-      // initialize raffle a first time
-      const firstSeed = ethers.encodeBytes32String("demo");
-      await expect(
-        superchainPointsRaffle
-          .connect(owner)
-          .initialize(
-            sealSeed(firstSeed, owner.address),
-            10n,
-            [1n, 2n],
-            [10n, 100n]
-          )
-      ).not.to.be.reverted;
-
-      // add participants so it doesn't revert on winner being zero address
-      await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claimTickets();
-
-      // reveal raffle owner
-      await expect(superchainPointsRaffle.connect(owner).revealWinner(firstSeed)).not
-        .to.be.reverted;
-
-      // reinitialize raffle
-      const secondSeed = ethers.encodeBytes32String("second-demo");
-      await expect(
-        superchainPointsRaffle
-          .connect(owner)
-          .initialize(
-            sealSeed(secondSeed, owner.address),
-            10n,
-            [10n, 2n],
-            [1000n, 500n]
-          )
-      ).not.to.be.reverted;
-
-      // tickets balance should be zero
-      expect(await superchainPointsRaffle.tickets(addr1.address)).to.equal(0n);
-
-      // badges requirement should be updated
-      expect(await superchainPointsRaffle.getEligibleBadges()).to.deep.equal([
-        10n,
-        2n,
-      ]);
-
-      // badges allocation should be updated
-      expect(await superchainPointsRaffle.badgeAllocations(2n)).to.equal(500n);
-    });
-
-    it("Cannot be reinitialized if already started", async function () {
-      const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
-        await loadFixture(deploySuperchainPointsRaffleFixture);
-
-      // initialize raffle a first time
-      const seed = ethers.encodeBytes32String("demo");
-      await expect(
-        superchainPointsRaffle
-          .connect(owner)
-          .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n])
-      ).not.to.be.reverted;
-
-      // reinitialize raffle
-      const secondSeed = ethers.encodeBytes32String("second-demo");
-      await expect(
-        superchainPointsRaffle
-          .connect(owner)
-          .initialize(
-            sealSeed(secondSeed, owner.address),
-            10n,
-            [10n, 2n],
-            [1000n, 500n]
-          )
-      ).to.be.revertedWithCustomError(
-        superchainPointsRaffle,
-        "RaffleAlreadyStarted"
-      );
-    });
-
-    it("Cannot be reinitialized with the same seed", async function () {
-      const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
-        await loadFixture(deploySuperchainPointsRaffleFixture);
-
-      // initialize raffle a first time
-      const firstSeed = ethers.encodeBytes32String("demo");
-      await expect(
-        superchainPointsRaffle
-          .connect(owner)
-          .initialize(
-            sealSeed(firstSeed, owner.address),
-            10n,
-            [1n, 2n],
-            [10n, 100n]
-          )
-      ).not.to.be.reverted;
-
-      // add participants so it doesn't revert on winner being zero address
-      await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claimTickets();
-
-      // reveal raffle owner
-      await expect(superchainPointsRaffle.connect(owner).revealWinner(firstSeed)).not
-        .to.be.reverted;
-
-      // reinitialize raffle
-      await expect(
-        superchainPointsRaffle
-          .connect(owner)
-          .initialize(
-            sealSeed(firstSeed, owner.address),
-            10n,
-            [10n, 2n],
-            [1000n, 500n]
-          )
-      ).to.be.revertedWithCustomError(
-        superchainPointsRaffle,
-        "SeedAlreadyUsed"
-      );
+        .withArgs(addr2.address, 100n);
     });
   });
 
@@ -370,8 +248,8 @@ describe("SuperchainPointsRaffle", function () {
           .revealWinner(ethers.encodeBytes32String("other"))
       ).to.be.revertedWithCustomError(superchainPointsRaffle, "InvalidSeed");
 
-      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not.to.be
-        .reverted;
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not
+        .to.be.reverted;
     });
 
     it("Seed is attached to user that initialized", async function () {

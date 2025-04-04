@@ -32,22 +32,19 @@ interface ISuperchainPointsRaffleErrors {
 
 interface ISuperchainPointsRaffleEvents {
     /// @notice Event emitted when a raffle is started
-    /// @param raffleId The id of the raffle
     /// @param sealedSeed The seed used to generate the raffle
     /// @param amount The amount of points to be distributed to the raffle winner
-    event RaffleStarted(uint256 raffleId, bytes32 sealedSeed, uint256 amount);
+    event RaffleStarted(bytes32 sealedSeed, uint256 amount);
 
     /// @notice Event emitted when a raffle is finished
-    /// @param raffleId The id of the raffle
     /// @param winner The address of the raffle winner
     /// @param amount The amount of points distributed to the raffle winner
-    event RaffleWinner(uint256 raffleId, address winner, uint256 amount);
+    event RaffleWinner(address winner, uint256 amount);
 
     /// @notice Event emitted when tickets are claimed
-    /// @param raffleId The id of the raffle
     /// @param claimer The address of the claimer
     /// @param amount The amount of points claimed
-    event TicketsClaimed(uint256 raffleId, address claimer, uint256 amount);
+    event TicketsClaimed(address claimer, uint256 amount);
 }
 
 interface ISuperchainPointsRaffle is
@@ -75,4 +72,6 @@ interface ISuperchainPointsRaffle is
 
     /// @notice Returns the badges that are eligible to participate in the raffle
     function getEligibleBadges() external view returns (uint256[] memory);
+
+    function isFinished() external view returns (bool);
 }
