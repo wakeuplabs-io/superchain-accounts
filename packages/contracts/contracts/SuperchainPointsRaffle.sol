@@ -40,6 +40,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         superchainBadges = _superchainBadges;
     }
 
+    /// @inheritdoc ISuperchainPointsRaffle
     function initialize(
         bytes32 _sealedSeed,
         uint256 _amount,
@@ -62,7 +63,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         sealedSeed = _sealedSeed;
         sealedSeeds[_sealedSeed] = true;
         storedBlockNumber = block.number + 1;
-        
+
         // Store raffle details
         raffleId += 1;
         prize[raffleId] = _amount;
@@ -93,7 +94,8 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         emit RaffleStarted(raffleId, sealedSeed, prize[raffleId]);
     }
 
-    function reveal(bytes32 _seed) public onlyOwner {
+    /// @inheritdoc ISuperchainPointsRaffle
+    function revealWinner(bytes32 _seed) public onlyOwner {
         // Verify raffle is ongoing
         if (finished || !initialized) {
             revert NoOngoingRaffle();
@@ -134,7 +136,8 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         emit RaffleWinner(raffleId, winners[raffleId], prize[raffleId]);
     }
 
-    function claim() public {
+    /// @inheritdoc ISuperchainPointsRaffle
+    function claimTickets() public {
         // Verify raffle is ongoing
         if (finished || !initialized) {
             revert NoOngoingRaffle();
@@ -179,6 +182,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         emit TicketsClaimed(raffleId, msg.sender, ticketsAllocation);
     }
 
+    /// @inheritdoc ISuperchainPointsRaffle
     function getEligibleBadges() external view returns (uint256[] memory) {
         return eligibleBadges;
     }

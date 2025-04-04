@@ -90,19 +90,14 @@ describe("SuperchainPointsRaffle", function () {
       const prize = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
-      const seed = ethers.encodeBytes32String("demo");
-
+      
       //  initialize raffle
+      const seed = ethers.encodeBytes32String("demo");
       await expect(
         superchainPointsRaffle
           .connect(owner)
           .initialize(
-            ethers.keccak256(
-              ethers.solidityPacked(
-                ["address", "bytes32"],
-                [owner.address, seed]
-              )
-            ),
+            sealSeed(seed, owner.address),
             prize,
             badges,
             badgesAllocations
@@ -111,12 +106,12 @@ describe("SuperchainPointsRaffle", function () {
 
       // add participants
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claim();
+      await superchainPointsRaffle.connect(addr1).claimTickets();
       await superchainBadges.connect(owner).mint(addr2.address, 2n);
-      await superchainPointsRaffle.connect(addr2).claim();
+      await superchainPointsRaffle.connect(addr2).claimTickets();
 
       // select winner
-      await expect(superchainPointsRaffle.connect(owner).reveal(seed)).to.emit(
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).to.emit(
         superchainPointsRaffle,
         "RaffleWinner"
       );
@@ -141,12 +136,7 @@ describe("SuperchainPointsRaffle", function () {
         superchainPointsRaffle
           .connect(addr1)
           .initialize(
-            ethers.keccak256(
-              ethers.solidityPacked(
-                ["address", "bytes32"],
-                [owner.address, seed]
-              )
-            ),
+            sealSeed(seed, addr1.address),
             prize,
             badges,
             badgesAllocations
@@ -158,12 +148,7 @@ describe("SuperchainPointsRaffle", function () {
         superchainPointsRaffle
           .connect(owner)
           .initialize(
-            ethers.keccak256(
-              ethers.solidityPacked(
-                ["address", "bytes32"],
-                [owner.address, seed]
-              )
-            ),
+            sealSeed(seed, owner.address),
             prize,
             badges,
             badgesAllocations
@@ -194,14 +179,14 @@ describe("SuperchainPointsRaffle", function () {
 
       // add participants so it doesn't revert on winner being zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claim();
+      await superchainPointsRaffle.connect(addr1).claimTickets();
 
       // reveal raffle addr1
-      await expect(superchainPointsRaffle.connect(addr1).reveal(seed)).to.be
+      await expect(superchainPointsRaffle.connect(addr1).revealWinner(seed)).to.be
         .reverted;
 
       // reveal raffle owner
-      await expect(superchainPointsRaffle.connect(owner).reveal(seed)).not.to.be
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not.to.be
         .reverted;
     });
 
@@ -228,13 +213,13 @@ describe("SuperchainPointsRaffle", function () {
 
       // addr1 has badge 1n so should receive 10 points
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await expect(superchainPointsRaffle.connect(addr1).claim())
+      await expect(superchainPointsRaffle.connect(addr1).claimTickets())
         .to.emit(superchainPointsRaffle, "TicketsClaimed")
         .withArgs(1, addr1.address, 10n);
 
       // addr2 has badge 2n so should receive 100 points
       await superchainBadges.connect(owner).mint(addr2.address, 2n);
-      await expect(superchainPointsRaffle.connect(addr2).claim())
+      await expect(superchainPointsRaffle.connect(addr2).claimTickets())
         .to.emit(superchainPointsRaffle, "TicketsClaimed")
         .withArgs(1, addr2.address, 100n);
     });
@@ -258,10 +243,10 @@ describe("SuperchainPointsRaffle", function () {
 
       // add participants so it doesn't revert on winner being zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claim();
+      await superchainPointsRaffle.connect(addr1).claimTickets();
 
       // reveal raffle owner
-      await expect(superchainPointsRaffle.connect(owner).reveal(firstSeed)).not
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(firstSeed)).not
         .to.be.reverted;
 
       // reinitialize raffle
@@ -338,10 +323,10 @@ describe("SuperchainPointsRaffle", function () {
 
       // add participants so it doesn't revert on winner being zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claim();
+      await superchainPointsRaffle.connect(addr1).claimTickets();
 
       // reveal raffle owner
-      await expect(superchainPointsRaffle.connect(owner).reveal(firstSeed)).not
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(firstSeed)).not
         .to.be.reverted;
 
       // reinitialize raffle
@@ -376,16 +361,16 @@ describe("SuperchainPointsRaffle", function () {
 
       // add at least one participant so reveal doesn't revert on winner == zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claim();
+      await superchainPointsRaffle.connect(addr1).claimTickets();
 
       // validate seed
       await expect(
         superchainPointsRaffle
           .connect(owner)
-          .reveal(ethers.encodeBytes32String("other"))
+          .revealWinner(ethers.encodeBytes32String("other"))
       ).to.be.revertedWithCustomError(superchainPointsRaffle, "InvalidSeed");
 
-      await expect(superchainPointsRaffle.connect(owner).reveal(seed)).not.to.be
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not.to.be
         .reverted;
     });
 
@@ -403,7 +388,7 @@ describe("SuperchainPointsRaffle", function () {
 
       // add at least one participant so reveal doesn't revert on winner == zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
-      await superchainPointsRaffle.connect(addr1).claim();
+      await superchainPointsRaffle.connect(addr1).claimTickets();
 
       // transfer ownership
       await superchainPointsRaffle
@@ -412,7 +397,7 @@ describe("SuperchainPointsRaffle", function () {
 
       // validate seed. Addr1 is owner but didn't send seed so cannot reveal
       await expect(
-        superchainPointsRaffle.connect(addr1).reveal(seed)
+        superchainPointsRaffle.connect(addr1).revealWinner(seed)
       ).to.be.revertedWithCustomError(superchainPointsRaffle, "InvalidSeed");
     });
   });
