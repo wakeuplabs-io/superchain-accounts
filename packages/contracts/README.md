@@ -10,22 +10,21 @@ All the contracts are located in the `contracts` folder. They extend from the [W
 
 ### Optimism Sepolia
 
- - Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
- - Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
- - WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
+- Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
+- Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
+- WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
 
 ### Unichain Sepolia
 
- - Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
- - Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
- - WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
+- Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
+- Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
+- WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
 
 ### Base Sepolia
 
- - Wakeup_entrypoint - 0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335
- - Wakeup_account_factory - 0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2
- - WakeUp_paymaster - 0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543
-  
+- Wakeup_entrypoint - 0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335
+- Wakeup_account_factory - 0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2
+- WakeUp_paymaster - 0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543
 
 ### WakeUp Entrypoint
 
@@ -69,9 +68,11 @@ The following environment variables are used by the project:
 ## Compiling the Contracts
 
 To compile the contracts, run the following command:
+
 ```bash
 pnpm build
 ```
+
 It will create the proper artifacts in the `artifacts` folder and generate typed abis definitions using [Wagmi](https://wagmi.sh/)
 
 ## Testing the Contracts
@@ -82,43 +83,3 @@ To test the contracts, run the following command:
 pnpm test
 ```
 
-## Deploying the Contracts
-
-### Mainnet
-
-1. Set the following environment variables:
-    - `NETWORK_MAINNET`
-    - `MAINNET_PRIVATE_KEY`
-    - `ETHERSCAN_API_KEY`
-
-make sure to use a private key with enough balance to deploy the contracts.
-
-2. Run the following command:
-```bash
-pnpm deploy:mainnet
-```
-
-### Testnet
-
-1. Set the following environment variables:
-    - `NETWORK_TESTNET`
-    - `TESTNET_PRIVATE_KEY`
-    - `ETHERSCAN_API_KEY`
-
-make sure to use a private key with enough balance to deploy the contracts.
-
-2. Run the following command:
-```bash
-pnpm deploy:testnet
-```
-
-## Set up the paymaster
-
-Once the deployment is finished, you will need to deposit funds to the `WakeUp Paymaster` in order for it to be able to sponsor the user operations. 
-
-To do this, grab the paymaster contract address from the deployment output and run the following command:
-
-``` bash
-pnpm setup-paymaster:<testnet | mainnet> -- --paymaster <PAYMASTER_CONTRACT_ADDRESS>
-```
-make sure to use a private key with enough balance to deposit funds.

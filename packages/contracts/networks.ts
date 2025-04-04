@@ -52,9 +52,9 @@ const unichain_sepolia = {
 
 const networks = {
   sepolia,
+  optimism,
   ["optimism-sepolia"]: optimism_sepolia,
   ["base-sepolia"]: base_sepolia,
-  optimism,
   ["unichain-sepolia"]: unichain_sepolia
 } as const;
 

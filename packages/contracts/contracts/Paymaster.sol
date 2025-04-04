@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.29;
 
+import "@account-abstraction/contracts/core/EntryPoint.sol";
+import "@account-abstraction/contracts/samples/SimpleAccountFactory.sol";
 import {BasePaymaster} from "@account-abstraction/contracts/core/BasePaymaster.sol";
 import {IEntryPoint} from "@account-abstraction/contracts/interfaces/IEntryPoint.sol";
 import {SIG_VALIDATION_FAILED, SIG_VALIDATION_SUCCESS} from "@account-abstraction/contracts/core/Helpers.sol";
 import {PackedUserOperation} from "@account-abstraction/contracts/interfaces/PackedUserOperation.sol";
-import {IWakeUpPaymaster} from "./interfaces/Paymaster.sol";
+import {IWakeUpPaymaster} from "./interfaces/IPaymaster.sol";
+
 
 /// @notice ERC-4337 Paymaster implementation that is in charge of sponsoring smart accounts operations gas.
 /// In order to allow an operation to be sponsored, the smart account must be registered in the paymaster.

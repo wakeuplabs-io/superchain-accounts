@@ -4,14 +4,18 @@ import buildWakeUpPaymasterModule from "./Paymaster";
 import buildWakeUpAccountFactoryModule from "./AccountFactory";
 
 const wakeUpERC4337Module = buildModule("WakeUpERC4337", (m) => {
-  //Deploy the entrypoint
+  // Deploy the entrypoint
   const { wakeUpEntryPoint } = m.useModule(wakeUpEntrypointModule);
-  
-  //Deploy the paymaster
-  const { wakeUpPaymaster } = m.useModule(buildWakeUpPaymasterModule(wakeUpEntryPoint));
+
+  // Deploy the paymaster
+  const { wakeUpPaymaster } = m.useModule(
+    buildWakeUpPaymasterModule(wakeUpEntryPoint)
+  );
 
   // Deploy the account factory
-  const { wakeUpAccountFactory } = m.useModule(buildWakeUpAccountFactoryModule(wakeUpEntryPoint));
+  const { wakeUpAccountFactory } = m.useModule(
+    buildWakeUpAccountFactoryModule(wakeUpEntryPoint)
+  );
 
   return { wakeUpEntryPoint, wakeUpPaymaster, wakeUpAccountFactory };
 });
