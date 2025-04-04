@@ -10,7 +10,7 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
     mapping(uint256 => string) private _tokenURIs;
 
     mapping(address => mapping(uint256 => bool)) claimed;
-    mapping(address => mapping(uint256 => bool)) canClaim;
+    mapping(address => mapping(uint256 => bool)) eligible;
 
     /// @dev Account can hold only one badge
     error AccountAlreadyHasThisBadge(address, uint256);
@@ -19,11 +19,27 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
     /// @param initialOwner address of the initial owner
     constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
 
+    function setIsEligible(
+        address[] memory allocations,
+        uint256[] memory tokenIds
+    ) public onlyOwner {
+        for (uint256 i = 0; i < allocations.length; i++) {
+            eligible[allocations[i]][tokenIds[i]] = true;
+        }
+    }
 
-    function setClaimAllocations(){}
+    function isEligible(
+        address account,
+        uint256 tokenId
+    ) public view returns (bool) {
+        return eligible[account][tokenId];
+    }
 
     function claim(uint256 tokenId) public {
-        if (canClaim[msg.sender][tokenId] == false && claimed[msg.sender][tokenId] == false) {
+        if (
+            eligible[msg.sender][tokenId] == false &&
+            claimed[msg.sender][tokenId] == false
+        ) {
             revert("You can't claim this badge");
         }
 
@@ -69,6 +85,27 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
     /// @param tokenId token id
     function uri(uint256 tokenId) public view override returns (string memory) {
         return _tokenURIs[tokenId];
+    }
+
+    // Override to block transfers
+    function safeTransferFrom(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes memory
+    ) public pure override {
+        revert("Soulbound: non-transferable");
+    }
+
+    function safeBatchTransferFrom(
+        address,
+        address,
+        uint256[] memory,
+        uint256[] memory,
+        bytes memory
+    ) public pure override {
+        revert("Soulbound: non-transferable");
     }
 
     /// @dev required by ERC1155Supply to track supply
