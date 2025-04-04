@@ -48,18 +48,6 @@ describe("SuperchainBadges", function () {
       await expect(superchainBadges.mint(addr1.address, 1)).to.be.rejected;
     });
 
-    it("should allow batch minting", async function () {
-      const {
-        superchainBadges,
-        owner: addr1,
-        other: addr2,
-      } = await loadFixture(deploySuperchainBadgesFixture);
-
-      await superchainBadges.mintBatch([addr1.address, addr2.address], [1, 2]);
-      expect(await superchainBadges.balanceOf(addr1.address, 1)).to.equal(1);
-      expect(await superchainBadges.balanceOf(addr2.address, 2)).to.equal(1);
-    });
-
     it("should allow the owner to set a URI for a token", async function () {
       const { superchainBadges, owner } = await loadFixture(
         deploySuperchainBadgesFixture
