@@ -8,11 +8,16 @@
     "build": "rimraf dist && tsc",
     "dev": "tsx watch src/app.ts",
     "start": "node dist/app.js",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "schema": "src/database/schema.prisma"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.146",
     "@types/aws-sdk": "2.7.4",
@@ -22,6 +27,7 @@
     "aws-lambda": "^1.0.7",
     "esbuild": "^0.24.0",
     "prettier": "^3.4.2",
+    "prisma": "^6.5.0",
     "rimraf": "5.0.5",
     "serverless-esbuild": "^1.54.6",
     "tsx": "4.11.0",
@@ -29,6 +35,7 @@
     "typescript-transform-paths": "3.4.7"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "aws-sdk": "2.1692.0",
     "cors": "2.8.5",
     "dotenv": "^16.4.7",
