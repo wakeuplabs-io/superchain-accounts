@@ -3,7 +3,7 @@ import { ProviderFactory } from "./provider-factory.js";
 import { http } from "viem";
 import envParsed from "@/envParsed.js";
 
-const TRANSPORTS_URLS: {
+export const BUNDLERS_URLS: {
   [key: number]: string;
 } = {
   1301: envParsed().BUNDLER_UNICHAIN_SEPOLIA,
@@ -23,7 +23,7 @@ export class BundlerFactory {
 
     this.clients[chainId] = createBundlerClient({
       client: ProviderFactory.getProvider(chainId),
-      transport: http(TRANSPORTS_URLS[chainId]),
+      transport: http(BUNDLERS_URLS[chainId]),
     });
 
     return this.clients[chainId] as BundlerClient;
