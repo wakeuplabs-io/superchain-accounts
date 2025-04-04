@@ -9,12 +9,28 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
     /// @dev Token id to URI
     mapping(uint256 => string) private _tokenURIs;
 
+    mapping(address => mapping(uint256 => bool)) claimed;
+    mapping(address => mapping(uint256 => bool)) canClaim;
+
     /// @dev Account can hold only one badge
     error AccountAlreadyHasThisBadge(address, uint256);
 
     /// @dev Constructor
     /// @param initialOwner address of the initial owner
     constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
+
+
+    function setClaimAllocations(){}
+
+    function claim(uint256 tokenId) public {
+        if (canClaim[msg.sender][tokenId] == false && claimed[msg.sender][tokenId] == false) {
+            revert("You can't claim this badge");
+        }
+
+        claimed[msg.sender][tokenId] = true;
+
+        _mint(msg.sender, tokenId, 1, "");
+    }
 
     /// @notice Mints a single token
     /// @param account address that receives the token
