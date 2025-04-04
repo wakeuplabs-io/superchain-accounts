@@ -11,6 +11,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
     bool internal initialized = false;
     bool public finished = false;
     uint256 public storedBlockNumber;
+    address public winner;
 
     uint256 public raffleAmount;
     address public superchainPoints;
@@ -91,7 +92,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         uint256 random = uint256(
             keccak256(abi.encodePacked(_seed, blockhash(storedBlockNumber)))
         );
-        address winner = tickets[random % ticketCount];
+        winner = tickets[random % ticketCount];
         if (winner == address(0)) {
             revert TicketNotFound();
         }
@@ -105,7 +106,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
             revert TransferFailed();
         }
 
-        emit RaffleRevealed(winner);
+        emit RaffleWinner(winner);
     }
 
     function claimTicket() public {
@@ -120,7 +121,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         }
         ticketsClaimed[msg.sender] = true;
 
-        // Calculate tickets allocation
+        // Calculate tickets allocation. Maximum possible
         uint256 ticketsAllocation = 0;
         for (uint256 i = 0; i < eligibleBadges.length; i++) {
             if (
@@ -129,7 +130,9 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
                     eligibleBadges[i]
                 ) > 0
             ) {
-                ticketsAllocation += badgeAllocations[eligibleBadges[i]];
+                if (badgeAllocations[eligibleBadges[i]] > ticketsAllocation) {
+                    ticketsAllocation = badgeAllocations[eligibleBadges[i]];
+                }
             }
         }
 
@@ -148,6 +151,6 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         }
         ticketCount += ticketsAllocation;
 
-        emit TicketClaimed(msg.sender);
+        emit TicketsClaimed(msg.sender, ticketsAllocation);
     }
 }

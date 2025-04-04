@@ -15,8 +15,8 @@ interface ISuperchainPointsRaffleErrors {
 
 interface ISuperchainPointsRaffleEvents {
     event RaffleStarted(bytes32 seed, uint256 amount);
-    event RaffleRevealed(address winner);
-    event TicketClaimed(address claimer);
+    event RaffleWinner(address winner);
+    event TicketsClaimed(address claimer, uint256 amount);
 }
 
 interface ISuperchainPointsRaffle is ISuperchainPointsRaffleErrors, ISuperchainPointsRaffleEvents {

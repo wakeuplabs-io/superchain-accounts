@@ -25,6 +25,12 @@ async function deploySuperchainPointsRaffleFixture() {
     await superchainBadges.getAddress()
   );
 
+  // mint points for owner
+  await superchainPoints.connect(owner).mint(owner.address, 1_000_000_000n);
+  await superchainPoints
+    .connect(owner)
+    .approve(await superchainPointsRaffle.getAddress(), ethers.MaxUint256);
+
   return {
     superchainPoints,
     superchainBadges,
@@ -45,16 +51,10 @@ describe("SuperchainPointsRaffle", function () {
     });
   });
 
-  describe("Contract", function () {
+  describe("Raffle", function () {
     it("Initialize should pull points for prize", async function () {
       const { superchainPoints, superchainPointsRaffle, owner, addr1 } =
         await loadFixture(deploySuperchainPointsRaffleFixture);
-
-      // mint points for owner
-      await superchainPoints.connect(owner).mint(owner.address, 100);
-      await superchainPoints
-        .connect(owner)
-        .approve(await superchainPointsRaffle.getAddress(), 100);
 
       const prize = 10n;
       const badges = [1n, 2n];
@@ -77,12 +77,275 @@ describe("SuperchainPointsRaffle", function () {
       expect(balanceBefore - balanceAfter).to.equal(prize);
     });
 
-    it("Should draw a winner", async function () {});
+    it("Should select a winner from participants and transfer points", async function () {
+      const {
+        superchainPointsRaffle,
+        superchainPoints,
+        superchainBadges,
+        owner,
+        addr1,
+        addr2,
+      } = await loadFixture(deploySuperchainPointsRaffleFixture);
 
-    it("Should validate seed", async function () {});
+      const prize = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
 
-    it("Should transfer points to winner", async function () {});
+      //  initialize raffle
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
 
-    it("Should enforce badge requirement", async function () {});
+      // add participants
+      await superchainBadges.connect(owner).mint(addr1.address, 1n);
+      await superchainPointsRaffle.connect(addr1).claimTicket();
+      await superchainBadges.connect(owner).mint(addr2.address, 2n);
+      await superchainPointsRaffle.connect(addr2).claimTicket();
+
+      // select winner
+      await expect(superchainPointsRaffle.connect(owner).reveal(seed)).to.emit(
+        superchainPointsRaffle,
+        "RaffleWinner"
+      );
+
+      // check winner balance
+      const winner = await superchainPointsRaffle.winner();
+      expect(await superchainPoints.balanceOf(winner)).to.equal(prize);
+    });
+
+    it("Only owner can initialize raffle", async function () {
+      const {
+        superchainPointsRaffle,
+
+        owner,
+        addr1,
+      } = await loadFixture(deploySuperchainPointsRaffleFixture);
+
+      const prize = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
+
+      //  initialize raffle addr1
+      await expect(
+        superchainPointsRaffle
+          .connect(addr1)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).to.be.reverted;
+
+      // initialize raffle owner
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
+    });
+
+    it("Only owner can reveal raffle", async function () {
+      const {
+        superchainPointsRaffle,
+        superchainPoints,
+        superchainBadges,
+        owner,
+        addr1,
+        addr2,
+      } = await loadFixture(deploySuperchainPointsRaffleFixture);
+
+      const prize = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
+
+      // initialize raffle owner
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
+
+      // add participants so it doesn't revert on winner being zero address
+      await superchainBadges.connect(owner).mint(addr1.address, 1n);
+      await superchainPointsRaffle.connect(addr1).claimTicket();
+
+      // reveal raffle addr1
+      await expect(superchainPointsRaffle.connect(addr1).reveal(seed)).to.be
+        .reverted;
+
+      // reveal raffle owner
+      await expect(superchainPointsRaffle.connect(owner).reveal(seed)).not.to.be
+        .reverted;
+    });
+
+    it("Should assign points based on badge", async function () {
+      const {
+        superchainPointsRaffle,
+        superchainPoints,
+        superchainBadges,
+        owner,
+        addr1,
+        addr2,
+      } = await loadFixture(deploySuperchainPointsRaffleFixture);
+
+      const prize = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
+
+      //  initialize raffle
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
+
+      // addr1 has badge 1n so should receive 10 points
+      await superchainBadges.connect(owner).mint(addr1.address, 1n);
+      await expect(superchainPointsRaffle.connect(addr1).claimTicket())
+        .to.emit(superchainPointsRaffle, "TicketsClaimed")
+        .withArgs(addr1.address, 10n);
+
+      // addr2 has badge 2n so should receive 100 points
+      await superchainBadges.connect(owner).mint(addr2.address, 2n);
+      await expect(superchainPointsRaffle.connect(addr2).claimTicket())
+        .to.emit(superchainPointsRaffle, "TicketsClaimed")
+        .withArgs(addr2.address, 100n);
+    });
+  });
+
+  describe("Randomness", function () {
+    it("Should validate seed", async function () {
+      const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
+        await loadFixture(deploySuperchainPointsRaffleFixture);
+
+      const prize = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
+
+      // initialize
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
+
+      // add at least one participant so reveal doesn't revert on winner == zero address
+      await superchainBadges.connect(owner).mint(addr1.address, 1n);
+      await superchainPointsRaffle.connect(addr1).claimTicket();
+
+      // validate seed
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .reveal(ethers.encodeBytes32String("other"))
+      ).to.be.revertedWithCustomError(superchainPointsRaffle, "InvalidSeed");
+
+      await expect(superchainPointsRaffle.connect(owner).reveal(seed)).not.to.be
+        .reverted;
+    });
+
+    it("Seed is attached to user that initialized", async function () {
+      const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
+        await loadFixture(deploySuperchainPointsRaffleFixture);
+
+      const prize = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
+
+      // initialize
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            ethers.keccak256(
+              ethers.solidityPacked(
+                ["address", "bytes32"],
+                [owner.address, seed]
+              )
+            ),
+            prize,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
+
+      // add at least one participant so reveal doesn't revert on winner == zero address
+      await superchainBadges.connect(owner).mint(addr1.address, 1n);
+      await superchainPointsRaffle.connect(addr1).claimTicket();
+
+      // transfer ownership
+      await superchainPointsRaffle
+        .connect(owner)
+        .transferOwnership(addr1.address);
+
+      // validate seed. Addr1 is owner but didn't send seed so cannot reveal
+      await expect(
+        superchainPointsRaffle.connect(addr1).reveal(seed)
+      ).to.be.revertedWithCustomError(superchainPointsRaffle, "InvalidSeed");
+    });
   });
 });
