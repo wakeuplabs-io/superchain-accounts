@@ -1,24 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ERC1155Supply} from "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import {ISuperchainBadges} from "./interfaces/ISuperchainBadges.sol";
+import {ERC1155, IERC1155, IERC1155MetadataURI} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
-contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
-    /// @dev Token id to URI
+/// @title SuperchainBadges
+/// @notice Badges for Superchain Achievements. Badges are non-transferable and claimable.
+contract SuperchainBadges is ISuperchainBadges, ERC1155, Ownable {
     mapping(uint256 => string) private _tokenURIs;
+    mapping(address => mapping(uint256 => bool)) internal claimed;
+    mapping(address => mapping(uint256 => bool)) internal eligible;
 
-    mapping(address => mapping(uint256 => bool)) claimed;
-    mapping(address => mapping(uint256 => bool)) eligible;
-
-    /// @dev Account can hold only one badge
-    error AccountAlreadyHasThisBadge(address, uint256);
-
-    /// @dev Constructor
     /// @param initialOwner address of the initial owner
     constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
 
+    /// @inheritdoc ISuperchainBadges
     function setIsEligible(
         address[] memory allocations,
         uint256[] memory tokenIds
@@ -28,6 +25,7 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
         }
     }
 
+    /// @inheritdoc ISuperchainBadges
     function isEligible(
         address account,
         uint256 tokenId
@@ -35,12 +33,13 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
         return eligible[account][tokenId];
     }
 
+    /// @inheritdoc ISuperchainBadges
     function claim(uint256 tokenId) public {
         if (
             eligible[msg.sender][tokenId] == false &&
             claimed[msg.sender][tokenId] == false
         ) {
-            revert("You can't claim this badge");
+            revert NotEligible(tokenId);
         }
 
         claimed[msg.sender][tokenId] = true;
@@ -48,73 +47,54 @@ contract SuperchainBadges is ERC1155, Ownable, ERC1155Supply {
         _mint(msg.sender, tokenId, 1, "");
     }
 
-    /// @notice Mints a single token
-    /// @param account address that receives the token
-    /// @param id token id
-    function mint(address account, uint256 id) public onlyOwner {
-        // verify account doesn't have it already
-        if (balanceOf(account, id) == 1) {
-            revert AccountAlreadyHasThisBadge(account, id);
-        }
-
-        _mint(account, id, 1, "");
+    /// @inheritdoc IERC1155MetadataURI
+    function uri(
+        uint256 tokenId
+    )
+        public
+        view
+        override(ERC1155, IERC1155MetadataURI)
+        returns (string memory)
+    {
+        return _tokenURIs[tokenId];
     }
 
-    /// @notice Mints a batch of tokens
-    /// @param to array of addresses that receives the tokens
-    /// @param ids array of token ids (matching the length of the to array)
-    function mintBatch(
-        address[] memory to,
-        uint256[] memory ids
-    ) public onlyOwner {
-        for (uint i = 0; i < ids.length; i++) {
-            mint(to[i], ids[i]);
-        }
-    }
-
-    /// @dev openzeppelin by default returns same uri for all. We override this.
-    /// @param tokenId token id
-    /// @param newUri new uri for token id
+    /// @notice Sets the token URI
     function setURI(uint256 tokenId, string memory newUri) public onlyOwner {
         _tokenURIs[tokenId] = newUri;
 
         emit URI(newUri, tokenId);
     }
 
-    /// @dev openzeppelin by default returns same uri for all. We override this.
-    /// @param tokenId token id
-    function uri(uint256 tokenId) public view override returns (string memory) {
-        return _tokenURIs[tokenId];
+    /// @notice Mints a badge
+    function mint(address account, uint256 id) public onlyOwner {
+        // verify account doesn't have it already
+        if (balanceOf(account, id) == 1) {
+            revert BadgeAlreadyClaimed(account, id);
+        }
+
+        _mint(account, id, 1, "");
     }
 
-    // Override to block transfers
+    /// @dev Override to block transfers
     function safeTransferFrom(
         address,
         address,
         uint256,
         uint256,
         bytes memory
-    ) public pure override {
-        revert("Soulbound: non-transferable");
+    ) public pure override(ERC1155, IERC1155) {
+        revert SoulBoundNonTransferable();
     }
 
+    /// @dev Override to block transfers
     function safeBatchTransferFrom(
         address,
         address,
         uint256[] memory,
         uint256[] memory,
         bytes memory
-    ) public pure override {
-        revert("Soulbound: non-transferable");
-    }
-
-    /// @dev required by ERC1155Supply to track supply
-    function _update(
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory values
-    ) internal override(ERC1155, ERC1155Supply) {
-        super._update(from, to, ids, values);
+    ) public pure override(ERC1155, IERC1155) {
+        revert SoulBoundNonTransferable();
     }
 }

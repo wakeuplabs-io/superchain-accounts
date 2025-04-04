@@ -73,5 +73,6 @@ interface ISuperchainPointsRaffle is
     /// @notice Returns the badges that are eligible to participate in the raffle
     function getEligibleBadges() external view returns (uint256[] memory);
 
+    /// @notice Returns true if the raffle is finished
     function isFinished() external view returns (bool);
 }
