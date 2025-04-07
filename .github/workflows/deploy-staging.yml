@@ -1,0 +1,76 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - main
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    outputs:
+      api_url: ${{ steps.save-outputs.outputs.api_url }}
+      ui_url: ${{ steps.save-outputs.outputs.ui_url }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          mask-aws-account-id: "no"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all
+        run: npm run build --ws
+
+      - name: Deploy
+        run: npx sst deploy --stage=staging
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BUNDLER_UNICHAIN_SEPOLIA: ${{ secrets.BUNDLER_UNICHAIN_SEPOLIA}}
+          BUNDLER_OPTIMISM_SEPOLIA: ${{ secrets.BUNDLER_OPTIMISM_SEPOLIA}}
+          BUNDLER_BASE_SEPOLIA: ${{ secrets.BUNDLER_BASE_SEPOLIA}}
+          RPC_BASE_SEPOLIA: ${{ secrets.RPC_BASE_SEPOLIA}}
+          RPC_OPTIMISM_SEPOLIA: ${{ secrets.RPC_OPTIMISM_SEPOLIA}}
+          RPC_UNICHAIN_SEPOLIA: ${{ secrets.RPC_UNICHAIN_SEPOLIA}}
+          ENTRYPOINT_UNICHAIN_SEPOLIA: ${{ secrets.ENTRYPOINT_UNICHAIN_SEPOLIA }}
+          ENTRYPOINT_OPTIMISM_SEPOLIA: ${{ secrets.ENTRYPOINT_OPTIMISM_SEPOLIA }}
+          ENTRYPOINT_BASE_SEPOLIA: ${{ secrets.ENTRYPOINT_BASE_SEPOLIA }}
+
+      - name: Save Outputs
+        id: save-outputs
+        run: |
+          API_URL=$(jq -r '.api' .sst/outputs.json)
+          UI_URL=$(jq -r '.ui' .sst/outputs.json)
+
+          echo "api_url=$API_URL" >> "$GITHUB_OUTPUT"
+          echo "ui_url=$UI_URL" >> "$GITHUB_OUTPUT"

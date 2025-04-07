@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "solhint 'contracts/**/*.sol'",
-    "compile": "npx hardhat compile && npm run types",
+    "compile": "npx hardhat compile",
     "build": "npm run compile",
-    "types": "wagmi generate",
     "deploy": "npx hardhat ignition deploy ./ignition/modules/ERC4337.ts",
     "deploy:testnet": "npm run deploy -- --network testnet --verify",
     "deploy:mainnet": "npm run deploy -- --network mainnet --verify",

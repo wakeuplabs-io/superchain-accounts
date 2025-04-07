@@ -1,85 +1,22 @@
-# WakeUp ERC-4337 Contracts
+# Superchain Contracts
 
 Project that contains all the necessary contracts for implementing the ERC-4337 standard
 
-## Contracts
-
-All the contracts are located in the `contracts` folder. They extend from the [WakeUp Account Abstraction](https://github.com/wakeuplabs-io/wakeup-account-abstraction) ERC-4337 contract implementations.
-
 ## Deployed Addresses
 
-### Optimism Sepolia
+Find deployed contracts within the ignition deployment framework
 
-- Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
-- Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
-- WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
-
-### Unichain Sepolia
-
-- Wakeup_entrypoint - 0xFA830B7B7AaF57f48BA14eaE080De1C9b94AeAEa
-- Wakeup_account_factory - 0x75A6844cd15fb61EDeb7C1A5C3b31789802fBFDb
-- WakeUp_paymaster - 0xcc369e5140BaD97A21A3fb09afa860E2109B6f8c
-
-### Base Sepolia
-
-- Wakeup_entrypoint - 0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335
-- Wakeup_account_factory - 0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2
-- WakeUp_paymaster - 0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543
-
-### WakeUp Entrypoint
-
-Core component of the ERC-4337 standard. It's in charge of:
-
-- Creating Smart Accounts if not exists.
-- Verify User Operations against its destination Smart Account.
-- Execute operations.
-- Manage Smart Account and Paymaster deposits used for gas payment.
-- Manage Paymaster Staking
-- Manage Smart Account Nonces.
-
-### WakeUp Entrypoints Simulations
-
-Contract used by bundler to simulate the `WakeUp Entrypoint` contract. It's used to calculate the gas cost of the operations before sending them to the `WakeUp Entrypoint` contract.
-
-### WakeUp Simple Account Factory
-
-Contract in charge of creating account abstractions. It's address is provided in the `initCode` property of the `User Operation`, which then the `WakeUp Entrypoint` contract uses to create account abstractions when needed. It uses the `CREATE2` opcode to calculate the account abstractions address in a deterministic way.
-
-### WakeUp Paymaster
-
-Contract in charge of sponsor for the gas of the operations on behalf of the account abstractions. It's address is provided in the `paymasterAndData` property of the `User Operation`, which then the `WakeUp Entrypoint` contract uses to pay for the gas of the operations.
-In order to sponsor for the gas of the operations, the paymaster needs to have a deposit in the `WakeUp Entrypoint` contract. The deposit is done by calling the `depositFor` function of the `WakeUp Entrypoint` contract.
-Accounts must be allowed by the Paymaster Owner so its transactions could be sponsored. This is done by calling the `allowAccount` function of the `WakeUp Paymaster` contract.
-
-## Environment Variables
-
-The following environment variables are used by the project:
-
-- **NETWORK_TESTNET**: Specifies the testnet network to be used.
-- **NETWORK_MAINNET**: Specifies the mainnet network to be used.
-- **TESTNET_PRIVATE_KEY**: Private key for the testnet account.
-- **MAINNET_PRIVATE_KEY**: Private key for the mainnet account.
-- **ETHERSCAN_API_KEY**: API key for Etherscan.
-- **LOCAL_CHAIN_ID**: Chain ID for the local development environment.
-- **LOCAL_CHAIN_NAME**: Name of the local development chain.
-- **LOCAL_RPC_URL**: RPC URL for the local development environment.
-- **LOCAL_PRIVATE_KEY**: Private key for the local development account.
-
-## Compiling the Contracts
+## Useful commands
 
 To compile the contracts, run the following command:
 
 ```bash
-pnpm build
+npm run build
 ```
-
-It will create the proper artifacts in the `artifacts` folder and generate typed abis definitions using [Wagmi](https://wagmi.sh/)
-
-## Testing the Contracts
 
 To test the contracts, run the following command:
 
 ```bash
-pnpm test
+npm test
 ```
 
