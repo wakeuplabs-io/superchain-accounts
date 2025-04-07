@@ -46,9 +46,7 @@ SC Points are awarded based on user engagement:
 | **Days Active**          | Being active on-chain on OP Chains for a certain number of days per week.                  | 5 SC Points          | Weekly                |
 | **Milestone Completion** | Hitting transaction milestones (e.g., 100, 500 transactions).                              | 50 SC Points         | Per milestone         |
 | **Token Swap**           | Swapping tokens on DEXs (e.g., Uniswap, Velodrome).                                        | 2 SC Points          | Per swap              |
-| **Holding Assets**       | Holding OP, ETH, stablecoins, or NFTs for a specified timeframe (e.g., 1 week to 1 month). | 10–50 SC Points      | Per holding timeframe |
-| **NFT Minting**          | Minting a new NFT (e.g., Superchain badges or collectibles).                               | 5 SC Points          | Per mint              |
-| **NFT Transfer**         | Sending an NFT to another wallet.                                                          | 2 SC Points          | Per transfer          |
+
 
 ## Badges
 

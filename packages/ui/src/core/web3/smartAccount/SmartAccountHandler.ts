@@ -5,7 +5,6 @@ import { createPimlicoClient } from "permissionless/clients/pimlico";
 import {
   EntryPointVersion,
   SmartAccount,
-  UserOperationCall,
 } from "viem/account-abstraction";
 import { supportedChains } from "../networks";
 
@@ -22,6 +21,7 @@ export class SmartAccountHandler {
   getSmartAccount(): SmartAccount | null {
     return this.smartAccount;
   }
+
 
   async initialize(owner: ToSimpleSmartAccountParameters<EntryPointVersion>["owner"]): Promise<SmartAccount> {
     this.smartAccount = await toSimpleSmartAccount({
@@ -80,7 +80,7 @@ export class SmartAccountHandler {
     await this.sendTransaction(transaction);
   }
 
-  async sendTransaction(transaction: UserOperationCall) {
+  async sendTransaction(transaction: any) {
     if(!this.smartAccountClient ) {
       throw Error("Smart account client not initialized");
     }

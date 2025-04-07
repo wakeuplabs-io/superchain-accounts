@@ -65,7 +65,7 @@ contract SuperchainPoints is ISuperchainPoints, ERC20, Ownable {
 
     /// @inheritdoc IERC7802
     function crosschainMint(address _to, uint256 _amount) external {
-        if (msg.sender == PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
+        if (msg.sender != PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
             revert Unauthorized();
         }
 
@@ -76,7 +76,7 @@ contract SuperchainPoints is ISuperchainPoints, ERC20, Ownable {
 
     /// @inheritdoc IERC7802
     function crosschainBurn(address _from, uint256 _amount) external {
-        if (msg.sender == PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
+        if (msg.sender != PredeployAddresses.SUPERCHAIN_TOKEN_BRIDGE) {
             revert Unauthorized();
         }
 

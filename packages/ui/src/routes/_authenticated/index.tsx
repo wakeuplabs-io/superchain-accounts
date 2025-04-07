@@ -20,7 +20,7 @@ function Index() {
 
   useEffect(() => {
     setIsInitializing(true);
-    smartAccountHandler.initialize(authHandler.getProvider()).then(async (smartAccount) => {
+    smartAccountHandler.initialize(authHandler.getProvider() as any).then(async (smartAccount) => {
       const isDeployed = await smartAccount.isDeployed();
       return { account: smartAccount, isDeployed };
     })

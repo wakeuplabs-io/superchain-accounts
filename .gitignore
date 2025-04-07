@@ -41,7 +41,6 @@ packages/ui/src/routeTree.gen.ts
 /coverage.json
 
 .serverless
-package-lock.json
 
 #SST
 .sst
