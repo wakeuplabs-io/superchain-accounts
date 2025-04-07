@@ -1,4 +1,4 @@
-name: Deploy api
+name: Deploy Staging
 
 on:
   workflow_call:
@@ -19,7 +19,6 @@ on:
         value: ${{ jobs.deploy.outputs.superchain_api_url }}
 
 jobs:
-  # Job to Deploy the UI
   deploy:
     runs-on: ubuntu-latest
 
@@ -28,33 +27,23 @@ jobs:
       deploy_api_output: ${{ steps.test-output.outputs.deploy_api_output }}
 
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      
-      # Set up pnpm
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
-      # Restore cached dependencies
-      - name: Restore pnpm dependencies
-        uses: actions/cache@v4
+      - name: Cache npm dependencies
+        uses: actions/cache@v2
         with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-            packages/ui/node_modules
-            packages/api/node_modules
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          fail-on-cache-miss: true
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -64,12 +53,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           mask-aws-account-id: "no"
 
-      # Run the build for the UI
       - name: Deploy
-        run: pnpm deploy:api:staging
+        run: npx sst deploy --stage=staging
         env:
           PAYMASTER_ADDRESS: ${{ inputs.PAYMASTER_ADDRESS }}
-      
+
       # Output the API URL and store in $GITHUB_OUTPUT
       - name: Save Output
         id: save-output
