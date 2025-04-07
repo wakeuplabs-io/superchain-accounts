@@ -45,7 +45,7 @@ async function deploySuperchainPointsRaffleFixture() {
   };
 }
 
-describe("SuperchainPointsRaffle", function () {
+describe("SuperchainPointsRaffleFactory", function () {
   describe("Deployment", function () {
     it("Should set the correct owner", async function () {
       const { superchainPointsRaffleFactory, owner } = await loadFixture(
@@ -131,6 +131,86 @@ describe("SuperchainPointsRaffle", function () {
         .not.to.be.reverted;
     });
   });
+
+  it.only("DEMO", async function () {
+    const { superchainPointsRaffleFactory: raffleFactory, superchainPoints: token, superchainBadges, owner } = await loadFixture(
+      deploySuperchainPointsRaffleFixture
+    );
+
+    const taskArguments = {
+      prize: 10n,
+      badges: "1,2",
+      allocations: "10,100",
+    }
+
+    const [signer] = await hre.ethers.getSigners();
+    if ((await raffleFactory.owner()) !== signer.address) {
+      throw new Error("You are not the owner of the raffle");
+    }
+
+    // Mint points for raffle
+    console.log(
+      `Minting ${taskArguments.prize} points to ${signer.address} for raffle deposit`
+    );
+    const txMint = await token.mint(
+      signer.address,
+      BigInt(taskArguments.prize)
+    );
+    console.log(`Points minted with tx: ${txMint.hash}`);
+
+    // Create raffle
+    console.log("Creating raffle");
+    const tx = await raffleFactory.createRaffle();
+    console.log("Raffle created with tx: ", tx.hash);
+
+    // Instantiate raffle
+    const raffleAddress = await raffleFactory.currentRaffle();
+    console.log("raffleAddress", raffleAddress)
+    const raffle = await hre.ethers.getContractAt(
+      "SuperchainPointsRaffle",
+      raffleAddress
+    );
+
+    // approve
+    console.log("Approving raffle");
+    await token.approve(raffleAddress, hre.ethers.MaxUint256);
+    console.log("Approved");
+
+    // Create raffle seed
+    const seed = hre.ethers.hexlify(hre.ethers.randomBytes(32));
+    console.log("Raffle seed:", seed);
+    console.log("Keep it safe, you'll need it later for revelation!");
+    // const seed = "0x1918b840defc05910aca2983c89a14c27a5152fca440f09b3c6f7ec2817af201"
+
+    //  Start raffle
+    console.log("Starting raffle");
+    console.log("Params",
+      hre.ethers.keccak256(
+        hre.ethers.solidityPacked(
+          ["address", "bytes32"],
+          [signer.address, seed]
+        )
+      ),
+      BigInt(taskArguments.prize),
+      taskArguments.badges.split(",").map(BigInt),
+      taskArguments.allocations.split(",").map(BigInt)
+    )
+
+    console.log("owner", await raffle.owner());
+
+    const txStart = await raffle.initialize(
+      hre.ethers.keccak256(
+        hre.ethers.solidityPacked(
+          ["address", "bytes32"],
+          [signer.address, seed]
+        )
+      ),
+      BigInt(taskArguments.prize),
+      taskArguments.badges.split(",").map(BigInt),
+      taskArguments.allocations.split(",").map(BigInt)
+    );
+    console.log(`Raffle started with tx: ${txStart.hash}`);
+  })
 });
 
 function sealSeed(seed: string, owner: string) {

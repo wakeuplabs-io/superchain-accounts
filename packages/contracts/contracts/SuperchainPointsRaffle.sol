@@ -62,12 +62,6 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         // Store raffle details
         prize = _amount;
 
-        // Cleanup tickets
-        for (uint256 i = 0; i < ticketCount; i++) {
-            tickets[i] = address(0);
-        }
-        ticketCount = 0;
-
         // Store badge details
         eligibleBadges = new uint256[](_badges.length);
         for (uint256 i = 0; i < _badges.length; i++) {

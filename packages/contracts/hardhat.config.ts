@@ -5,9 +5,10 @@ import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "solidity-coverage";
 
-import "./tasks/badges"
-import "./tasks/paymaster"
-import "./tasks/points"
+import "./tasks/badges";
+import "./tasks/raffle";
+import "./tasks/paymaster";
+import "./tasks/points";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -63,7 +64,19 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      "optimism-sepolia": process.env.OPTIMISM_SEPOLIA_ETHERSCAN_API_KEY!,
+    },
+    customChains: [
+      {
+        chainId: 11155420,
+        urls: {
+          apiURL: "https://optimism-sepolia.blockscout.com/api/",
+          browserURL: "https://optimism-sepolia.blockscout.com/",
+        },
+        network: "optimism-sepolia",
+      },
+    ],
   },
   sourcify: {
     enabled: false,
