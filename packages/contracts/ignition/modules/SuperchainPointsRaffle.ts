@@ -2,19 +2,19 @@ import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 import SuperchainBadgesModule from "./SuperchainBadges";
 import SuperchainPointsModule from "./SuperchainPoints";
 
-const SuperchainPointsRaffleModule = buildModule("SuperchainPointsRaffleModule", (m) => {
+const SuperchainPointsRaffleFactoryModule = buildModule("SuperchainPointsRaffleFactoryModule", (m) => {
   const owner = m.getParameter<string>("Owner");
   const superchainBadges = m.useModule(SuperchainBadgesModule)
   const superchainPoints = m.useModule(SuperchainPointsModule)
   
 
-  const SuperchainPointsRaffle = m.contract("SuperchainPointsRaffle", [
+  const SuperchainPointsRaffleFactory = m.contract("SuperchainPointsRaffleFactory", [
     owner,
     superchainBadges.SuperchainBadges,
     superchainPoints.SuperchainPoints
   ]);
 
-  return { SuperchainPointsRaffle };
+  return { SuperchainPointsRaffleFactory };
 });
 
-export default SuperchainPointsRaffleModule;
+export default SuperchainPointsRaffleFactoryModule;

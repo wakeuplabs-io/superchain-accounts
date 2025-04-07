@@ -35,7 +35,7 @@ const config: HardhatUserConfig = {
     "optimism-sepolia": {
       chainId: 11155420,
       url:
-        process.env.OPTIMISM_SEPOLIA_RPC_RUL || "https://sepolia.optimism.io",
+        process.env.OPTIMISM_SEPOLIA_RPC_URL || "https://sepolia.optimism.io",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
     "base-sepolia": {
