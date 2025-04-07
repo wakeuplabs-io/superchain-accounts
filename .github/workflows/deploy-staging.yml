@@ -1,7 +1,11 @@
 name: Deploy Staging
 
 on:
-  workflow_call:
+  # just for test
+  # push:
+  #   branches:
+  #     - main
+  pull_request:
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -9,24 +13,32 @@ on:
         required: true
       AWS_REGION:
         required: true
-    inputs:
-      PAYMASTER_ADDRESS:
-        required: true
-        type: string
     outputs:
-      superchain_api_url:
+      api_url:
         description: "The URL of the deployed API"
-        value: ${{ jobs.deploy.outputs.superchain_api_url }}
+        value: ${{ jobs.deploy.outputs.api_url }}
+      ui_url:
+        description: "The URL of the deployed UI"
+        value: ${{ jobs.deploy.outputs.ui_url }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: staging
 
     outputs:
-      superchain_api_url: ${{ steps.save-output.outputs.superchain_api_url }}
-      deploy_api_output: ${{ steps.test-output.outputs.deploy_api_output }}
+      api_url: ${{ steps.save-outputs.outputs.api_url }}
+      ui_url: ${{ steps.save-outputs.outputs.ui_url }}
 
     steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          mask-aws-account-id: "no"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -36,31 +48,38 @@ jobs:
           node-version: 20
 
       - name: Cache npm dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            ${{ runner.os }}-node-
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          mask-aws-account-id: "no"
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build all
+        run: npm run build --ws
 
       - name: Deploy
         run: npx sst deploy --stage=staging
         env:
-          PAYMASTER_ADDRESS: ${{ inputs.PAYMASTER_ADDRESS }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BUNDLER_UNICHAIN_SEPOLIA: ${{ secrets.BUNDLER_UNICHAIN_SEPOLIA}}
+          BUNDLER_OPTIMISM_SEPOLIA: ${{ secrets.BUNDLER_OPTIMISM_SEPOLIA}}
+          BUNDLER_BASE_SEPOLIA: ${{ secrets.BUNDLER_BASE_SEPOLIA}}
+          RPC_BASE_SEPOLIA: ${{ secrets.RPC_BASE_SEPOLIA}}
+          RPC_OPTIMISM_SEPOLIA: ${{ secrets.RPC_OPTIMISM_SEPOLIA}}
+          RPC_UNICHAIN_SEPOLIA: ${{ secrets.RPC_UNICHAIN_SEPOLIA}}
+          ENTRYPOINT_UNICHAIN_SEPOLIA: ${{ secrets.ENTRYPOINT_UNICHAIN_SEPOLIA }}
+          ENTRYPOINT_OPTIMISM_SEPOLIA: ${{ secrets.ENTRYPOINT_OPTIMISM_SEPOLIA }}
+          ENTRYPOINT_BASE_SEPOLIA: ${{ secrets.ENTRYPOINT_BASE_SEPOLIA }}
 
-      # Output the API URL and store in $GITHUB_OUTPUT
-      - name: Save Output
-        id: save-output
+      - name: Save Outputs
+        id: save-outputs
         run: |
-          SUPERCHAIN_API_URL=$(cat .env | sed -n 's/.*ServiceEndpoint = \"\(.*\)\"/\1/p')
-          echo "superchain_api_url=$SUPERCHAIN_API_URL" >> "$GITHUB_OUTPUT"
+          API_URL=$(jq -r '.api' .sst/outputs.json)
+          UI_URL=$(jq -r '.ui' .sst/outputs.json)
+
+          echo "api_url=$API_URL" >> "$GITHUB_OUTPUT"
+          echo "ui_url=$UI_URL" >> "$GITHUB_OUTPUT"
