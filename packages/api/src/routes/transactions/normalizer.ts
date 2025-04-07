@@ -1,27 +1,38 @@
+import { isAddress, isHex, numberToHex, stringToHex } from "viem";
 import { z } from "zod";
+
+isHex
+
+const addressProp = z.string().refine((value) => isAddress(value), {
+  message: "Not an address",
+});
+
+const hexProp = z.string().refine((value) => isHex(value), {
+  message: "Not a hex string",
+});
 
 const SendUserOperationSchema = z.object({
   operation: z.object({
-    sender: z.string(),
-    nonce: z.string(),
-    factory: z.string().optional(),
-    factoryData: z.string().optional(),
+    sender: addressProp,
+    nonce: hexProp,
+    factory: addressProp.optional(),
+    factoryData: hexProp.optional(),
     initCode: z.string(),
-    callData: z.string(),
-    callGasLimit: z.string(),
-    verificationGasLimit: z.string(),
-    preVerificationGas: z.string(),
-    maxPriorityFeePerGas: z.string(),
-    maxFeePerGas: z.string(),
-    paymasterAndData: z.string(),
-    signature: z.string(),
-    paymaster: z.string().optional(),
-    paymasterVerificationGasLimit: z.string().optional(),
-    paymasterData: z.string().optional(),
-    paymasterPostOpGasLimit: z.string().optional(),
+    callData: hexProp,
+    callGasLimit: hexProp,
+    verificationGasLimit: hexProp,
+    preVerificationGas: hexProp,
+    maxPriorityFeePerGas: hexProp,
+    maxFeePerGas: hexProp,
+    paymasterAndData: hexProp.optional(),
+    signature: hexProp,
+    paymaster: hexProp.optional(),
+    paymasterVerificationGasLimit: hexProp.optional(),
+    paymasterData: hexProp.optional(),
+    paymasterPostOpGasLimit: hexProp.optional(),
   }),
   chainId: z.number(),
 });
 
 export const normalizeSendUserOperation = (event: any) =>
-  SendUserOperationSchema.parse(event);
+  SendUserOperationSchema.safeParse(event);
