@@ -6,13 +6,13 @@ on:
   #   branches:
   #     - main
   pull_request:
-    secrets:
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      AWS_REGION:
-        required: true
+    # secrets:
+    #   AWS_ACCESS_KEY_ID:
+    #     required: true
+    #   AWS_SECRET_ACCESS_KEY:
+    #     required: true
+    #   AWS_REGION:
+    #     required: true
     outputs:
       api_url:
         description: "The URL of the deployed API"
