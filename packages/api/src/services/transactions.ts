@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 import { PrismaClient, Transaction } from "@prisma/client";
-import { BundlerFactory, BUNDLERS_URLS } from "./bundler-factory.js";
+import { BundlerFactory, CHAIN_DATA } from "./bundler-factory.js";
 import { ProviderFactory } from "./provider-factory.js";
 import { Transaction as DomainTransaction } from "../domain/transaction.js";
 import axios from "axios";
@@ -31,47 +31,48 @@ export class TransactionService {
     operation: UserOperation,
     chainId: number
   ): Promise<Transaction> {
+    const { bundlerUrl, entryPoint } = CHAIN_DATA[chainId];
     const bundlerClient = BundlerFactory.getBundler(chainId);
-    const {initCode, ...opData} = operation
+    const { initCode: _, ...opData } = operation;
 
     try {
-      const { data } = await axios.post(BUNDLERS_URLS[chainId], {
-      jsonrpc: "2.0",
-      method: "eth_sendUserOperation",
-      params: [opData, "0x0000000071727De22E5E9d8BAf0edAc6f37da032"],
-      id: 1,
-    });
+      const { data } = await axios.post(bundlerUrl, {
+        jsonrpc: "2.0",
+        method: "eth_sendUserOperation",
+        params: [opData, entryPoint],
+        id: 1,
+      });
 
-    if (!data.result) {
-      throw Error("Transaction failed");
-    }
+      if (!data.result) {
+        throw Error("Transaction failed");
+      }
 
-    const {receipt} = await bundlerClient.waitForUserOperationReceipt({
-      hash: data.result as `0x${string}`,
-    });
+      const {receipt} = await bundlerClient.waitForUserOperationReceipt({
+        hash: data.result as `0x${string}`,
+      });
 
-    if (receipt.status !== "success") {
-      throw Error("Transaction failed");
-    }
+      if (receipt.status !== "success") {
+        throw Error("Transaction failed");
+      }
 
-    const providerClient = ProviderFactory.getProvider(chainId);
-    const tx = await providerClient.getTransaction({
-      hash: receipt.transactionHash,
-    });
+      const providerClient = ProviderFactory.getProvider(chainId);
+      const tx = await providerClient.getTransaction({
+        hash: receipt.transactionHash,
+      });
 
-    return await this.repo.transaction.create({
-      data: {
-        hash: tx.hash as string,
-        from: tx.from as string,
-        to: tx.to ?? (zeroAddress as string),
-        value: tx.value.toString() as string,
-        data: tx.input as string,
-        action: DomainTransaction.typeFromReceipt(receipt),
-      },
-    });
+      return await this.repo.transaction.create({
+        data: {
+          hash: tx.hash as string,
+          from: tx.from as string,
+          to: tx.to ?? (zeroAddress as string),
+          value: tx.value.toString() as string,
+          data: tx.input as string,
+          action: DomainTransaction.typeFromReceipt(receipt),
+        },
+      });
 
     } catch (error) {
-      console.error(error)
+      console.error(error);
       throw Error("Transaction failed");
     }
   }
