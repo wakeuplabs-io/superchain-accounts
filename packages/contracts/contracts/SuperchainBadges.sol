@@ -10,41 +10,59 @@ import {ERC1155, IERC1155, IERC1155MetadataURI} from "@openzeppelin/contracts/to
 contract SuperchainBadges is ISuperchainBadges, ERC1155, Ownable {
     mapping(uint256 => string) private _tokenURIs;
     mapping(address => mapping(uint256 => bool)) internal claimed;
-    mapping(address => mapping(uint256 => bool)) internal eligible;
+    mapping(address => mapping(uint256 => bool)) internal claimable;
+    mapping(address => uint256[]) internal claimableList;
 
     /// @param initialOwner address of the initial owner
     constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
 
     /// @inheritdoc ISuperchainBadges
-    function setIsEligible(
+    function addClaimable(
         address[] memory allocations,
         uint256[] memory tokenIds
     ) public onlyOwner {
         for (uint256 i = 0; i < allocations.length; i++) {
-            eligible[allocations[i]][tokenIds[i]] = true;
+            if (claimable[allocations[i]][tokenIds[i]] == true) {
+                continue;
+            }
+
+            claimable[allocations[i]][tokenIds[i]] = true;
+            claimableList[allocations[i]].push(tokenIds[i]);
+
+            emit Claimable(allocations[i], tokenIds[i]);
         }
     }
 
     /// @inheritdoc ISuperchainBadges
-    function isEligible(
-        address account,
-        uint256 tokenId
-    ) public view returns (bool) {
-        return eligible[account][tokenId];
+    function getClaimable(
+        address account
+    ) public view returns (uint256[] memory) {
+        return claimableList[account];
     }
 
     /// @inheritdoc ISuperchainBadges
     function claim(uint256 tokenId) public {
         if (
-            eligible[msg.sender][tokenId] == false &&
+            claimable[msg.sender][tokenId] == false &&
             claimed[msg.sender][tokenId] == false
         ) {
             revert NotEligible(tokenId);
         }
 
+        // mark as claimed and remove from array
         claimed[msg.sender][tokenId] = true;
+        uint256[] storage list = claimableList[msg.sender];
+        for (uint256 i = 0; i < list.length; i++) {
+            if (list[i] == tokenId) {
+                list[i] = list[list.length - 1];
+                list.pop();
+                break;
+            }
+        }
 
         _mint(msg.sender, tokenId, 1, "");
+
+        emit Claimed(msg.sender, tokenId);
     }
 
     /// @inheritdoc IERC1155MetadataURI

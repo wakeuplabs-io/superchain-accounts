@@ -56,9 +56,7 @@ describe("SuperchainPoints", function () {
 
       await superchainPoints.connect(owner).addClaimable([addr1.address], [1]);
 
-      expect(
-        await superchainPoints.claimableAmount(addr1.address)
-      ).to.equal(1n);
+      expect(await superchainPoints.getClaimable(addr1.address)).to.equal(1n);
     });
 
     it("should claim if eligible", async function () {
@@ -68,9 +66,7 @@ describe("SuperchainPoints", function () {
 
       await superchainPoints.connect(owner).addClaimable([addr1.address], [1]);
 
-      expect(await superchainPoints.claimableAmount(addr1.address)).to.equal(
-        1n
-      );
+      expect(await superchainPoints.getClaimable(addr1.address)).to.equal(1n);
       expect(await superchainPoints.connect(addr1).claim()).to.not.be.reverted;
     });
 
@@ -79,9 +75,7 @@ describe("SuperchainPoints", function () {
         deploySuperchainPointsFixture
       );
 
-      expect(await superchainPoints.claimableAmount(addr1.address)).to.equal(
-        0n
-      );
+      expect(await superchainPoints.getClaimable(addr1.address)).to.equal(0n);
       expect(superchainPoints.connect(addr1).claim()).to.be.rejected;
     });
   });

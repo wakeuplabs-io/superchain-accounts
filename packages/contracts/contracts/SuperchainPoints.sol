@@ -36,6 +36,11 @@ contract SuperchainPoints is ISuperchainPoints, ERC20, Ownable {
     }
 
     /// @inheritdoc ISuperchainPoints
+    function getClaimable(address user) external view returns (uint256) {
+        return claimable[user] - claimed[user];
+    }
+
+    /// @inheritdoc ISuperchainPoints
     function claim() external {
         uint256 total = claimable[msg.sender];
         uint256 alreadyClaimed = claimed[msg.sender];
@@ -49,11 +54,6 @@ contract SuperchainPoints is ISuperchainPoints, ERC20, Ownable {
         _mint(msg.sender, amountToClaim);
 
         emit TokensClaimed(msg.sender, amountToClaim);
-    }
-
-    /// @inheritdoc ISuperchainPoints
-    function claimableAmount(address user) external view returns (uint256) {
-        return claimable[user] - claimed[user];
     }
 
     /// @notice Allows owner to mint tokens

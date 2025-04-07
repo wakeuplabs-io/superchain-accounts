@@ -43,7 +43,7 @@ interface ISuperchainPoints is
 
     /// @notice View how much a user can still claim
     /// @param account The account to check
-    function claimableAmount(address account) external view returns (uint256);
+    function getClaimable(address account) external view returns (uint256);
 
     /// @notice Claim the tokens assigned to the caller.
     function claim() external;

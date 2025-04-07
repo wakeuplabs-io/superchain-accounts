@@ -13,25 +13,25 @@ task("start-raffle", "Starts a raffle")
       );
 
       // Instantiate points
-      const tokenAddress =
+      const superchainPointsAddress =
         deployed_addresses["SuperchainPointsModule#SuperchainPoints"];
       const token = await hre.ethers.getContractAt(
         "SuperchainPoints",
-        tokenAddress
+        superchainPointsAddress
       );
 
       // Instantiate raffle
-      const raffleAddress =
+      const raffleFactoryAddress =
         deployed_addresses[
           "SuperchainPointsRaffleModule#SuperchainPointsRaffle"
         ];
-      const raffle = await hre.ethers.getContractAt(
-        "SuperchainPointsRaffle",
-        raffleAddress
+      const raffleFactory = await hre.ethers.getContractAt(
+        "SuperchainPointsRaffleFactory",
+        raffleFactoryAddress
       );
 
       const [signer] = await hre.ethers.getSigners();
-      if ((await raffle.owner()) !== signer.address) {
+      if ((await raffleFactory.owner()) !== signer.address) {
         throw new Error("You are not the owner of the raffle");
       }
 
@@ -44,6 +44,18 @@ task("start-raffle", "Starts a raffle")
         BigInt(taskArguments.amount)
       );
       console.log(`Points minted with tx: ${txMint.hash}`);
+
+      // Create raffle
+      console.log("Creating raffle");
+      const tx = await raffleFactory.createRaffle();
+      console.log("Raffle created with tx: ", tx.hash);
+
+      // Instantiate raffle
+      const raffleAddress = await raffleFactory.currentRaffle();
+      const raffle = await hre.ethers.getContractAt(
+        "SuperchainPointsRaffle",
+        raffleAddress
+      );
 
       // approve
       console.log("Approving raffle");
@@ -82,13 +94,17 @@ task("finish-raffle", "Finishes a raffle")
       );
 
       // Instantiate raffle
-      const raffleAddress =
+      const raffleFactoryAddress =
         deployed_addresses[
-          "SuperchainPointsRaffleModule#SuperchainPointsRaffle"
+          "SuperchainPointsRaffleModule#SuperchainPointsRaffleFactory"
         ];
+      const raffleFactory = await hre.ethers.getContractAt(
+        "SuperchainPointsRaffleFactory",
+        raffleFactoryAddress
+      );
       const raffle = await hre.ethers.getContractAt(
         "SuperchainPointsRaffle",
-        raffleAddress
+        await raffleFactory.currentRaffle()
       );
 
       const [signer] = await hre.ethers.getSigners();
@@ -111,11 +127,17 @@ task("claim-raffle", "Claim raffle tickets").setAction(
     );
 
     // Instantiate raffle
-    const raffleAddress =
-      deployed_addresses["SuperchainPointsRaffleModule#SuperchainPointsRaffle"];
+    const raffleFactoryAddress =
+      deployed_addresses[
+        "SuperchainPointsRaffleModule#SuperchainPointsRaffleFactory"
+      ];
+    const raffleFactory = await hre.ethers.getContractAt(
+      "SuperchainPointsRaffleFactory",
+      raffleFactoryAddress
+    );
     const raffle = await hre.ethers.getContractAt(
       "SuperchainPointsRaffle",
-      raffleAddress
+      await raffleFactory.currentRaffle()
     );
 
     //  Claim tickets

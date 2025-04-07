@@ -93,7 +93,10 @@ describe("SuperchainPointsRaffle", function () {
       // second raffle should fail as first is ongoing
       await expect(
         superchainPointsRaffleFactory.connect(owner).createRaffle()
-      ).to.be.revertedWith("Ongoing raffle");
+      ).to.be.revertedWithCustomError(
+        superchainPointsRaffleFactory,
+        "OngoingRaffle"
+      );
     });
 
     it("Can create a raffle if previous one finished", async function () {

@@ -73,11 +73,10 @@ describe("SuperchainBadges", function () {
         deploySuperchainBadgesFixture
       );
 
-      await superchainBadges.connect(owner).setIsEligible([other.address], [1]);
+      await superchainBadges.connect(owner).addClaimable([other.address], [1]);
 
-      expect(await superchainBadges.isEligible(other.address, 1)).to.equal(
-        true
-      );
+      expect((await superchainBadges.getClaimable(other.address)).includes(1n))
+        .to.be.true;
     });
 
     it("should claim if eligible", async function () {
@@ -85,11 +84,10 @@ describe("SuperchainBadges", function () {
         deploySuperchainBadgesFixture
       );
 
-      await superchainBadges.connect(owner).setIsEligible([other.address], [1]);
+      await superchainBadges.connect(owner).addClaimable([other.address], [1]);
 
-      expect(await superchainBadges.isEligible(other.address, 1)).to.equal(
-        true
-      );
+      expect((await superchainBadges.getClaimable(other.address)).includes(1n))
+        .to.be.true;
       expect(await superchainBadges.connect(other).claim(1)).to.not.be.reverted;
     });
 
@@ -98,9 +96,8 @@ describe("SuperchainBadges", function () {
         deploySuperchainBadgesFixture
       );
 
-      expect(await superchainBadges.isEligible(other.address, 1)).to.equal(
-        false
-      );
+      expect((await superchainBadges.getClaimable(other.address)).includes(1n))
+        .to.be.false;
       expect(superchainBadges.connect(other).claim(1)).to.be.rejected;
     });
   });

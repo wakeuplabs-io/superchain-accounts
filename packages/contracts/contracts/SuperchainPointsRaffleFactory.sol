@@ -4,13 +4,13 @@ pragma solidity ^0.8.29;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 import {IERC1155} from "@openzeppelin/contracts/interfaces/IERC1155.sol";
-import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import {ISuperchainPointsRaffle} from "./interfaces/ISuperchainPointsRaffle.sol";
 import {SuperchainPointsRaffle} from "./SuperchainPointsRaffle.sol";
+import {ISuperchainPointsRaffleFactory} from "./interfaces/ISuperchainPointsRaffleFactory.sol";
 
 /// @title SuperchainPointsRaffleFactory
 /// @notice Factory for SuperchainPointsRaffle contracts that also acts as a proxy for the current raffle
-contract SuperchainPointsRaffleFactory is Ownable {
+contract SuperchainPointsRaffleFactory is ISuperchainPointsRaffleFactory, Ownable {
     IERC20 public superchainPoints;
     IERC1155 public superchainBadges;
 
@@ -30,7 +30,7 @@ contract SuperchainPointsRaffleFactory is Ownable {
 
     function createRaffle() public onlyOwner {
         if (address(currentRaffle) != address(0) && currentRaffle.isFinished() == false) {
-            revert("Ongoing raffle");
+            revert OngoingRaffle();
         }
 
         currentRaffle = new SuperchainPointsRaffle(
@@ -38,6 +38,8 @@ contract SuperchainPointsRaffleFactory is Ownable {
             superchainPoints,
             superchainBadges
         );
+
+        emit RaffleCreated(address(currentRaffle));
     }
 
 }
