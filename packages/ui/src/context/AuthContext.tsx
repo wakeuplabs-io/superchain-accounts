@@ -18,7 +18,7 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
     buttonPosition: "bottom-right",
   }));
 
-  const { chain, updateChain } = useWeb3();
+  const { chain } = useWeb3();
 
   const initialize = async () => {
     const testEnvironment = mode === "development" || mode === "local";
@@ -56,34 +56,6 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
   const getProvider = () => {
     return torus.current.provider;
   };
-
-  useEffect(() => {
-    async function handleChainChanged() {
-      if(!torus.current.isInitialized) {
-        return;
-      }
-
-      const currentTorusChainId = hexToNumber(torus.current.provider.chainId as Hex ?? "");
-
-      if(currentTorusChainId === chain.data.id) {
-        return;
-      }
-
-      try {
-        await torus.current.setProvider({
-          host: chain.rpcUrl,
-          chainId: chain.data.id,
-          networkName: chain.data.name,
-        });
-      } catch (e) {
-        //revert to previous chain
-        updateChain(currentTorusChainId);
-      }
-    }
-
-    handleChainChanged();
-  }, [chain]);
-
 
   const value = {
     isAuthenticated: torus.current.isLoggedIn,
