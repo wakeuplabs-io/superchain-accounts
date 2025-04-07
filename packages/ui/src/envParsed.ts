@@ -22,6 +22,7 @@ const env = {
   BASE_RPC_URL: import.meta.env.VITE_BASE_RPC_URL,
   BASE_PIMLICO_URL: import.meta.env.VITE_BASE_PIMLICO_URL,
   BASE_ENTRYPOINT_ADDRESS: import.meta.env.VITE_BASE_ENTRYPOINT_ADDRESS,
+  API_URL: import.meta.env.VITE_API_URL,
 };
 
 const envSchema = z
@@ -42,6 +43,7 @@ const envSchema = z
     BASE_RPC_URL: z.string().url(),
     BASE_PIMLICO_URL: z.string().url(),
     BASE_ENTRYPOINT_ADDRESS: z.string().transform((x) => getAddress(x)),
+    API_URL: z.string().url(),
   });
 
 const envParsed = () => envSchema.parse(env);
