@@ -1,21 +1,42 @@
-import { createSmartAccountClient, SmartAccountClient } from "permissionless";
 import { createContext, useContext, ReactNode, useState, useEffect, useCallback } from "react";
-import { http } from "viem";
+import { Address, Hex, http, numberToHex } from "viem";
 import { useWeb3 } from "./Web3Context";
 import { useAuth } from "./AuthContext";
-import { toSimpleSmartAccount } from "permissionless/accounts";
-import { SmartAccount, UserOperationCall } from "viem/account-abstraction";
+import { SimpleSmartAccountImplementation, toSimpleSmartAccount, ToSimpleSmartAccountParameters } from "permissionless/accounts";
+import { BundlerClient, createBundlerClient, SmartAccount, UserOperation,  } from "viem/account-abstraction";
+import { transactionService } from "@/services";
+
+function formatUserOperation(userOperation: UserOperation) {
+  return ({
+    ...userOperation,
+    initCode: "",
+    nonce: numberToHex(userOperation.nonce),
+    callGasLimit: numberToHex(userOperation.callGasLimit),
+    verificationGasLimit: numberToHex(userOperation.verificationGasLimit),
+    preVerificationGas: numberToHex(userOperation.preVerificationGas),
+    maxFeePerGas: numberToHex(userOperation.maxFeePerGas),
+    maxPriorityFeePerGas: numberToHex(userOperation.maxPriorityFeePerGas),
+    paymasterVerificationGasLimit: userOperation.paymasterVerificationGasLimit && numberToHex(userOperation.paymasterVerificationGasLimit),
+    paymasterPostOpGasLimit: userOperation.paymasterPostOpGasLimit && numberToHex(userOperation.paymasterPostOpGasLimit),
+  });
+}
+
+interface SuperChainUserOperation  {
+    to: Address;
+    value: bigint;
+    data?: Hex;
+}
 
 type SuperChainAccountStatus = "pending" | "initialized" | "deployed";
 
 type SuperChainAccount = {
-    instance: SmartAccount | null;
-    client: SmartAccountClient | null;
+    instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">> | null;
+    bundlerClient: BundlerClient | null; //TODO: remove this when we have a better solutio
     balance: 0n;
     status: "pending";
   } | {
-    instance: SmartAccount;
-    client: SmartAccountClient;
+    instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">>;
+    bundlerClient: BundlerClient;
     balance: bigint;
     status: Exclude<SuperChainAccountStatus, "pending">;
   };
@@ -23,42 +44,53 @@ type SuperChainAccount = {
 type SuperChainAccountContextType = {
   account: SuperChainAccount;
   deploySmartAccount: () => Promise<void>;
+  sendTransaction: (userOperation: SuperChainUserOperation) => Promise<void>;
 }
 
 const SuperChainAccountContext = createContext<SuperChainAccountContextType | undefined>(undefined);
 
 export function SuperChainAccountProvider({ children }: { children: ReactNode }) {
-  const {chain, web3Data} = useWeb3();
+  const {chain, publicClient} = useWeb3();
   const {getProvider} = useAuth();
   
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
-    client: null,
+    bundlerClient: null,
     balance: 0n,
     status: "pending",
   });
 
-  const sendTransaction = useCallback(async (transaction: UserOperationCall) => {
-    if(account.status === "pending" || !web3Data) {
+  const sendTransaction = useCallback(async (userOperation: SuperChainUserOperation) => {
+    if(account.status === "pending" || !publicClient) {
       return;
     }
 
     try {
-      const receipt = await account.client.sendTransaction({
+      const {account: _, ...preparedUserOperation} = await account.bundlerClient.prepareUserOperation({
         account: account.instance,
-        chain: chain.data,
-        ...transaction
+        calls: [{
+          ...userOperation,
+        }],
       });
 
-      return receipt;
+      const signature = await account.instance.signUserOperation(preparedUserOperation);
+     
+      await transactionService.sendUserOperation({
+        chainId: chain.data.id,
+        operation: {
+          ...formatUserOperation(preparedUserOperation),
+          signature,
+        },
+      });
+
     } catch (error) {
       console.error("Error sending transaction:", error);
       throw error;
     }
-  }, [account, web3Data]);
+  }, [account, publicClient]);
 
   const deploySmartAccount = async () => {
-    if(account.status !== "initialized" || !web3Data) {
+    if(account.status !== "initialized" || !publicClient) {
       return;
     }
 
@@ -73,7 +105,7 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
     
     try {
       await sendTransaction(transaction);
-      const balance = await web3Data.publicClient.getBalance({
+      const balance = await publicClient.getBalance({
         address: account.instance.address,
       });
       newBalance = balance;
@@ -83,23 +115,21 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
 
     setAccount(prev => ({
       instance: prev.instance!,
-      client: prev.client!,
+      bundlerClient: prev.bundlerClient!,
       balance: newBalance,
       status: newStatus,
     }));
   };
 
-
   useEffect(() => {
     async function initialize() {
-      if(!web3Data) {
+      if(!publicClient) {
         return;
       }
 
-      const provider = getProvider();
       const newSmartAccount = await toSimpleSmartAccount({
-        owner: provider,
-        client: web3Data.publicClient,
+        owner: getProvider() as ToSimpleSmartAccountParameters<"0.7">["owner"],
+        client: publicClient,
         entryPoint: {
           address: chain.entryPointAddress,
           version: "0.7",
@@ -111,45 +141,40 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
         return;
       }
 
-      const newSmartAccountClient = createSmartAccountClient({
-        account: newSmartAccount,
-        chain: chain.data,
-        bundlerTransport: http(chain.pimlicoUrl),
-        paymaster: web3Data.pimlicoClient,
-        userOperation: {
-          estimateFeesPerGas: async () => {
-            return (await web3Data.pimlicoClient.getUserOperationGasPrice()).fast;
-          },
-        },
+      const bundlerClient = createBundlerClient({
+        client: publicClient,
+        transport: http(chain.pimlicoUrl),
+        paymaster: true,
       });
 
       const isDeployed = await newSmartAccount.isDeployed();
 
-      const balance = await web3Data.publicClient.getBalance({
+      const balance = await publicClient.getBalance({
         address: newSmartAccount.address,
       });
 
       setAccount({
         balance,
         instance: newSmartAccount,
-        client: newSmartAccountClient,
+        bundlerClient,
         status: isDeployed ? "deployed" : "initialized",
       });
     }
 
     setAccount({
       instance: null,
-      client: null,
+      bundlerClient: null,
       balance: 0n,
       status: "pending",
     });
     
     initialize();
-  },[chain, web3Data, getProvider]);
+  },[chain, publicClient, getProvider]);
 
   const value = {
     account,
     deploySmartAccount,
+    sendTransaction,
   };
 
   return (

@@ -1,7 +1,6 @@
 import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
-import { createContext, useContext, ReactNode, useRef, useEffect } from "react";
+import { createContext, useContext, ReactNode, useRef,  } from "react";
 import { useWeb3 } from "./Web3Context";
-import { Hex, hexToNumber } from "viem";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
