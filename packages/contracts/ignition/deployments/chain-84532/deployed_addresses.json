@@ -2,5 +2,6 @@
   "WakeUpEntryPointModule#wakeup_entrypoint": "0xC9EB4faA4a1D33DDDbF995B84c331A6DF5aBE335",
   "WakeUpAccountFactoryModule#wakeup_account_factory": "0x3ADcc7E63c7B0EE97FA1ADC4a3B3Bf5568941DF2",
   "WakeUpPaymasterModule#wakeup_paymaster": "0xFc80FB0a6f7f7d59CcDF91d12Be5b979E6343543",
-  "SuperchainPointsModule#SuperchainPoints": "0x564Cb9bFfE7864A892E757B699F87096680884c9"
+  "SuperchainPointsModule#SuperchainPoints": "0x564Cb9bFfE7864A892E757B699F87096680884c9",
+  "SuperchainBadgesModule#SuperchainBadges": "0x8f26A7Dfb1CD087c5a50212E87608E79D4e23f36"
 }
