@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
     "base-sepolia": {
-      chainId: 84531,
+      chainId: 84532,
       url:
         process.env.BASE_SEPOLIA_RPC_URL ||
         "https://base-sepolia.public.blastapi.io",
