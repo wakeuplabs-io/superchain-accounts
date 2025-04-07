@@ -40,6 +40,7 @@ export const supportedChains: Record<number, SmartAccountChain> = {
 };
 
 export type SupportedChainOptions = typeof supportedChains;
+
 interface Web3ContextType {
   chain: SmartAccountChain;
   publicClient: PublicClient | null;

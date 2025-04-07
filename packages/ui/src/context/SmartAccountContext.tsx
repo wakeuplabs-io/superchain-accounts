@@ -31,12 +31,10 @@ type SuperChainAccountStatus = "pending" | "initialized" | "deployed";
 
 type SuperChainAccount = {
     instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">> | null;
-    bundlerClient: BundlerClient | null; //TODO: remove this when we have a better solutio
     balance: 0n;
     status: "pending";
   } | {
     instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">>;
-    bundlerClient: BundlerClient;
     balance: bigint;
     status: Exclude<SuperChainAccountStatus, "pending">;
   };
@@ -51,21 +49,21 @@ const SuperChainAccountContext = createContext<SuperChainAccountContextType | un
 export function SuperChainAccountProvider({ children }: { children: ReactNode }) {
   const {chain, publicClient} = useWeb3();
   const {getProvider} = useAuth();
+  const [bundlerClient, setBundlerClient] = useState<BundlerClient | null>(null);
   
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
-    bundlerClient: null,
     balance: 0n,
     status: "pending",
   });
 
   const sendTransaction = useCallback(async (userOperation: SuperChainUserOperation) => {
-    if(account.status === "pending" || !publicClient) {
+    if(account.status === "pending" || !publicClient || !bundlerClient) {
       return;
     }
 
     try {
-      const {account: _, ...preparedUserOperation} = await account.bundlerClient.prepareUserOperation({
+      const {account: _, ...preparedUserOperation} = await bundlerClient.prepareUserOperation({
         account: account.instance,
         calls: [{
           ...userOperation,
@@ -120,17 +118,17 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
         address: newSmartAccount.address,
       });
 
+      setBundlerClient(bundlerClient);
+
       setAccount({
         balance,
         instance: newSmartAccount,
-        bundlerClient,
         status: isDeployed ? "deployed" : "initialized",
       });
     }
 
     setAccount({
       instance: null,
-      bundlerClient: null,
       balance: 0n,
       status: "pending",
     });
