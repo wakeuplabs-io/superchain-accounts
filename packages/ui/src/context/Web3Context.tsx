@@ -10,7 +10,7 @@ const DEFAULT_CHAIN_ID = 11155420; // Optimism Sepolia
 interface SmartAccountChain {
     data: Chain,
     rpcUrl: string;
-    pimlicoUrl: string;
+    bundlerUrl: string;
     entryPointAddress: Address;
     order: number;
 }
@@ -18,23 +18,23 @@ interface SmartAccountChain {
 export const supportedChains: Record<number, SmartAccountChain> = {
   [optimismSepolia.id]: {
     data: optimismSepolia,
-    rpcUrl: envVars.OPTIMISM_RPC_URL,
-    pimlicoUrl: envVars.OPTIMISM_PIMLICO_URL,
-    entryPointAddress: envVars.OPTIMISM_ENTRYPOINT_ADDRESS,
+    rpcUrl: envVars.RPC_OPTIMISM_SEPOLIA,
+    bundlerUrl: envVars.BUNDLER_OPTIMISM_SEPOLIA,
+    entryPointAddress: envVars.ENTRYPOINT_OPTIMISM_SEPOLIA,
     order: 1,
   },
   [baseSepolia.id]: {
     data: baseSepolia,
-    rpcUrl: envVars.BASE_RPC_URL,
-    pimlicoUrl: envVars.BASE_PIMLICO_URL,
-    entryPointAddress: envVars.BASE_ENTRYPOINT_ADDRESS,
+    rpcUrl: envVars.RPC_BASE_SEPOLIA,
+    bundlerUrl: envVars.BUNDLER_BASE_SEPOLIA,
+    entryPointAddress: envVars.ENTRYPOINT_BASE_SEPOLIA,
     order: 2,
   },
   [unichainSepolia.id]: {
     data: unichainSepolia,
-    rpcUrl: envVars.UNICHAIN_RPC_URL,
-    pimlicoUrl: envVars.UNICHAIN_PIMLICO_URL,
-    entryPointAddress: envVars.UNICHAIN_ENTRYPOINT_ADDRESS,
+    rpcUrl: envVars.RPC_UNICHAIN_SEPOLIA,
+    bundlerUrl: envVars.BUNDLER_UNICHAIN_SEPOLIA,
+    entryPointAddress: envVars.ENTRYPOINT_UNICHAIN_SEPOLIA,
     order: 3,
   },
 };

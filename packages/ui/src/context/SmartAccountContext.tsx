@@ -108,7 +108,7 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
 
       const bundlerClient = createBundlerClient({
         client: publicClient,
-        transport: http(chain.pimlicoUrl),
+        transport: http(chain.bundlerUrl),
         paymaster: true,
       });
 
