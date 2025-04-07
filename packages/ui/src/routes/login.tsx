@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { cn } from "@/lib/utils";
-import { useSuperChainStore } from "@/core/store";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const [isLoading, setIsLoading] = useState(false);
-  const authHandler = useSuperChainStore((state => state.authHandler));
+  const {login} = useAuth();
   
   const router = useRouter();
   const search = useSearch({
@@ -24,7 +24,7 @@ function Login() {
   const doLogin = async () => {
     try {
       setIsLoading(true);
-      await authHandler.login();
+      await login();
       router.history.push(search.redirect ?? "/");
     } finally {
       setIsLoading(false);

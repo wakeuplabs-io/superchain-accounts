@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npx tsc",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"No tests yet\""
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.723.0",
@@ -18,6 +19,7 @@
     "@tanstack/react-query": "^5.40.0",
     "@tanstack/react-router": "^1.34.7",
     "@toruslabs/torus-embed": "^5.0.0",
+    "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",

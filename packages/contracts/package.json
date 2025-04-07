@@ -1,0 +1,53 @@
+{
+  "name": "@wakeuplabs-io/web3",
+  "version": "1.0.0",
+  "description": "Package for web3 related code like contracts and utils",
+  "main": "index.js",
+  "scripts": {
+    "lint": "solhint 'contracts/**/*.sol'",
+    "compile": "npx hardhat compile",
+    "build": "npm run compile",
+    "deploy": "npx hardhat ignition deploy ./ignition/modules/ERC4337.ts",
+    "deploy:testnet": "npm run deploy -- --network testnet --verify",
+    "deploy:mainnet": "npm run deploy -- --network mainnet --verify",
+    "deploy:local": "npm run deploy -- --network local",
+    "test": "npx hardhat test",
+    "deploy:superchain-points:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPoints.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia",
+    "deploy:superchain-points:base-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPoints.ts --parameters ignition/parameters/base-sepolia.json --network base-sepolia",
+    "deploy:superchain-points:unichain-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPoints.ts --parameters ignition/parameters/unichain-sepolia.json --network unichain-sepolia",
+    "deploy:superchain-badges:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia",
+    "deploy:superchain-badges:base-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/base-sepolia.json --network base-sepolia",
+    "deploy:superchain-badges:unichain-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/unichain-sepolia.json --network unichain-sepolia"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wakeuplabs-io"
+  },
+  "keywords": [
+    "web3",
+    "solidity",
+    "blockchain"
+  ],
+  "author": "Wake Up Labs",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.8",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@nomicfoundation/hardhat-verify": "2.0.11",
+    "@types/chai": "^4.3.20",
+    "@types/mocha": "^10.0.10",
+    "@openzeppelin/contracts": "5.0.2",
+    "ethers": "^6.13.4",
+    "ts-node": "^10.9.2",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.22.18",
+    "solhint": "^5.0.5",
+    "@account-abstraction/contracts": "^0.7.0",
+    "@wagmi/cli": "^2.1.16",
+    "mocha": "^10.7.3",
+    "viem": "^2.21.35"
+  }
+}

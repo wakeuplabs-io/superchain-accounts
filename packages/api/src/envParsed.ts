@@ -1,6 +1,5 @@
 import { z } from "zod";
 import dotenv from "dotenv";
-import { getAddress } from "viem";
 
 dotenv.config();
 
@@ -9,46 +8,34 @@ dotenv.config();
 const env = {
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
-  PAYMASTER_ADDRESS: process.env.PAYMASTER_ADDRESS,
-  EVENTS_TABLE: process.env.EVENTS_TABLE,
   USERS_TABLE: process.env.USERS_TABLE,
-  MILESTONES_TABLE: process.env.MILESTONES_TABLE,
-  REWARDS_TABLE: process.env.REWARDS_TABLE,
-  EVENTS_DEF_TABLE: process.env.EVENTS_DEF_TABLE,
-  MILESTONES_DEF_TABLE: process.env.MILESTONES_DEF_TABLE,
-  REWARDS_DEF_TABLE: process.env.REWARDS_DEF_TABLE,
-  TIMEFRAME_EVENTS_TABLE: process.env.TIMEFRAME_EVENTS_TABLE,
+  BUNDLER_UNICHAIN_SEPOLIA: process.env.BUNDLER_UNICHAIN_SEPOLIA,
+  BUNDLER_OPTIMISM_SEPOLIA: process.env.BUNDLER_OPTIMISM_SEPOLIA,
+  BUNDLER_BASE_SEPOLIA: process.env.BUNDLER_BASE_SEPOLIA,
+  RPC_UNICHAIN_SEPOLIA: process.env.RPC_UNICHAIN_SEPOLIA,
+  RPC_OPTIMISM_SEPOLIA: process.env.RPC_OPTIMISM_SEPOLIA,
+  RPC_BASE_SEPOLIA: process.env.RPC_BASE_SEPOLIA,
+  ENTRYPOINT_UNICHAIN_SEPOLIA: process.env.ENTRYPOINT_UNICHAIN_SEPOLIA,
+  ENTRYPOINT_OPTIMISM_SEPOLIA: process.env.ENTRYPOINT_OPTIMISM_SEPOLIA,
+  ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA,
+  DATABASE_URL: process.env.DATABASE_URL,
 } as const;
 
 const envSchema = z
   .object({
     NODE_ENV: z.enum(["development", "production"]).default("development"),
     PORT: z.string().default("5000"),
-    EVENTS_TABLE: z
-      .string()
-      .default("superchain-accounts-api-events-development-table"),
-    USERS_TABLE: z
-      .string()
-      .default("superchain-accounts-api-users-development-table"),
-    MILESTONES_TABLE: z
-      .string()
-      .default("superchain-accounts-api-milestones-development-table"),
-    REWARDS_TABLE: z
-      .string()
-      .default("superchain-accounts-api-rewards-development-table"),
-    EVENTS_DEF_TABLE: z
-      .string()
-      .default("superchain-accounts-api-events-def-development-table"),
-    MILESTONES_DEF_TABLE: z
-      .string()
-      .default("superchain-accounts-api-milestones-def-development-table"),
-    REWARDS_DEF_TABLE: z
-      .string()
-      .default("superchain-accounts-api-rewards-def-development-table"),
-    TIMEFRAME_EVENTS_TABLE: z
-      .string()
-      .default("superchain-accounts-api-timeframe-cron-development-table"),
-    PAYMASTER_ADDRESS: z.string().transform((str) => getAddress(str)),
+    USERS_TABLE: z.string().default("users-staging-table"),
+    BUNDLER_UNICHAIN_SEPOLIA: z.string(),
+    BUNDLER_OPTIMISM_SEPOLIA: z.string(),
+    BUNDLER_BASE_SEPOLIA: z.string(),
+    RPC_UNICHAIN_SEPOLIA: z.string(),
+    RPC_OPTIMISM_SEPOLIA: z.string(),
+    RPC_BASE_SEPOLIA: z.string(),
+    ENTRYPOINT_UNICHAIN_SEPOLIA: z.string(),
+    ENTRYPOINT_OPTIMISM_SEPOLIA: z.string(),
+    ENTRYPOINT_BASE_SEPOLIA: z.string(),
+    DATABASE_URL: z.string(),
   })
   .required();
 

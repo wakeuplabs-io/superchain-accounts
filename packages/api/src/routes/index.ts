@@ -1,21 +1,17 @@
 import { Router } from "express";
 
 import userRoute from "./users/route.js";
-import milestonesRoute from "./milestones/route.js";
-import eventsRoute from "./events/route.js";
-import rewardsRoute from "./rewards/route.js";
-import paymasterClientRoute from "./paymaster-client/route.js";
+import badgesRoute from "./badges/route.js";
+import pointsRoute from "./points/route.js";
+import transactionsRoute from "./transactions/route.js";
+import healthRoute from "./health/route.js";
 
 const router = Router();
 
-router.get("/health-check", (req, res) => {
-  res.json({ message: "API is healthy" });
-});
-
+router.use("/health", healthRoute)
 router.use("/users", userRoute);
-router.use("/events", eventsRoute);
-router.use("/milestones", milestonesRoute);
-router.use("/rewards", rewardsRoute);
-router.use(paymasterClientRoute);
+router.use("/badges", badgesRoute);
+router.use("/points", pointsRoute);
+router.use("/transactions", transactionsRoute);
 
 export default router;

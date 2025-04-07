@@ -8,11 +8,18 @@
     "build": "rimraf dist && tsc",
     "dev": "tsx watch src/app.ts",
     "start": "node dist/app.js",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "test": "echo \"No tests yet\"",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "schema": "src/database/schema.prisma"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.146",
     "@types/aws-sdk": "2.7.4",
@@ -22,15 +29,17 @@
     "aws-lambda": "^1.0.7",
     "esbuild": "^0.24.0",
     "prettier": "^3.4.2",
+    "prisma": "^6.5.0",
     "rimraf": "5.0.5",
     "serverless-esbuild": "^1.54.6",
-    "ts-patch": "3.1.2",
     "tsx": "4.11.0",
     "typescript": "5.4.4",
     "typescript-transform-paths": "3.4.7"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "aws-sdk": "2.1692.0",
+    "axios": "^1.8.4",
     "cors": "2.8.5",
     "dotenv": "^16.4.7",
     "express": "4.21.2",
@@ -38,6 +47,7 @@
     "jsonrpc-lite": "^2.2.0",
     "morgan": "1.10.0",
     "serverless-http": "^3.2.0",
+    "ts-patch": "^3.3.0",
     "viem": "^2.21.55",
     "zod": "3.22.4"
   }
