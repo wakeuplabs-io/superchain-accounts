@@ -13,13 +13,6 @@ on:
     #     required: true
     #   AWS_REGION:
     #     required: true
-    outputs:
-      api_url:
-        description: "The URL of the deployed API"
-        value: ${{ jobs.deploy.outputs.api_url }}
-      ui_url:
-        description: "The URL of the deployed UI"
-        value: ${{ jobs.deploy.outputs.ui_url }}
 
 jobs:
   deploy:
