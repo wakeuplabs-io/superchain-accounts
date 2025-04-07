@@ -43,7 +43,6 @@ type SuperChainAccount = {
 
 type SuperChainAccountContextType = {
   account: SuperChainAccount;
-  deploySmartAccount: () => Promise<void>;
   sendTransaction: (userOperation: SuperChainUserOperation) => Promise<void>;
 }
 
@@ -88,38 +87,6 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
       throw error;
     }
   }, [account, publicClient]);
-
-  const deploySmartAccount = async () => {
-    if(account.status !== "initialized" || !publicClient) {
-      return;
-    }
-
-    // Send a user operation to the bundler to deploy the smart account
-    const transaction = {
-      to: account.instance.address,
-      value: BigInt(0),
-    };
-
-    let newStatus: SuperChainAccountStatus = "deployed"; 
-    let newBalance = account.balance;
-    
-    try {
-      await sendTransaction(transaction);
-      const balance = await publicClient.getBalance({
-        address: account.instance.address,
-      });
-      newBalance = balance;
-    } catch (error) {
-      newStatus = "initialized";
-    }
-
-    setAccount(prev => ({
-      instance: prev.instance!,
-      bundlerClient: prev.bundlerClient!,
-      balance: newBalance,
-      status: newStatus,
-    }));
-  };
 
   useEffect(() => {
     async function initialize() {
@@ -173,7 +140,6 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
 
   const value = {
     account,
-    deploySmartAccount,
     sendTransaction,
   };
 
