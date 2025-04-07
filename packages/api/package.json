@@ -11,7 +11,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "test": "echo \"No tests yet\""
+    "test": "echo \"No tests yet\"",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
