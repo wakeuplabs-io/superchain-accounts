@@ -12,7 +12,7 @@ export interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ mode = "production" , children }: { children: ReactNode, mode?: "development" | "production" | "local" }) {
+export function AuthProvider({ children }: { children: ReactNode}) {
   const torus = useRef(new Torus({
     buttonPosition: "bottom-right",
   }));
@@ -20,18 +20,16 @@ export function AuthProvider({ mode = "production" , children }: { children: Rea
   const { chain } = useWeb3();
 
   const initialize = async () => {
-    const testEnvironment = mode === "development" || mode === "local";
-    const showTorusButton = mode === "local";
     if (!torus.current.isInitialized) {
       await torus.current.init({
-        showTorusButton: showTorusButton,
+        showTorusButton: false,
         network: {
           host: chain.rpcUrl,
           chainId: chain.data.id,
           networkName: chain.data.name,
         },
-        enableLogging: testEnvironment,
-        buildEnv: testEnvironment ? "testing" : "production",
+        enableLogging: false,
+        buildEnv: "production",
       });
     }
 
