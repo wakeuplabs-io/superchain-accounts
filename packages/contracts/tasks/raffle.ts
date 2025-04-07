@@ -23,7 +23,7 @@ task("start-raffle", "Starts a raffle")
       // Instantiate raffle
       const raffleFactoryAddress =
         deployed_addresses[
-          "SuperchainPointsRaffleModule#SuperchainPointsRaffle"
+          "SuperchainPointsRaffleFactoryModule#SuperchainPointsRaffleFactory"
         ];
       const raffleFactory = await hre.ethers.getContractAt(
         "SuperchainPointsRaffleFactory",
@@ -37,16 +37,16 @@ task("start-raffle", "Starts a raffle")
 
       // Mint points for raffle
       console.log(
-        `Minting ${taskArguments.prize} points to ${signer.address} for raffle deposit`
+        `Minting ${taskArguments.prize} points to ${signer.address} for raffle deposit...`
       );
       const txMint = await token.mint(
-        taskArguments.to,
-        BigInt(taskArguments.amount)
+        signer.address,
+        BigInt(taskArguments.prize)
       );
       console.log(`Points minted with tx: ${txMint.hash}`);
 
       // Create raffle
-      console.log("Creating raffle");
+      console.log("Creating raffle...");
       const tx = await raffleFactory.createRaffle();
       console.log("Raffle created with tx: ", tx.hash);
 
@@ -58,7 +58,7 @@ task("start-raffle", "Starts a raffle")
       );
 
       // approve
-      console.log("Approving raffle");
+      console.log("Approving raffle...");
       await token.approve(raffleAddress, hre.ethers.MaxUint256);
       console.log("Approved");
 
@@ -68,7 +68,7 @@ task("start-raffle", "Starts a raffle")
       console.log("Keep it safe, you'll need it later for revelation!");
 
       //  Start raffle
-      console.log("Starting raffle");
+      console.log("Starting raffle...");
       const txStart = await raffle.initialize(
         hre.ethers.keccak256(
           hre.ethers.solidityPacked(
@@ -96,7 +96,7 @@ task("finish-raffle", "Finishes a raffle")
       // Instantiate raffle
       const raffleFactoryAddress =
         deployed_addresses[
-          "SuperchainPointsRaffleModule#SuperchainPointsRaffleFactory"
+          "SuperchainPointsRaffleFactoryModule#SuperchainPointsRaffleFactory"
         ];
       const raffleFactory = await hre.ethers.getContractAt(
         "SuperchainPointsRaffleFactory",
@@ -120,7 +120,7 @@ task("finish-raffle", "Finishes a raffle")
   );
 
 task("claim-raffle", "Claim raffle tickets").setAction(
-  async (taskArguments: TaskArguments, hre: HardhatRuntimeEnvironment) => {
+  async (_: TaskArguments, hre: HardhatRuntimeEnvironment) => {
     const chain = await hre.ethers.provider.getNetwork();
     const deployed_addresses = require(
       `../ignition/deployments/chain-${chain.chainId}/deployed_addresses.json`
@@ -129,7 +129,7 @@ task("claim-raffle", "Claim raffle tickets").setAction(
     // Instantiate raffle
     const raffleFactoryAddress =
       deployed_addresses[
-        "SuperchainPointsRaffleModule#SuperchainPointsRaffleFactory"
+        "SuperchainPointsRaffleFactoryModule#SuperchainPointsRaffleFactory"
       ];
     const raffleFactory = await hre.ethers.getContractAt(
       "SuperchainPointsRaffleFactory",

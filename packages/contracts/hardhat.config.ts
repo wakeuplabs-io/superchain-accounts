@@ -30,11 +30,6 @@ const config: HardhatUserConfig = {
       url: "http://localhost:8545",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
-    "ethereum-sepolia": {
-      chainId: 11155111,
-      url: process.env.ETHEREUM_SEPOLIA_RPC_URL || "https://sepolia.drpc.org",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-    },
     "optimism-sepolia": {
       chainId: 11155420,
       url:
@@ -66,6 +61,8 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       "optimism-sepolia": process.env.OPTIMISM_SEPOLIA_ETHERSCAN_API_KEY!,
+      "base-sepolia": process.env.BASE_SEPOLIA_ETHERSCAN_API_KEY!,
+      "unichain-sepolia": process.env.UNICHAIN_SEPOLIA_ETHERSCAN_API_KEY!,
     },
     customChains: [
       {
@@ -75,6 +72,22 @@ const config: HardhatUserConfig = {
           browserURL: "https://optimism-sepolia.blockscout.com/",
         },
         network: "optimism-sepolia",
+      },
+      {
+        chainId: 84532,
+        urls: {
+          apiURL: "https://base-sepolia.blockscout.com/api/",
+          browserURL: "https://base-sepolia.blockscout.com/",
+        },
+        network: "base-sepolia",
+      },
+      {
+        chainId: 1301,
+        urls: {
+          apiURL: "https://unichain-sepolia.blockscout.com/api/",
+          browserURL: "https://unichain-sepolia.blockscout.com/",
+        },
+        network: "unichain-sepolia",
       },
     ],
   },

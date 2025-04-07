@@ -10,8 +10,8 @@ const SuperchainPointsRaffleFactoryModule = buildModule("SuperchainPointsRaffleF
 
   const SuperchainPointsRaffleFactory = m.contract("SuperchainPointsRaffleFactory", [
     owner,
-    superchainBadges.SuperchainBadges,
-    superchainPoints.SuperchainPoints
+    superchainPoints.SuperchainPoints,
+    superchainBadges.SuperchainBadges
   ]);
 
   return { SuperchainPointsRaffleFactory };
