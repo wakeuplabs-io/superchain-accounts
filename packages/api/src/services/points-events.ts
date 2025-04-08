@@ -165,7 +165,7 @@ export class DaysActivePointsEventsHandler implements PointsEventsHandler {
     const [{ count }] = await this.repo.$queryRawUnsafe<{ count: number }[]>(
       // use substr to get the first 10 characters of the timestamp 2025-04-08..
       `
-      SELECT COUNT(DISTINCT substr("timestamp", 1, 10)) as count 
+      SELECT COUNT(DISTINCT DATE("timestamp")) as count 
       FROM "Transaction"
       WHERE "from" = $1
     `,

@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "test": "DATABASE_URL=\"file:./test.db\" jest",
+    "test": "jest",
     "postinstall": "prisma generate"
   },
   "keywords": [],
