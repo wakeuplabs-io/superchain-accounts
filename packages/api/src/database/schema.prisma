@@ -20,11 +20,12 @@ enum TransactionAction {
 }
 
 model Transaction {
-  hash  String @id
-  from  String
-  to    String
-  value String
-  data  String
+  hash    String @id
+  from    String
+  to      String
+  value   String
+  data    String
+  chainId String
 
   action    TransactionAction
   timestamp DateTime          @default(now())

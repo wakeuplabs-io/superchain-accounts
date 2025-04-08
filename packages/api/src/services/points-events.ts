@@ -3,7 +3,7 @@ import {
   Transaction,
   PointEventType,
   PrismaClient,
-  db,
+  TransactionAction
 } from "@/database/client";
 
 interface PointsEventsHandler {
@@ -11,10 +11,7 @@ interface PointsEventsHandler {
 }
 
 export class PointsEventsService {
-  constructor(
-    private repo: PrismaClient,
-    private handlers: PointsEventsHandler[]
-  ) {}
+  constructor(private handlers: PointsEventsHandler[]) {}
 
   async handleNewTransaction(tx: Transaction): Promise<PointEvent[]> {
     const events = await Promise.all(
@@ -23,14 +20,13 @@ export class PointsEventsService {
 
     return events.flat();
   }
-
-  submit() {}
 }
 
 export class TransactionSentHandler implements PointsEventsHandler {
   constructor(
     private repo: PrismaClient,
-    private pointsConfig: { count: number; reward: number }[]
+    private pointsPerTx: number,
+    private milestonePointsConfig: { count: number; points: number }[]
   ) {}
 
   async handle(tx: Transaction): Promise<PointEvent[]> {
@@ -48,17 +44,18 @@ export class TransactionSentHandler implements PointsEventsHandler {
         transaction: { connect: { hash: tx.hash } },
         type: PointEventType.TransactionsSent,
         data: "",
-        value: 1,
+        value: this.pointsPerTx,
       },
     });
 
+    // assign milestone points
     const count = await this.repo.transaction.count({
       where: { from: tx.from },
     });
 
     const milestoneEvents = (
       await Promise.all(
-        this.pointsConfig.map((config) => {
+        this.milestonePointsConfig.map((config) => {
           if (count >= config.count) {
             return this.repo.pointEvent.upsert({
               where: {
@@ -73,7 +70,7 @@ export class TransactionSentHandler implements PointsEventsHandler {
                 transaction: { connect: { hash: tx.hash } },
                 type: PointEventType.TransactionsSentMilestone,
                 data: String(config.count),
-                value: config.reward,
+                value: config.points,
               },
             });
           }
@@ -85,6 +82,120 @@ export class TransactionSentHandler implements PointsEventsHandler {
   }
 }
 
-export const pointsEventsService = new PointsEventsService(db, [
-  new TransactionSentHandler(db, [{ count: 1, reward: 1 }]),
-]);
+export class UniqueChainTransactionHandler implements PointsEventsHandler {
+  constructor(
+    private repo: PrismaClient,
+    private pointsPerUniqueChainTransaction: number
+  ) {}
+
+  async handle(tx: Transaction): Promise<PointEvent[]> {
+    const chainTxCount = await this.repo.transaction.count({
+      where: { from: tx.from, chainId: tx.chainId },
+    });
+
+    if (chainTxCount > 1) {
+      return [];
+    }
+
+    // assign one point for the transaction
+    const event = await this.repo.pointEvent.upsert({
+      where: {
+        transactionHash_type_data: {
+          transactionHash: tx.hash,
+          type: PointEventType.UniqueChainUse,
+          data: tx.chainId,
+        },
+      },
+      update: {},
+      create: {
+        transaction: { connect: { hash: tx.hash } },
+        type: PointEventType.UniqueChainUse,
+        data: tx.chainId,
+        value: this.pointsPerUniqueChainTransaction
+      },
+    });
+
+    return [event];
+  }
+}
+
+export class TokenSwapHandler implements PointsEventsHandler {
+  constructor(
+    private repo: PrismaClient,
+    private pointsPerSwap: number
+  ) {}
+
+  async handle(tx: Transaction): Promise<PointEvent[]> {
+    if (tx.action !== TransactionAction.SWAP) {
+      return [];
+    }
+
+    // assign one point for the transaction
+    const event = await this.repo.pointEvent.upsert({
+      where: {
+        transactionHash_type_data: {
+          transactionHash: tx.hash,
+          type: PointEventType.TokenSwap,
+          data: "",
+        },
+      },
+      update: {},
+      create: {
+        transaction: { connect: { hash: tx.hash } },
+        type: PointEventType.TokenSwap,
+        data: "",
+        value: this.pointsPerSwap
+      },
+    });
+
+    return [event];
+  }
+
+}
+
+export class DaysActiveHandler implements PointsEventsHandler {
+  constructor(
+    private repo: PrismaClient,
+    private milestonePointsConfig: { count: number; points: number }[]
+  ) {}
+
+  async handle(tx: Transaction): Promise<PointEvent[]> {
+    // assign milestone points
+    const [{ count }] = await this.repo.$queryRawUnsafe<{ count: number }[]>(
+      // use substr to get the first 10 characters of the timestamp 2025-04-08..
+      `
+      SELECT COUNT(DISTINCT substr("timestamp", 1, 10)) as count 
+      FROM "Transaction"
+      WHERE "from" = $1
+    `,
+      tx.from
+    );
+
+    const milestoneEvents = (
+      await Promise.all(
+        this.milestonePointsConfig.map((config) => {
+          if (count >= config.count) {
+            return this.repo.pointEvent.upsert({
+              where: {
+                transactionHash_type_data: {
+                  transactionHash: tx.hash,
+                  type: PointEventType.DaysActive,
+                  data: String(config.count),
+                },
+              },
+              update: {},
+              create: {
+                transaction: { connect: { hash: tx.hash } },
+                type: PointEventType.DaysActive,
+                data: String(config.count),
+                value: config.points,
+              },
+            });
+          }
+        })
+      )
+    ).filter((e) => !!e) as PointEvent[];
+
+    return milestoneEvents;
+  }
+}
