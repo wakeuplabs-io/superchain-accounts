@@ -20,7 +20,7 @@ const router = Router();
 
 const transactionService = new TransactionService(db);
 
-const pointsEventsService = new PointsEventsService([
+const pointsEventsService = new PointsEventsService(db, [
   new TransactionSentPointsEventsHandler(db, 1, [
     { count: 10, points: 10 },
     { count: 50, points: 50 },
@@ -35,7 +35,7 @@ const pointsEventsService = new PointsEventsService([
   new TokenSwapPointsEventsHandler(db, 5),
 ]);
 
-const badgesEventsService = new BadgeEventsService([
+const badgesEventsService = new BadgeEventsService(db, [
   new TransactionSentBadgeEventsHandler(db, [10, 50, 100]),
   new DaysActiveBadgeEventsHandler(db, [10, 50, 100]),
   new DefiInteractionsBadgeEventsHandler(db, [10, 50, 100]),

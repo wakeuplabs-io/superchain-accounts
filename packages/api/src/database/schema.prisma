@@ -37,6 +37,7 @@ model PointEvent {
   minted Boolean        @default(false)
   value  Int
 
+  // transaction where the point or milestone has been achieved
   transaction     Transaction @relation(fields: [transactionHash], references: [hash])
   transactionHash String
 
@@ -57,7 +58,9 @@ model BadgeEvent {
   data   String // Any extra data associated to the type, number of days active, etc
   minted Boolean        @default(false)
 
-  transactions Transaction[]
+  // transaction where the point or milestone has been achieved
+  transaction     Transaction @relation(fields: [transactionHash], references: [hash])
+  transactionHash String
 
   @@unique([type, data])
 }

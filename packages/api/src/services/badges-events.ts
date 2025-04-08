@@ -4,14 +4,30 @@ import {
   BadgeEventType,
   BadgeEvent,
   TransactionAction,
+  Prisma,
 } from "@prisma/client";
 
 interface BadgeEventsHandler {
   handle(tx: Transaction): Promise<BadgeEvent[]>;
 }
 
+export type BadgeEventWithTransaction = Prisma.BadgeEventGetPayload<{
+  include: { transaction: true };
+}>;
+
+
 export class BadgeEventsService {
-  constructor(private handlers: BadgeEventsHandler[]) {}
+  constructor(
+    private repo: PrismaClient,
+    private handlers: BadgeEventsHandler[]
+  ) {}
+
+  async getUserBadges(address: string): Promise<BadgeEventWithTransaction[]> {
+    return this.repo.badgeEvent.findMany({
+      where: { transaction: { from: address } },
+      include: { transaction: true },
+    });
+  }
 
   async handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]> {
     const events = await Promise.all(
@@ -46,7 +62,7 @@ export class TransactionSentBadgeEventsHandler implements BadgeEventsHandler {
               },
               update: {},
               create: {
-                transactions: { connect: { hash: tx.hash } },
+                transaction: { connect: { hash: tx.hash } },
                 type: BadgeEventType.TransactionsSent,
                 data: String(threshold),
               },
@@ -88,7 +104,7 @@ export class DaysActiveBadgeEventsHandler implements BadgeEventsHandler {
               },
               update: {},
               create: {
-                transactions: { connect: { hash: tx.hash } },
+                transaction: { connect: { hash: tx.hash } },
                 type: BadgeEventType.DaysActive,
                 data: String(threshold),
               },
@@ -128,7 +144,7 @@ export class DefiInteractionsBadgeEventsHandler implements BadgeEventsHandler {
               },
               update: {},
               create: {
-                transactions: { connect: { hash: tx.hash } },
+                transaction: { connect: { hash: tx.hash } },
                 type: BadgeEventType.DefiInteractions,
                 data: String(threshold),
               },

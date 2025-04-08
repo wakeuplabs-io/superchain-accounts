@@ -4,14 +4,29 @@ import {
   PointEventType,
   PrismaClient,
   TransactionAction,
+  Prisma,
 } from "@prisma/client";
 
 interface PointsEventsHandler {
   handle(tx: Transaction): Promise<PointEvent[]>;
 }
 
+export type PointEventWithTransaction = Prisma.PointEventGetPayload<{
+  include: { transaction: true };
+}>;
+
 export class PointsEventsService {
-  constructor(private handlers: PointsEventsHandler[]) {}
+  constructor(
+    private repo: PrismaClient,
+    private handlers: PointsEventsHandler[]
+  ) {}
+
+  async getUserPoints(address: string): Promise<PointEventWithTransaction[]> {
+    return this.repo.pointEvent.findMany({
+      where: { transaction: { from: address } },
+      include: { transaction: true },
+    });
+  }
 
   async handleNewTransaction(tx: Transaction): Promise<PointEvent[]> {
     const events = await Promise.all(

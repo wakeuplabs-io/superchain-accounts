@@ -1,18 +1,10 @@
 import {
   BadgeEvent,
   BadgeEventType,
-  PointEvent,
   PointEventType,
   Transaction,
   TransactionAction,
 } from "@prisma/client";
-import {
-  DaysActivePointsEventsHandler,
-  PointsEventsService,
-  TokenSwapPointsEventsHandler,
-  TransactionSentPointsEventsHandler,
-  UniqueChainTransactionPointsEventsHandler,
-} from "./points-events";
 import {
   BadgeEventsService,
   DaysActiveBadgeEventsHandler,
@@ -35,9 +27,12 @@ const mockBadgeEvent: BadgeEvent = {
   type: PointEventType.TransactionsSent,
   data: "0x0",
   minted: false,
+  transactionHash: "0x123",
 };
 
 describe("BadgeEventsService", () => {
+  const db = jestPrisma.client;
+  
   it("Should call all handlers with transaction and return all events", async () => {
     const tx: Transaction = mockTransfer;
 
@@ -51,7 +46,7 @@ describe("BadgeEventsService", () => {
       handle: jest.fn().mockResolvedValue([mockBadgeEvent2]),
     };
 
-    const service = new BadgeEventsService([handler1, handler2]);
+    const service = new BadgeEventsService(db, [handler1, handler2]);
 
     const result = await service.handleNewTransaction(tx);
 

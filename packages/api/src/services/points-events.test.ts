@@ -32,6 +32,8 @@ const mockPointEvent: PointEvent = {
 };
 
 describe("PointsEventsService", () => {
+  const db = jestPrisma.client;
+
   it("Should call all handlers with transaction and return all events", async () => {
     const tx: Transaction = mockTransfer;
 
@@ -46,7 +48,7 @@ describe("PointsEventsService", () => {
       handle: jest.fn().mockResolvedValue([mockEvent2]),
     };
 
-    const service = new PointsEventsService([handler1, handler2]);
+    const service = new PointsEventsService(db, [handler1, handler2]);
 
     const result = await service.handleNewTransaction(tx);
 
