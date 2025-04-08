@@ -1,16 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./client"
 }
 
 datasource db {
-  // postgres for prod
-  // provider = "postgresql"
-  // url      = env("DATABASE_URL")
-
-  // sqlite for local testing
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 enum TransactionAction {

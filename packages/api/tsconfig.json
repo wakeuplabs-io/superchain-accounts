@@ -19,6 +19,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "types": ["@types/jest", "@quramy/jest-prisma"]
   }
 }
