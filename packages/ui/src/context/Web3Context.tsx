@@ -3,6 +3,10 @@ import { createContext, useContext, ReactNode, useState, useRef, useEffect, useM
 import { Address, Chain, createPublicClient, http, PublicClient } from "viem";
 import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
 
+import optimismChainLogo from "@/assets/logos/optimism-chain-logo.svg";
+import baseChainLogo from "@/assets/logos/base-chain-logo.svg";
+import unichainChainLogo from "@/assets/logos/unichain-chain-logo.svg";
+
 const envVars = envParsed();
 
 const DEFAULT_CHAIN_ID = 11155420; // Optimism Sepolia
@@ -12,6 +16,7 @@ interface SmartAccountChain {
     rpcUrl: string;
     bundlerUrl: string;
     entryPointAddress: Address;
+    logo: string;
     order: number;
 }
 
@@ -21,6 +26,7 @@ export const supportedChains: Record<number, SmartAccountChain> = {
     rpcUrl: envVars.RPC_OPTIMISM_SEPOLIA,
     bundlerUrl: envVars.BUNDLER_OPTIMISM_SEPOLIA,
     entryPointAddress: envVars.ENTRYPOINT_OPTIMISM_SEPOLIA,
+    logo: optimismChainLogo,
     order: 1,
   },
   [baseSepolia.id]: {
@@ -28,6 +34,7 @@ export const supportedChains: Record<number, SmartAccountChain> = {
     rpcUrl: envVars.RPC_BASE_SEPOLIA,
     bundlerUrl: envVars.BUNDLER_BASE_SEPOLIA,
     entryPointAddress: envVars.ENTRYPOINT_BASE_SEPOLIA,
+    logo: baseChainLogo,
     order: 2,
   },
   [unichainSepolia.id]: {
@@ -35,6 +42,7 @@ export const supportedChains: Record<number, SmartAccountChain> = {
     rpcUrl: envVars.RPC_UNICHAIN_SEPOLIA,
     bundlerUrl: envVars.BUNDLER_UNICHAIN_SEPOLIA,
     entryPointAddress: envVars.ENTRYPOINT_UNICHAIN_SEPOLIA,
+    logo: unichainChainLogo,
     order: 3,
   },
 };
