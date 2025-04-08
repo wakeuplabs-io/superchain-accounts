@@ -1,7 +1,6 @@
 {
   "name": "api",
   "version": "0.0.0",
-  "type": "module",
   "main": "dist/app.js",
   "scripts": {
     "prepare": "ts-patch install -s",
@@ -18,7 +17,8 @@
   "author": "",
   "license": "ISC",
   "prisma": {
-    "schema": "src/database/schema.prisma"
+    "schema": "src/database/schema.prisma",
+    "seed": "ts-node src/database/seed.ts"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.146",
@@ -32,8 +32,9 @@
     "prisma": "^6.5.0",
     "rimraf": "5.0.5",
     "serverless-esbuild": "^1.54.6",
+    "ts-node": "^10.9.2",
     "tsx": "4.11.0",
-    "typescript": "5.4.4",
+    "typescript": "^5.4.4",
     "typescript-transform-paths": "3.4.7"
   },
   "dependencies": {

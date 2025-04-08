@@ -1,4 +1,4 @@
-import envParsed from "@/envParsed.js";
+import envParsed from "@/envParsed";
 import { createPublicClient, http, PublicClient } from "viem";
 
 const TRANSPORTS_URLS: {

@@ -1,5 +1,5 @@
-import envParsed from "@/envParsed.js";
-import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
+import envParsed from "@/envParsed";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 class UserService {
   private readonly table = envParsed().USERS_TABLE;

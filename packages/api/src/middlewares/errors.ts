@@ -1,4 +1,4 @@
-import envParsed from "@/envParsed.js";
+import envParsed from "@/envParsed";
 import { Request, Response, NextFunction } from "express";
 
 export const STATUS_CODES = {

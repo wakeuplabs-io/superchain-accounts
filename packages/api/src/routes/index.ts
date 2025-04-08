@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import userRoute from "./users/route.js";
-import badgesRoute from "./badges/route.js";
-import pointsRoute from "./points/route.js";
-import transactionsRoute from "./transactions/route.js";
-import healthRoute from "./health/route.js";
+import userRoute from "./users/route";
+import badgesRoute from "./badges/route";
+import pointsRoute from "./points/route";
+import transactionsRoute from "./transactions/route";
+import healthRoute from "./health/route";
 
 const router = Router();
 

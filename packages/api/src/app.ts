@@ -3,9 +3,9 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import serverless from "serverless-http";
-import envParsed from "@/envParsed.js";
-import middlewares from "@/middlewares/index.js";
-import routes from "@/routes/index.js";
+import envParsed from "@/envParsed";
+import middlewares from "@/middlewares/index";
+import routes from "@/routes/index";
 
 const app = express();
 

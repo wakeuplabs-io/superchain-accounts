@@ -1,10 +1,16 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./client"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // postgres for prod
+  // provider = "postgresql"
+  // url      = env("DATABASE_URL")
+
+  // sqlite for local testing
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 enum TransactionAction {
@@ -29,19 +35,40 @@ model Transaction {
   @@unique([hash, from])
 }
 
-// It'll be further implemented later in OSA-80
 model PointEvent {
-  id     Int     @id @default(autoincrement())
-  minted Boolean
+  id     Int            @id @default(autoincrement())
+  type   PointEventType
+  data   String // Any extra data, like specs on the milestone or so on
+  minted Boolean        @default(false)
+  value  Int
 
   transaction     Transaction @relation(fields: [transactionHash], references: [hash])
   transactionHash String
+
+  @@unique([transactionHash, type, data])
 }
 
-// It'll be further implemented later in OSA-80
+enum PointEventType {
+  TransactionsSent
+  TransactionsSentMilestone
+  TokenSwap
+  UniqueChainUse
+  DaysActive
+}
+
 model BadgeEvent {
-  id     Int     @id @default(autoincrement())
-  minted Boolean
+  id     Int            @id @default(autoincrement())
+  type   BadgeEventType
+  data   String // Any extra data associated to the type, number of days active, etc
+  minted Boolean        @default(false)
 
   transactions Transaction[]
+
+  @@unique([type, data])
+}
+
+enum BadgeEventType {
+  DaysActive
+  TransactionsSent
+  DefiInteractions
 }
