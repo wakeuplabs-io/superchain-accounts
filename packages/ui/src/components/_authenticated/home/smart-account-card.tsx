@@ -1,7 +1,7 @@
 import { ActionButton } from "./action-button";
 import { Download } from "lucide-react";
 import { useState } from "react";
-import { ReceiveTokensDialog } from "@/components/_authenticated/smart-account-card/receive-tokens-dialog";
+import { ReceiveTokensDialog } from "@/components/_authenticated/home/receive-tokens-dialog";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
 
