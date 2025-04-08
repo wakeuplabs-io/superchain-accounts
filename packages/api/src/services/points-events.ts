@@ -3,7 +3,7 @@ import {
   Transaction,
   PointEventType,
   PrismaClient,
-  TransactionAction
+  TransactionAction,
 } from "@prisma/client";
 
 interface PointsEventsHandler {
@@ -82,7 +82,9 @@ export class TransactionSentPointsEventsHandler implements PointsEventsHandler {
   }
 }
 
-export class UniqueChainTransactionPointsEventsHandler implements PointsEventsHandler {
+export class UniqueChainTransactionPointsEventsHandler
+  implements PointsEventsHandler
+{
   constructor(
     private repo: PrismaClient,
     private pointsPerUniqueChainTransaction: number
@@ -111,7 +113,7 @@ export class UniqueChainTransactionPointsEventsHandler implements PointsEventsHa
         transaction: { connect: { hash: tx.hash } },
         type: PointEventType.UniqueChainUse,
         data: tx.chainId,
-        value: this.pointsPerUniqueChainTransaction
+        value: this.pointsPerUniqueChainTransaction,
       },
     });
 
@@ -144,13 +146,12 @@ export class TokenSwapPointsEventsHandler implements PointsEventsHandler {
         transaction: { connect: { hash: tx.hash } },
         type: PointEventType.TokenSwap,
         data: "",
-        value: this.pointsPerSwap
+        value: this.pointsPerSwap,
       },
     });
 
     return [event];
   }
-
 }
 
 export class DaysActivePointsEventsHandler implements PointsEventsHandler {
@@ -175,21 +176,25 @@ export class DaysActivePointsEventsHandler implements PointsEventsHandler {
       await Promise.all(
         this.milestonePointsConfig.map((config) => {
           if (count >= config.count) {
-            return this.repo.pointEvent.upsert({
-              where: {
-                transactionHash_type_data: {
-                  transactionHash: tx.hash,
+            // upsert won't work here, we can met conditions in multiple txs
+            return this.repo.$transaction(async (dbTx) => {
+              const existing = await dbTx.pointEvent.findFirst({
+                where: {
                   type: PointEventType.DaysActive,
                   data: String(config.count),
                 },
-              },
-              update: {},
-              create: {
-                transaction: { connect: { hash: tx.hash } },
-                type: PointEventType.DaysActive,
-                data: String(config.count),
-                value: config.points,
-              },
+              });
+
+              if (!existing) {
+                return await dbTx.pointEvent.create({
+                  data: {
+                    transaction: { connect: { hash: tx.hash } },
+                    type: PointEventType.DaysActive,
+                    data: String(config.count),
+                    value: config.points,
+                  },
+                });
+              }
             });
           }
         })
