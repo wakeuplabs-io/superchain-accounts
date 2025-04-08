@@ -3,21 +3,26 @@ import { TransactionService } from "@/services/transactions";
 import { Router, Request, Response } from "express";
 import { normalizeSendUserOperation } from "./normalizer";
 import {
-  DaysActiveHandler,
+  DaysActivePointsEventsHandler,
   PointsEventsService,
-  TokenSwapHandler,
-  TransactionSentHandler,
-  UniqueChainTransactionHandler,
+  TokenSwapPointsEventsHandler,
+  TransactionSentPointsEventsHandler,
+  UniqueChainTransactionPointsEventsHandler,
 } from "@/services/points-events";
+import { BadgeEventsService, TransactionSentBadgeEventsHandler } from "@/services/badges-events";
 
 const router = Router();
 const transactionService = new TransactionService(db);
 
 const pointsEventsService = new PointsEventsService([
-  new TransactionSentHandler(db, 1, [{ count: 2, points: 1 }]),
-  new TokenSwapHandler(db, 2),
-  new UniqueChainTransactionHandler(db, 5),
-  new DaysActiveHandler(db, [{ count: 2, points: 1 }]),
+  new TransactionSentPointsEventsHandler(db, 1, [{ count: 2, points: 1 }]),
+  new TokenSwapPointsEventsHandler(db, 2),
+  new UniqueChainTransactionPointsEventsHandler(db, 5),
+  new DaysActivePointsEventsHandler(db, [{ count: 2, points: 1 }]),
+]);
+
+const badgesEventsService = new BadgeEventsService([
+  new TransactionSentBadgeEventsHandler(db, [1,10,100]),
 ]);
 
 router.post("/send", async (req: Request, res: Response) => {
@@ -27,12 +32,14 @@ router.post("/send", async (req: Request, res: Response) => {
 
   // determine points events
   const points = await pointsEventsService.handleNewTransaction(tx);
+  const badges = await badgesEventsService.handleNewTransaction(tx);
 
   return res.send({
     message: "Transaction sent",
     data: {
       transaction: tx,
       points: points,
+      badges: badges
     },
   });
 });

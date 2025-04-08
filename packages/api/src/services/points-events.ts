@@ -22,7 +22,7 @@ export class PointsEventsService {
   }
 }
 
-export class TransactionSentHandler implements PointsEventsHandler {
+export class TransactionSentPointsEventsHandler implements PointsEventsHandler {
   constructor(
     private repo: PrismaClient,
     private pointsPerTx: number,
@@ -82,7 +82,7 @@ export class TransactionSentHandler implements PointsEventsHandler {
   }
 }
 
-export class UniqueChainTransactionHandler implements PointsEventsHandler {
+export class UniqueChainTransactionPointsEventsHandler implements PointsEventsHandler {
   constructor(
     private repo: PrismaClient,
     private pointsPerUniqueChainTransaction: number
@@ -119,7 +119,7 @@ export class UniqueChainTransactionHandler implements PointsEventsHandler {
   }
 }
 
-export class TokenSwapHandler implements PointsEventsHandler {
+export class TokenSwapPointsEventsHandler implements PointsEventsHandler {
   constructor(
     private repo: PrismaClient,
     private pointsPerSwap: number
@@ -153,7 +153,7 @@ export class TokenSwapHandler implements PointsEventsHandler {
 
 }
 
-export class DaysActiveHandler implements PointsEventsHandler {
+export class DaysActivePointsEventsHandler implements PointsEventsHandler {
   constructor(
     private repo: PrismaClient,
     private milestonePointsConfig: { count: number; points: number }[]
