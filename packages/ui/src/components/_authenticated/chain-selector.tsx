@@ -18,7 +18,7 @@ export function ChainSelector() {
               })}
           >
             <img className="w-5 h-5" src={logo} />
-            <div className={clsx("hidden lg:flex lg:flex-row lg:items-center gap-2 text-custom-slate-400", {
+            <div className={clsx("hidden lg:flex lg:flex-row lg:items-baseline gap-2 text-custom-slate-400", {
               "text-black": selected,
             })}>
               <span className='text-base font-semibold'>{data.name}</span>
