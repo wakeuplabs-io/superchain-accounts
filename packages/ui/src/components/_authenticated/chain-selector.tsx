@@ -18,8 +18,9 @@ export function ChainSelector() {
               })}
           >
             <img className="w-5 h-5" src={logo} />
-            <div className={clsx("hidden lg:flex lg:flex-row lg:items-baseline gap-2 text-custom-slate-400", {
+            <div className={clsx("hidden lg:flex lg:flex-row lg:items-baseline gap-2", {
               "text-black": selected,
+              "text-custom-slate-400": !selected,
             })}>
               <span className='text-base font-semibold'>{data.name}</span>
               {selected && <span className="text-sm">Connected</span>}
