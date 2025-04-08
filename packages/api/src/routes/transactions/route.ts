@@ -9,7 +9,12 @@ import {
   TransactionSentPointsEventsHandler,
   UniqueChainTransactionPointsEventsHandler,
 } from "@/services/points-events";
-import { BadgeEventsService, TransactionSentBadgeEventsHandler } from "@/services/badges-events";
+import {
+  BadgeEventsService,
+  DaysActiveBadgeEventsHandler,
+  DefiInteractionsBadgeEventsHandler,
+  TransactionSentBadgeEventsHandler,
+} from "@/services/badges-events";
 
 const router = Router();
 const transactionService = new TransactionService(db);
@@ -22,7 +27,9 @@ const pointsEventsService = new PointsEventsService([
 ]);
 
 const badgesEventsService = new BadgeEventsService([
-  new TransactionSentBadgeEventsHandler(db, [1,10,100]),
+  new TransactionSentBadgeEventsHandler(db, [1, 10, 100]),
+  new DaysActiveBadgeEventsHandler(db, [1, 10, 100]),
+  new DefiInteractionsBadgeEventsHandler(db, [1, 10, 100]),
 ]);
 
 router.post("/send", async (req: Request, res: Response) => {
@@ -39,7 +46,7 @@ router.post("/send", async (req: Request, res: Response) => {
     data: {
       transaction: tx,
       points: points,
-      badges: badges
+      badges: badges,
     },
   });
 });

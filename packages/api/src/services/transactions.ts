@@ -1,5 +1,5 @@
 import { zeroAddress } from "viem";
-import { PrismaClient, Transaction } from "@/database/client";
+import { PrismaClient, Transaction } from "@prisma/client";
 import { UserOperation } from "viem/account-abstraction";
 import { BundlerFactory } from "./bundler-factory";
 import { ProviderFactory } from "./provider-factory";
@@ -35,6 +35,7 @@ export class TransactionService {
         value: tx.value.toString() as string,
         data: tx.input as string,
         action: DomainTransaction.typeFromReceipt(receipt.receipt),
+        chainId: chainId.toString(),
       },
     });
   }

@@ -4,7 +4,7 @@ import {
   PointEventType,
   PrismaClient,
   TransactionAction
-} from "@/database/client";
+} from "@prisma/client";
 
 interface PointsEventsHandler {
   handle(tx: Transaction): Promise<PointEvent[]>;
