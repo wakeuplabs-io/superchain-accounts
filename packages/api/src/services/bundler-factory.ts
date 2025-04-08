@@ -3,12 +3,26 @@ import { ProviderFactory } from "./provider-factory";
 import { http } from "viem";
 import envParsed from "@/envParsed";
 
-const TRANSPORTS_URLS: {
-  [key: number]: string;
+type ChainData = {
+  bundlerUrl: string;
+  entryPoint: string;
+};
+
+export const CHAIN_DATA: {
+  [key: number]: ChainData;
 } = {
-  1301: envParsed().BUNDLER_UNICHAIN_SEPOLIA,
-  84532: envParsed().BUNDLER_BASE_SEPOLIA,
-  11155420: envParsed().BUNDLER_OPTIMISM_SEPOLIA
+  1301: {
+    bundlerUrl: envParsed().BUNDLER_UNICHAIN_SEPOLIA,
+    entryPoint: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,
+  },
+  84532: {
+    bundlerUrl: envParsed().BUNDLER_BASE_SEPOLIA,
+    entryPoint: envParsed().ENTRYPOINT_BASE_SEPOLIA,
+  },
+  11155420: {
+    bundlerUrl: envParsed().BUNDLER_OPTIMISM_SEPOLIA,
+    entryPoint: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
+  },
 };
 
 export class BundlerFactory {
@@ -23,7 +37,7 @@ export class BundlerFactory {
 
     this.clients[chainId] = createBundlerClient({
       client: ProviderFactory.getProvider(chainId),
-      transport: http(TRANSPORTS_URLS[chainId]),
+      transport: http(CHAIN_DATA[chainId].bundlerUrl),
     });
 
     return this.clients[chainId] as BundlerClient;

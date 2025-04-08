@@ -1,11 +1,16 @@
-import { router } from "@/shared/config/tanstackRouter";
-import { RouterProvider } from "@tanstack/react-router";
-import { useSuperChainStore } from "./core/store";
+import { Web3Provider } from "./context/Web3Context";
+import { AuthProvider } from "./context/AuthContext";
+import { RouterProvider } from "./hoc/RouterProvider";
+
 
 function App() {
-  const authHandler = useSuperChainStore((state => state.authHandler));
-
-  return <RouterProvider router={router} context={{authHandler}} />;
+  return (
+    <Web3Provider>
+      <AuthProvider>
+        <RouterProvider />
+      </AuthProvider>
+    </Web3Provider>
+  );
 }
 
 export default App;

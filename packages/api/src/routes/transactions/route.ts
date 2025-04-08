@@ -33,9 +33,16 @@ const badgesEventsService = new BadgeEventsService([
 ]);
 
 router.post("/send", async (req: Request, res: Response) => {
-  const { chainId, operation } = normalizeSendUserOperation(req.body);
+  const result = normalizeSendUserOperation(req.body);
 
-  const tx = await transactionService.sendUserOperation(operation, chainId);
+  if(!result.success) {
+    return res.status(400).send({
+      message: "Invalid request",
+      data: result.error.errors,
+    });
+  }
+
+  const tx = await transactionService.sendUserOperation(result.data.operation, result.data.chainId);
 
   // determine points events
   const points = await pointsEventsService.handleNewTransaction(tx);
