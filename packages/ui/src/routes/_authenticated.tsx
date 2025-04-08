@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 import optimismLogo from "@/assets/logos/optimism-logo.svg";
@@ -106,6 +107,7 @@ function AuthenticatedLayout() {
           </Sidebar>
           <main className="flex flex-1 overflow-auto p-8 lg:p-16">
             <div className="w-full flex flex-col gap-4">
+              <SidebarTrigger />
               <Outlet />
             </div>
           </main>

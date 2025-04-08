@@ -21,7 +21,7 @@ export function ChainSelector() {
             <div className={clsx("hidden lg:flex lg:flex-row lg:items-center gap-2 text-custom-slate-400", {
               "text-black": selected,
             })}>
-              <span className='text-md font-semibold'>{data.name}</span>
+              <span className='text-base font-semibold'>{data.name}</span>
               {selected && <span className="text-sm">Connected</span>}
             </div>
           </button>
