@@ -44,6 +44,6 @@ jobs:
       - name: Test All
         run: |
           npm run db:push --workspace=api
-          npm run test --ws
+          npm run test:ci --ws
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/db

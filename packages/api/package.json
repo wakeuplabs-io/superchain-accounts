@@ -10,7 +10,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "test": "jest",
+    "test:ci": "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/db jest --verbose",
+    "test": "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/superchain jest --verbose",
     "postinstall": "prisma generate"
   },
   "keywords": [],
