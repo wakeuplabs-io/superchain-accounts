@@ -26,7 +26,7 @@ describe("SuperchainPoints", function () {
     });
   });
 
-  describe("Contract", function () {
+  describe("Minting", function () {
     it("Should allow owner to mint tokens", async function () {
       const { superchainPoints, owner, addr1 } = await loadFixture(
         deploySuperchainPointsFixture
@@ -39,31 +39,44 @@ describe("SuperchainPoints", function () {
       expect(await superchainPoints.balanceOf(addr1.address)).to.equal(100);
     });
 
-    it("Should allow owner to batch mint tokens", async function () {
-      const { superchainPoints, owner, addr1, addr2 } = await loadFixture(
-        deploySuperchainPointsFixture
-      );
-
-      await expect(
-        superchainPoints
-          .connect(owner)
-          .batchMint([addr1.address, addr2.address], [100, 200])
-      )
-        .to.emit(superchainPoints, "Transfer")
-        .withArgs(hre.ethers.ZeroAddress, addr1.address, 100)
-        .to.emit(superchainPoints, "Transfer")
-        .withArgs(hre.ethers.ZeroAddress, addr2.address, 200);
-
-      expect(await superchainPoints.balanceOf(addr1.address)).to.equal(100);
-      expect(await superchainPoints.balanceOf(addr2.address)).to.equal(200);
-    });
-
     it("Should fail if non-owner tries to mint", async function () {
       const { superchainPoints, addr1 } = await loadFixture(
         deploySuperchainPointsFixture
       );
       await expect(superchainPoints.connect(addr1).mint(addr1.address, 100)).to
         .be.reverted;
+    });
+  });
+
+  describe("Claiming", function () {
+    it("should allow owner to set eligibility", async function () {
+      const { superchainPoints, owner, addr1 } = await loadFixture(
+        deploySuperchainPointsFixture
+      );
+
+      await superchainPoints.connect(owner).addClaimable([addr1.address], [1]);
+
+      expect(await superchainPoints.getClaimable(addr1.address)).to.equal(1n);
+    });
+
+    it("should claim if eligible", async function () {
+      const { superchainPoints, owner, addr1 } = await loadFixture(
+        deploySuperchainPointsFixture
+      );
+
+      await superchainPoints.connect(owner).addClaimable([addr1.address], [1]);
+
+      expect(await superchainPoints.getClaimable(addr1.address)).to.equal(1n);
+      expect(await superchainPoints.connect(addr1).claim()).to.not.be.reverted;
+    });
+
+    it("should revert if not eligible", async function () {
+      const { superchainPoints, addr1 } = await loadFixture(
+        deploySuperchainPointsFixture
+      );
+
+      expect(await superchainPoints.getClaimable(addr1.address)).to.equal(0n);
+      expect(superchainPoints.connect(addr1).claim()).to.be.rejected;
     });
   });
 });
