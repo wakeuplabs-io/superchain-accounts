@@ -11,6 +11,7 @@ import { useWeb3 } from "@/context/Web3Context";
 import { useSuperChainAccount } from "@/context/SmartAccountContext";
 import { tokenService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface ImportTokensDialogProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export const ImportTokensDialog = ({
   const { chain } = useWeb3();
   const { account } = useSuperChainAccount();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ImportUserTokenRequest>({
     resolver: zodResolver(importUserTokenRequestSchema),
@@ -35,6 +37,7 @@ export const ImportTokensDialog = ({
 
   const onSubmit = async (values: ImportUserTokenRequest) => {
     try {
+      setIsSubmitting(true);
       const userToken = await tokenService.importToken(values);
       toast({
         title: "Token imported",
@@ -42,11 +45,19 @@ export const ImportTokensDialog = ({
       });
       onClose();
     } catch (error) {
+      let description = "";
+
+      if(error instanceof Error) {
+        description = error.message;
+      }
+
       toast({
         title: "Import Token failed",
-        description: error.message ?? "",
         variant: "destructive",
+        description,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -79,6 +90,7 @@ export const ImportTokensDialog = ({
                   variant="confirm"
                   type="submit"
                   className="w-full"
+                  loading={isSubmitting}
                 >
                 Continue
                 </Button>
