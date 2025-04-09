@@ -13,10 +13,11 @@ export interface IPointsEventsHandler {
 }
 
 export interface IPointsEventsService {
-  getUserPoints(address: string): Promise<PointEventWithTransaction[]>;
-
+  getUserPoints(
+    address: string,
+    opts: { chainId?: string; limit?: number }
+  ): Promise<PointEventWithTransaction[]>;
   handleNewTransaction(tx: Transaction): Promise<PointEvent[]>;
-
   submit(): Promise<void>;
 }
 
@@ -31,10 +32,14 @@ export class PointsEventsService implements IPointsEventsService {
     private superchainPointsService: ISuperchainPointsService
   ) {}
 
-  async getUserPoints(address: string): Promise<PointEventWithTransaction[]> {
+  async getUserPoints(
+    address: string,
+    opts: { chainId?: string; limit?: number }
+  ): Promise<PointEventWithTransaction[]> {
     return this.repo.pointEvent.findMany({
-      where: { transaction: { from: address } },
+      where: { transaction: { from: address }, chainId: opts?.chainId },
       include: { transaction: true },
+      take: opts?.limit,
     });
   }
 

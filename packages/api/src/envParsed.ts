@@ -39,6 +39,7 @@ const envSchema = z
     OWNER_PRIVATE_KEY: z.string().startsWith("0x"),
     SUPERCHAIN_BADGES_ADDRESS: z.string().startsWith("0x"),
     SUPERCHAIN_POINTS_ADDRESS: z.string().startsWith("0x"),
+    CRONJOB_KEY: z.string(),
   })
   .required();
 

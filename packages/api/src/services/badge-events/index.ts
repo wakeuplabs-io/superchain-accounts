@@ -12,7 +12,10 @@ export interface BadgeEventsHandler {
 }
 
 export interface IBadgesEventsService {
-  getUserBadges(address: string): Promise<BadgeEventWithTransaction[]>;
+  getUserBadges(
+    address: string,
+    opts: { chainId?: string; limit?: number }
+  ): Promise<BadgeEventWithTransaction[]>;
   handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]>;
   submit(): Promise<void>;
 }
@@ -29,10 +32,11 @@ export class BadgeEventsService implements IBadgesEventsService {
     private badgeToTokenId: Map<BadgeEventType, Map<Number, bigint>>
   ) {}
 
-  async getUserBadges(address: string): Promise<BadgeEventWithTransaction[]> {
+  async getUserBadges(address: string, opts?: { chainId?: string, limit?: number }): Promise<BadgeEventWithTransaction[]> {
     return this.repo.badgeEvent.findMany({
-      where: { transaction: { from: address } },
+      where: { transaction: { from: address }, chainId: opts?.chainId },
       include: { transaction: true },
+      take: opts?.limit
     });
   }
 

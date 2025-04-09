@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { IBadgesEventsService } from "@/services/badge-events";
+import envParsed from "@/envParsed";
 
 export default function buildBadgesRoutes(
   badgeEventsService: IBadgesEventsService
@@ -8,7 +9,7 @@ export default function buildBadgesRoutes(
 
   router.post("/submit", async (req, res) => {
     // verify api key
-    if (req.headers["x-api-key"] !== process.env.API_KEY) {
+    if (req.headers["x-cron-key"] !== envParsed().CRONJOB_KEY) {
       return res.status(401).send({ message: "Unauthorized" });
     }
 
@@ -17,10 +18,13 @@ export default function buildBadgesRoutes(
 
   router.get("/:address", async (req, res) => {
     const address = req.params.address;
+    const chainId = req.query.chainId as string;
+    const limit = req.query.limit;
 
-    // TODO: filter by chain, and limit
-
-    const badgesEvents = await badgeEventsService.getUserBadges(address);
+    const badgesEvents = await badgeEventsService.getUserBadges(address, {
+      chainId,
+      limit: limit ? Number(limit) : undefined,
+    });
 
     res.send({ data: { badges: badgesEvents } });
   });
