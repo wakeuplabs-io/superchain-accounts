@@ -75,3 +75,16 @@ enum BadgeEventType {
   DaysActive
   DefiInteractions
 }
+
+model UserToken {
+  id          Int     @id @default(autoincrement())
+  userAddress String
+  chainId     Int
+  address     String
+  name        String
+  symbol      String
+  decimals    Int
+  logoURI     String?
+
+  @@unique([userAddress, address])
+}
