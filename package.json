@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "dev": "concurrently --kill-others \"npm run dev --workspace=packages/schemas\" \"npm run dev --workspace=packages/api\" \"npm run dev --workspace=packages/ui\"",
-    "build": "npm run build --ws",
+    "build": "npm run build --workspace=packages/schemas && npm run build --ws",
     "package:api": "npm  run build --workspace=packages/api && serverless package --config serverless-api.yml",
     "deploy:api:staging": "npm run build --workspace=packages/api && serverless deploy --config serverless-api.yml --verbose ",
     "deploy:app:staging": "sst deploy --stage=staging --print-logs"

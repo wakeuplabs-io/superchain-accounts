@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import tokenMetadata from "./token-metadata.json" with { type: "json" };
+import tokenMetadata from "./token-metadata.json";
 import { ImportUserTokenRequest } from "schemas";
 import { ProviderFactory } from "./provider-factory.js";
 import { Address, getContract } from "viem";
