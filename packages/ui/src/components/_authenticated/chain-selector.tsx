@@ -1,4 +1,4 @@
-import { supportedChains } from "@/hoc/web3-provider";
+import { supportedChains } from "@/config/chains";
 import { useWeb3 } from "@/hooks/use-web3";
 import clsx from "clsx";
 

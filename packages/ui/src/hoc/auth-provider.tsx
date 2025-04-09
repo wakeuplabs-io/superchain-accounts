@@ -1,5 +1,5 @@
 import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
-import { createContext, ReactNode, useCallback, useEffect, useRef } from "react";
+import { createContext, ReactNode, useCallback, useMemo, useRef } from "react";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -7,7 +7,6 @@ export interface AuthContextType {
   login: () => Promise<void>;
   logout: () => Promise<void>;
   getProvider: () => TorusInpageProvider;
-  torus: React.MutableRefObject<Torus>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -31,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           host: "https://sepolia.optimism.io",
           chainId: 11155420,
           networkName: "Optimism Sepolia",
-        }
+        },
       });
     }
 
@@ -53,24 +52,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [torus]);
 
   const getProvider = () => {
-    // if (!torus.current.isInitialized) {
-    //   await initialize();
-    // }
     return torus.current.provider;
   };
 
-  // useEffect(() => {
-  //   initialize();
-  // }, [torus]);
-
-  const value = {
-    isAuthenticated: torus.current.isLoggedIn,
-    initialize,
-    login,
-    logout,
-    getProvider,
-    torus,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: torus.current.isLoggedIn,
+        initialize,
+        login,
+        logout,
+        getProvider,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }

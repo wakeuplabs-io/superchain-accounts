@@ -2,7 +2,6 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import React from "react";
 import envParsed from "@/envParsed";
 import { Toaster } from "@/components/ui/toaster";
-import { SuperChainAccountProvider } from "@/hoc/smart-account-provider";
 import { AuthContextType } from "@/hoc/auth-provider";
 
 const TanStackRouterDevtools = envParsed().PROD
@@ -17,14 +16,12 @@ export const Route = createRootRouteWithContext<{
   auth: AuthContextType | null;
 }>()({
   component: () => (
-    <SuperChainAccountProvider>
-      <div className="w-screen h-screen">
-        <main className="min-h-screen bg-gray-100">
-          <Outlet />
-          <Toaster />
-        </main>
-        <TanStackRouterDevtools />
-      </div>
-    </SuperChainAccountProvider>
+    <div className="w-screen h-screen">
+      <main className="min-h-screen bg-gray-100">
+        <Outlet />
+        <Toaster />
+      </main>
+      <TanStackRouterDevtools />
+    </div>
   ),
 });

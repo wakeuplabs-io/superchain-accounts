@@ -10,7 +10,7 @@ export const ClaimRaffleTicketsButton: React.FC<{}> = () => {
     return null;
   }
   return (
-    <Link to="/" className="h-[70px] rounded-lg p-3 flex flex-col justify-between bg-[linear-gradient(-25deg,_#FF6375,_#FF0420,_#FF6375)] text-white">
+    <Link to="/profile" className="h-[70px] rounded-lg p-3 flex flex-col justify-between bg-[linear-gradient(-25deg,_#FF6375,_#FF0420,_#FF6375)] text-white">
       <div className="flex items-center gap-2">
         <Ticket className="h-4 w-4" />
         <span className="text-sm">Superchain Raffle</span>

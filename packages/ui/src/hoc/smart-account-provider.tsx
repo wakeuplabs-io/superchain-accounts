@@ -65,7 +65,7 @@ export function SuperChainAccountProvider({
   children: ReactNode;
 }) {
   const { chain, currentChainId } = useWeb3();
-  const { torus, initialize: initializeTorus } = useAuth();
+  const { getProvider } = useAuth();
 
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
@@ -113,29 +113,14 @@ export function SuperChainAccountProvider({
   useEffect(() => {
 
     async function initialize() {
-      console.log("Initializing smart account...");
-      console.log({
-        owner: torus.current.provider,
-        client: chain.client,
-        entryPoint: {
-          address: chain.entryPointAddress,
-          version: "0.7",
-        },
-      })
-
-      // if (!torus.current.isInitialized) {
-      //   await initializeTorus()
-      // }
-
       const newSmartAccount = await toSimpleSmartAccount({
-        owner: torus.current.provider as ToSimpleSmartAccountParameters<"0.7">["owner"],
+        owner: getProvider() as ToSimpleSmartAccountParameters<"0.7">["owner"],
         client: chain.client,
         entryPoint: {
           address: chain.entryPointAddress,
           version: "0.7",
         },
       });
-      console.log("newSmartAccount", newSmartAccount.address);
 
       const isDeployed = await newSmartAccount.isDeployed();
 
@@ -156,7 +141,7 @@ export function SuperChainAccountProvider({
       .catch((error) => {
         console.error("Error initializing smart account:", error);
       })
-  }, [currentChainId, chain, torus]);
+  }, [currentChainId, chain, getProvider]);
 
   return (
     <SuperChainAccountContext.Provider
