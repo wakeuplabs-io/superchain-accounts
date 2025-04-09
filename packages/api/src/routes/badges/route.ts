@@ -13,7 +13,7 @@ export default function buildBadgesRoutes(
       return res.status(401).send({ message: "Unauthorized" });
     }
 
-    await badgeEventsService.submit();
+    res.send({ data: { transactions: await badgeEventsService.submit() } });
   });
 
   router.get("/:address", async (req, res) => {
