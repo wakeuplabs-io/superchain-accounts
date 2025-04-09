@@ -1,8 +1,7 @@
 import { Request, Response, Router, NextFunction } from "express";
 import AWS from "aws-sdk";
-import envParsed from "@/envParsed.js";
-import { normalizeCreateAccount } from "./normalizer.js";
-import { UserService } from "./service.js";
+import { normalizeCreateAccount } from "./normalizer";
+import { UserService } from "./service";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const router = Router();
 const userService = new UserService(dynamoDb);

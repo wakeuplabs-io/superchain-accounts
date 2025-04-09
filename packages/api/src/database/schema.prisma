@@ -14,11 +14,12 @@ enum TransactionAction {
 }
 
 model Transaction {
-  hash  String @id
-  from  String
-  to    String
-  value String
-  data  String
+  hash    String @id
+  from    String
+  to      String
+  value   String
+  data    String
+  chainId String
 
   action    TransactionAction
   timestamp DateTime          @default(now())
@@ -29,19 +30,40 @@ model Transaction {
   @@unique([hash, from])
 }
 
-// It'll be further implemented later in OSA-80
 model PointEvent {
-  id     Int     @id @default(autoincrement())
-  minted Boolean
+  id     Int            @id @default(autoincrement())
+  type   PointEventType
+  data   String // Any extra data, like specs on the milestone or so on
+  minted Boolean        @default(false)
+  value  Int
 
   transaction     Transaction @relation(fields: [transactionHash], references: [hash])
   transactionHash String
+
+  @@unique([transactionHash, type, data])
 }
 
-// It'll be further implemented later in OSA-80
+enum PointEventType {
+  TransactionsSent
+  TransactionsSentMilestone
+  TokenSwap
+  UniqueChainUse
+  DaysActive
+}
+
 model BadgeEvent {
-  id     Int     @id @default(autoincrement())
-  minted Boolean
+  id     Int            @id @default(autoincrement())
+  type   BadgeEventType
+  data   String // Any extra data associated to the type, number of days active, etc
+  minted Boolean        @default(false)
 
   transactions Transaction[]
+
+  @@unique([type, data])
+}
+
+enum BadgeEventType {
+  TransactionsSent
+  DaysActive
+  DefiInteractions
 }

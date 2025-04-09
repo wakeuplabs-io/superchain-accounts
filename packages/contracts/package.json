@@ -12,6 +12,7 @@
     "deploy:mainnet": "npm run deploy -- --network mainnet --verify",
     "deploy:local": "npm run deploy -- --network local",
     "test": "npx hardhat test",
+    "test:ci": "npx hardhat test",
     "deploy:superchain-points:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPoints.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia --strategy create2 --verify",
     "deploy:superchain-badges:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia --strategy create2 --verify",
     "deploy:superchain-points-raffle-factory:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPointsRaffleFactory.ts --parameters ignition/parameters/optimism-sepolia.json --network optimism-sepolia --strategy create2 --verify",

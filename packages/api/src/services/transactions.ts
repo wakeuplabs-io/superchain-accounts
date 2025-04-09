@@ -1,8 +1,8 @@
 import { zeroAddress } from "viem";
 import { PrismaClient, Transaction } from "@prisma/client";
-import { BundlerFactory, CHAIN_DATA } from "./bundler-factory.js";
-import { ProviderFactory } from "./provider-factory.js";
-import { Transaction as DomainTransaction } from "../domain/transaction.js";
+import { BundlerFactory, CHAIN_DATA } from "./bundler-factory";
+import { ProviderFactory } from "./provider-factory";
+import { Transaction as DomainTransaction } from "../domain/transaction";
 import axios from "axios";
 
 interface UserOperation {
@@ -68,6 +68,7 @@ export class TransactionService {
           value: tx.value.toString() as string,
           data: tx.input as string,
           action: DomainTransaction.typeFromReceipt(receipt),
+          chainId: chainId.toString(),
         },
       });
 

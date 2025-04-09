@@ -1,7 +1,7 @@
 import { BundlerClient, createBundlerClient } from "viem/account-abstraction";
-import { ProviderFactory } from "./provider-factory.js";
+import { ProviderFactory } from "./provider-factory";
 import { http } from "viem";
-import envParsed from "@/envParsed.js";
+import envParsed from "@/envParsed";
 
 type ChainData = {
   bundlerUrl: string;
