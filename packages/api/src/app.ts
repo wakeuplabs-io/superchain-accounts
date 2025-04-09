@@ -9,7 +9,7 @@ import morgan from "morgan";
 import * as errorMiddlewares from "@/middlewares/errors";
 
 // services
-import { db } from "./database/client";
+import { BadgeEventType, db } from "./database/client";
 import { TransactionService } from "./services/transactions";
 import { SuperchainPointsService } from "./services/superchain-points";
 import { PointsEventsService } from "./services/points-events";
@@ -55,6 +55,7 @@ const superchainBadgesService = new SuperchainBadgesService(
 
 const pointsEventsService = new PointsEventsService(
   db,
+  superchainPointsService,
   [
     new TransactionSentPointsEventsHandler(db, 1, [
       { count: 10, points: 10 },
@@ -68,19 +69,22 @@ const pointsEventsService = new PointsEventsService(
     ]),
     new UniqueChainTransactionPointsEventsHandler(db, 5),
     new TokenSwapPointsEventsHandler(db, 5),
-  ],
-  superchainPointsService
+  ]
 );
 
 const badgesEventsService = new BadgeEventsService(
   db,
+  superchainBadgesService,
   [
     new TransactionSentBadgeEventsHandler(db, [10, 50, 100]),
     new DaysActiveBadgeEventsHandler(db, [10, 50, 100]),
     new DefiInteractionsBadgeEventsHandler(db, [10, 50, 100]),
   ],
-  superchainBadgesService,
-  new Map()
+  {
+    [BadgeEventType.DaysActive]: { 10: 10, 50: 50, 100: 100 },
+    [BadgeEventType.TransactionsSent]: { 10: 10, 50: 50, 100: 100 },
+    [BadgeEventType.DefiInteractions]: { 10: 10, 50: 50, 100: 100 },
+  }
 );
 
 // instantiate express

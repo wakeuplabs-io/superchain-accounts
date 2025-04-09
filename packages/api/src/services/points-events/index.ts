@@ -28,8 +28,8 @@ export type PointEventWithTransaction = Prisma.PointEventGetPayload<{
 export class PointsEventsService implements IPointsEventsService {
   constructor(
     private repo: PrismaClient,
+    private superchainPointsService: ISuperchainPointsService,
     private handlers: IPointsEventsHandler[],
-    private superchainPointsService: ISuperchainPointsService
   ) {}
 
   async getUserPoints(

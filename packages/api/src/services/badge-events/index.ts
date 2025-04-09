@@ -27,16 +27,21 @@ export type BadgeEventWithTransaction = Prisma.BadgeEventGetPayload<{
 export class BadgeEventsService implements IBadgesEventsService {
   constructor(
     private repo: PrismaClient,
-    private handlers: BadgeEventsHandler[],
     private superchainBadgesService: ISuperchainBadgesService,
-    private badgeToTokenId: Map<BadgeEventType, Map<Number, bigint>>
+    private handlers: BadgeEventsHandler[],
+    private badgeToTokenId: {
+      [event in BadgeEventType]: { [threshold: number]: number };
+    }
   ) {}
 
-  async getUserBadges(address: string, opts?: { chainId?: string, limit?: number }): Promise<BadgeEventWithTransaction[]> {
+  async getUserBadges(
+    address: string,
+    opts?: { chainId?: string; limit?: number }
+  ): Promise<BadgeEventWithTransaction[]> {
     return this.repo.badgeEvent.findMany({
       where: { transaction: { from: address }, chainId: opts?.chainId },
       include: { transaction: true },
-      take: opts?.limit
+      take: opts?.limit,
     });
   }
 
@@ -70,9 +75,11 @@ export class BadgeEventsService implements IBadgesEventsService {
     for (const [chainId, events] of eventsByChain) {
       const claimable = new Map<string, boolean>();
       for (const event of events) {
-        const tokenId = this.badgeToTokenId
-          .get(event.type)!
-          .get(Number(event.data))!;
+        const tokenId = this.badgeToTokenId[event.type][Number(event.data)];
+        if (!tokenId) {
+          continue;
+        }
+
         claimable.set(`${event.user}:${tokenId}`, true);
       }
 
