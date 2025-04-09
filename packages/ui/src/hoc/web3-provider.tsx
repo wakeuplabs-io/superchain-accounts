@@ -55,10 +55,10 @@ interface Web3ContextType {
   updateChain: (chainId: number) => void;
 }
 
-const Web3Context = createContext<Web3ContextType | undefined>(undefined);
+export const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const chainPublicClients = useRef(new Map<number, PublicClient>());
+  const publicClients = useRef(new Map<number, PublicClient>());
   const [chain, setChain] = useState<SmartAccountChain>(supportedChains[DEFAULT_CHAIN_ID]);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -70,24 +70,24 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       return;
     }
     
-    if (!chainPublicClients.current.has(chainId)) {
+    if (!publicClients.current.has(chainId)) {
       const publicClient = createPublicClient({
         chain: newChain.data,
         transport: http(newChain.rpcUrl),
       });
 
-      chainPublicClients.current.set(chainId,publicClient);
+      publicClients.current.set(chainId,publicClient);
     }
 
     setChain(newChain);
   };
 
-  const chainPublicClient = useMemo(() => {
-    if (!chainPublicClients.current.has(chain.data.id)) {
+  const publicClient = useMemo(() => {
+    if (!publicClients.current.has(chain.data.id)) {
       return null;
     }
 
-    return chainPublicClients.current.get(chain.data.id)!;
+    return publicClients.current.get(chain.data.id)!;
   },[isInitialized, chain]);
 
 
@@ -100,17 +100,9 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     <Web3Context.Provider value={{
       chain,
       updateChain,
-      publicClient: chainPublicClient,
+      publicClient,
     }}>
       {children}
     </Web3Context.Provider>
   );
-}
-
-export function useWeb3() {
-  const context = useContext(Web3Context);
-  if (context === undefined) {
-    throw new Error("useWeb3 must be used within a Web3Provider");
-  }
-  return context;
 }

@@ -2,25 +2,28 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { QRCodeSVG } from "qrcode.react";
 import { Copy } from "lucide-react";
-import { SmartAccountChain } from "@/context/Web3Context";
 import { useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { SmartAccountChain } from "@/hoc/web3-provider";
 
 interface ReceiveTokensDialogProps {
   isOpen: boolean;
   onClose: () => void;
   address: string;
-  chain: SmartAccountChain
+  chain: SmartAccountChain;
 }
 
 export const ReceiveTokensDialog = ({
   isOpen,
   onClose,
   address,
-  chain
+  chain,
 }: ReceiveTokensDialogProps) => {
   const { toast } = useToast();
-  const shortAddress = useMemo(() => `${address.slice(0, 12)}...${address.slice(-4)}`, [address]);
+  const shortAddress = useMemo(
+    () => `${address.slice(0, 12)}...${address.slice(-4)}`,
+    [address]
+  );
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
@@ -35,7 +38,7 @@ export const ReceiveTokensDialog = ({
             <div className="relative">
               <QRCodeSVG value={address} size={200} level="L" />
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-[5px] border-white bg-white rounded-full shadow-md">
-                <img className="w-14 h-14" src={chain.logo}  />
+                <img className="w-14 h-14" src={chain.logo} />
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -43,12 +46,16 @@ export const ReceiveTokensDialog = ({
                 <span className="text-3xl font-light">{shortAddress}</span>
                 <span className="text-xs font-medium">Address</span>
               </div>
-              <Copy className="w-8 h-8 cursor-pointer hover:text-gray-500" strokeWidth={2} onClick={() => {
-                navigator.clipboard.writeText(address);
-                toast({
-                  title: "Address copied to clipboard",
-                });
-              }} />
+              <Copy
+                className="w-8 h-8 cursor-pointer hover:text-gray-500"
+                strokeWidth={2}
+                onClick={() => {
+                  navigator.clipboard.writeText(address);
+                  toast({
+                    title: "Address copied to clipboard",
+                  });
+                }}
+              />
             </div>
           </div>
         </Dialog.Content>

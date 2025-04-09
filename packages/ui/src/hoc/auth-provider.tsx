@@ -1,6 +1,6 @@
+import { useWeb3 } from "@/hooks/use-web3";
 import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
-import { createContext, useContext, ReactNode, useRef,  } from "react";
-import { useWeb3 } from "./Web3Context";
+import { createContext, ReactNode, useRef } from "react";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,12 +10,16 @@ export interface AuthContextType {
   getProvider: () => TorusInpageProvider;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-export function AuthProvider({ children }: { children: ReactNode}) {
-  const torus = useRef(new Torus({
-    buttonPosition: "bottom-right",
-  }));
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const torus = useRef(
+    new Torus({
+      buttonPosition: "bottom-right",
+    })
+  );
 
   const { chain } = useWeb3();
 
@@ -42,8 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode}) {
     await torus.current.login();
   };
 
-  const logout = async () =>  {
-    if(!torus.current.isInitialized || !torus.current.isLoggedIn) {
+  const logout = async () => {
+    if (!torus.current.isInitialized || !torus.current.isLoggedIn) {
       return;
     }
 
@@ -62,20 +66,5 @@ export function AuthProvider({ children }: { children: ReactNode}) {
     getProvider,
   };
 
-  return (
-    <AuthContext.Provider
-      value={value}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}
-
