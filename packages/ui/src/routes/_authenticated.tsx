@@ -23,6 +23,7 @@ import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
 import { ActionButton } from "@/components/_authenticated/sidebar/action-button";
 import { AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar/authenticated-sidebar-menu-button";
 import { useAuth } from "@/hooks/use-auth";
+import { ClaimRaffleTicketsButton } from "@/components/_authenticated/sidebar/claim-raffle-tickets-button";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -95,17 +96,7 @@ function AuthenticatedLayout() {
               </SidebarMenuItem>
             </SidebarMenu>
             <hr className="my-4" />
-            <div className="h-[70px] rounded-lg p-3 flex flex-col justify-between bg-[linear-gradient(-25deg,_#FF6375,_#FF0420,_#FF6375)] text-white">
-              <div className="flex items-center gap-2">
-                <Ticket className="h-4 w-4" />
-                <span className="text-sm">Superchain Raffle</span>
-              </div>
-
-              <div className="flex items-center gap-2 ml-6">
-                <span className="font-medium text-sm">Claim {10} tickets</span>
-                <ArrowRight className="h-4 w-4" />
-              </div>
-            </div>
+            <ClaimRaffleTicketsButton />
           </SidebarContent>
           <SidebarFooter>
             <div className="flex flex-col px-8 py-14 gap-9">

@@ -19,6 +19,7 @@ const env = {
   ENTRYPOINT_OPTIMISM_SEPOLIA: import.meta.env.VITE_ENTRYPOINT_OPTIMISM_SEPOLIA,
   ENTRYPOINT_BASE_SEPOLIA: import.meta.env.VITE_ENTRYPOINT_BASE_SEPOLIA,
   API_URL: import.meta.env.VITE_API_URL,
+  SUPERCHAIN_POINTS_RAFFLE_FACTORY: import.meta.env.VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY,
 };
 
 const envSchema = z
@@ -36,6 +37,7 @@ const envSchema = z
     ENTRYPOINT_OPTIMISM_SEPOLIA: z.string().transform((x) => getAddress(x)),
     ENTRYPOINT_BASE_SEPOLIA: z.string().transform((x) => getAddress(x)),
     API_URL: z.string().url(),
+    SUPERCHAIN_POINTS_RAFFLE_FACTORY: z.string().startsWith("0x"),
   });
 
 const envParsed = () => envSchema.parse(env);

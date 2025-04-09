@@ -127,25 +127,10 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
             revert NoOngoingRaffle();
         }
 
-        // Check if tickets have already been claimed
-        if (ticketsClaimed[msg.sender]) {
-            revert TicketAlreadyClaimed();
-        }
-        ticketsClaimed[msg.sender] = true;
-
         // Calculate tickets allocation. Maximum possible
-        uint256 ticketsAllocation = 0;
-        for (uint256 i = 0; i < eligibleBadges.length; i++) {
-            if (superchainBadges.balanceOf(msg.sender, eligibleBadges[i]) > 0) {
-                if (badgeAllocations[eligibleBadges[i]] > ticketsAllocation) {
-                    ticketsAllocation = badgeAllocations[eligibleBadges[i]];
-                }
-            }
-        }
-
-        // Check if user has eligible badges
+        uint256 ticketsAllocation = getClaimableTickets(msg.sender);
         if (ticketsAllocation == 0) {
-            revert NoEligibleBadges();
+            revert NoTicketsToClaim();
         }
 
         // Allocate tickets to user
@@ -156,9 +141,38 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         ) {
             tickets[i] = msg.sender;
         }
+        ticketsClaimed[msg.sender] = true;
         ticketCount += ticketsAllocation;
 
         emit TicketsClaimed(msg.sender, ticketsAllocation);
+    }
+
+    /// @inheritdoc ISuperchainPointsRaffle
+    function getClaimableTickets(address user) public view returns (uint256) {
+        if (ticketsClaimed[user]) {
+            return 0;
+        }
+
+        uint256 ticketsAllocation = 0;
+        for (uint256 i = 0; i < eligibleBadges.length; i++) {
+            if (superchainBadges.balanceOf(user, eligibleBadges[i]) > 0) {
+                if (badgeAllocations[eligibleBadges[i]] > ticketsAllocation) {
+                    ticketsAllocation = badgeAllocations[eligibleBadges[i]];
+                }
+            }
+        }
+
+        return ticketsAllocation;
+    }
+
+    /// @inheritdoc ISuperchainPointsRaffle
+    function getTotalTickets() public view returns (uint256) {
+        return ticketCount;
+    }
+
+    /// @inheritdoc ISuperchainPointsRaffle
+    function getPrizeAmount() public view returns (uint256) {
+        return prize;
     }
 
     /// @inheritdoc ISuperchainPointsRaffle

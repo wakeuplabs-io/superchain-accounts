@@ -5,7 +5,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { Address, Hex, http, numberToHex } from "viem";
+import { Address, Hex, http, numberToHex, zeroAddress } from "viem";
 import {
   SimpleSmartAccountImplementation,
   toSimpleSmartAccount,
@@ -48,17 +48,12 @@ interface SuperChainUserOperation {
 
 type SuperChainAccountStatus = "pending" | "initialized" | "deployed";
 
-type SuperChainAccount =
-  | {
-      instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">> | null;
-      balance: 0n;
-      status: "pending";
-    }
-  | {
-      instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">>;
-      balance: bigint;
-      status: Exclude<SuperChainAccountStatus, "pending">;
-    };
+type SuperChainAccount = {
+  instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">> | null;
+  balance: bigint;
+  status: SuperChainAccountStatus;
+  address: Address;
+};
 
 type SuperChainAccountContextType = {
   account: SuperChainAccount;
@@ -84,11 +79,12 @@ export function SuperChainAccountProvider({
     instance: null,
     balance: 0n,
     status: "pending",
+    address: zeroAddress,
   });
 
   const sendTransaction = useCallback(
     async (userOperation: SuperChainUserOperation) => {
-      if (account.status === "pending" || !publicClient || !bundlerClient) {
+      if (account.status === "pending" || !publicClient || !bundlerClient || !account.instance) {
         return;
       }
 
@@ -160,6 +156,7 @@ export function SuperChainAccountProvider({
         balance,
         instance: newSmartAccount,
         status: isDeployed ? "deployed" : "initialized",
+        address: newSmartAccount.address,
       });
     }
 
@@ -167,6 +164,7 @@ export function SuperChainAccountProvider({
       instance: null,
       balance: 0n,
       status: "pending",
+      address: zeroAddress,
     });
 
     initialize();

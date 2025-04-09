@@ -1,39 +1,56 @@
-import { useCallback, useEffect, useState } from "react";
+import envParsed from "@/envParsed";
+import { zeroAddress } from "viem";
 import { useWeb3 } from "./use-web3";
+import { useEffect, useState } from "react";
+import superchainPointsRaffleFactory from "@/config/abis/superchain-points-raffle-factory";
+import superchainPointsRaffle from "@/config/abis/superchain-points-raffle";
+import { useSuperChainAccount } from "./use-smart-account";
 
 export const useSuperchainRaffle = () => {
   const { publicClient } = useWeb3();
+  const {
+    account: { address },
+  } = useSuperChainAccount();
   const [isPending, setIsPending] = useState(false);
   const [claimableTickets, setClaimableTickets] = useState(0);
 
-  const claimTickets = useCallback(() => {
-    // TODO: To be DONE at OSA-85
-  }, []);
-
   useEffect(() => {
     async function getClaimableTickets() {
-      if (!publicClient) {
+      if (!publicClient || !address) {
         return;
       }
 
-    //   TODO: from factory ready current raffle
-      // const claimableTickets = await publicClient.readContract({
-      //     address: envVars.SUPERCHAIN_RAFFLE_ADDRESS as Address,
-      //     functionName: "claimableTickets",
-      //     args: [],
-      //     chain: supportedChains[DEFAULT_CHAIN_ID].data,
-      // })
+      // from factory ready current raffle
+      const currentRaffle = await publicClient.readContract({
+        address: envParsed().SUPERCHAIN_POINTS_RAFFLE_FACTORY as `0x${string}`,
+        functionName: "currentRaffle",
+        abi: superchainPointsRaffleFactory,
+        args: [],
+      });
+      if (!currentRaffle || currentRaffle === zeroAddress) {
+        return setClaimableTickets(0);
+      }
 
-    //   read at raffle contract claimable tickets
+      // read at raffle contract claimable tickets
+      const claimableTickets = await publicClient.readContract({
+        address: currentRaffle as `0x${string}`,
+        functionName: "getClaimableTickets",
+        abi: superchainPointsRaffle,
+        args: [address],
+      });
+
+      setClaimableTickets(Number(claimableTickets));
     }
 
     setIsPending(true);
-    getClaimableTickets().finally(() => setIsPending(false));
-  }, []);
+    setClaimableTickets(0);
+    getClaimableTickets()
+      .catch((e) => console.log("Error getting claimable tickets", e))
+      .finally(() => setIsPending(false));
+  }, [address, publicClient]);
 
   return {
     isPending,
-    claimTickets,
     claimableTickets,
   };
 };
