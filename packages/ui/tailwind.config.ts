@@ -67,6 +67,9 @@ export default {
           "90": "hsl(var(--custom-slate-90))",
           "400": "hsl(var(--custom-slate-400))"
         },
+        "custom-gray": {
+          "200": "hsl(var(--custom-gray-200))",
+        },
   		}
   	}
   },
