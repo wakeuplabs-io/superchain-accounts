@@ -1,17 +1,23 @@
-import { db } from "@/database/client";
-import { PointsEventsService } from "@/services/points-events";
+import { IPointsEventsService } from "@/services/points-events";
 import { Router } from "express";
 
-const router = Router();
+export default function createRoutes(
+  pointsEventsService: IPointsEventsService
+): Router {
+  const router = Router();
 
-const pointsEventsService = new PointsEventsService(db, []);
+  router.post("/submit", async (req, res) => {
+    // TODO:
+    await pointsEventsService.submit();
+  });
 
-router.get("/:address", async (req, res) => {
-  const address = req.params.address;
+  router.get("/:address", async (req, res) => {
+    const address = req.params.address;
 
-  const pointsEvents = await pointsEventsService.getUserPoints(address);
+    const pointsEvents = await pointsEventsService.getUserPoints(address);
 
-  res.send({ data: { points: pointsEvents } });
-});
+    res.send({ data: { points: pointsEvents } });
+  });
 
-export default router;
+  return router;
+}

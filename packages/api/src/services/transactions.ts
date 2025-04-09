@@ -24,6 +24,13 @@ interface UserOperation {
   signature: string;
 }
 
+export interface ITransactionService {
+  sendUserOperation(
+    operation: UserOperation,
+    chainId: number
+  ): Promise<Transaction>;
+}
+
 export class TransactionService {
   constructor(private repo: PrismaClient) {}
 
@@ -47,7 +54,7 @@ export class TransactionService {
         throw Error("Transaction failed");
       }
 
-      const {receipt} = await bundlerClient.waitForUserOperationReceipt({
+      const { receipt } = await bundlerClient.waitForUserOperationReceipt({
         hash: data.result as `0x${string}`,
       });
 
@@ -71,7 +78,6 @@ export class TransactionService {
           chainId: chainId.toString(),
         },
       });
-
     } catch (error) {
       console.error(error);
       throw Error("Transaction failed");

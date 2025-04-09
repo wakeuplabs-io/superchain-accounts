@@ -1,0 +1,80 @@
+import {
+  Transaction,
+  PrismaClient,
+  BadgeEventType,
+  BadgeEvent,
+  Prisma,
+} from "@prisma/client";
+import { ISuperchainBadgesService } from "../superchain-badges";
+
+export interface BadgeEventsHandler {
+  handle(tx: Transaction): Promise<BadgeEvent[]>;
+}
+
+export interface IBadgesEventsService {
+  getUserBadges(address: string): Promise<BadgeEventWithTransaction[]>;
+  handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]>;
+  submit(): Promise<void>;
+}
+
+export type BadgeEventWithTransaction = Prisma.BadgeEventGetPayload<{
+  include: { transaction: true };
+}>;
+
+export class BadgeEventsService implements IBadgesEventsService {
+  constructor(
+    private repo: PrismaClient,
+    private handlers: BadgeEventsHandler[],
+    private superchainBadgesService: ISuperchainBadgesService,
+    private badgeToTokenId: Map<BadgeEventType, Map<Number, bigint>>
+  ) {}
+
+  async getUserBadges(address: string): Promise<BadgeEventWithTransaction[]> {
+    return this.repo.badgeEvent.findMany({
+      where: { transaction: { from: address } },
+      include: { transaction: true },
+    });
+  }
+
+  async handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]> {
+    const events = await Promise.all(
+      this.handlers.map((handler) => handler.handle(tx))
+    );
+
+    return events.flat();
+  }
+
+  async submit(): Promise<void> {
+    // get all non minted points
+    const events = await this.repo.badgeEvent.findMany({
+      where: { minted: false },
+      include: { transaction: true },
+    });
+    if (events.length === 0) {
+      return;
+    }
+
+    // sum by address
+    const claimable = new Map<string, boolean>();
+    for (const event of events) {
+      const tokenId = this.badgeToTokenId.get(event.type)!.get(Number(event.data))!;
+      claimable.set(`${event.transaction.from}:${tokenId}`, true);
+    }
+
+    // add claimable in contract
+    await this.superchainBadgesService.addClaimable(
+      Array.from(claimable.keys()).map((k) => k.split(":")[0]),
+      Array.from(claimable.keys()).map((k) => BigInt(k.split(":")[1]))
+    );
+
+    // mark as minted
+    await this.repo.badgeEvent.updateMany({
+      where: { id: { in: events.map((e) => e.id) } },
+      data: { minted: true },
+    });
+  }
+}
+
+
+
+

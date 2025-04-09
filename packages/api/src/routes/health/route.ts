@@ -1,9 +1,11 @@
 import { Router } from "express";
 
-const router = Router();
+export default function buildHealthRoutes(): Router {
+  const router = Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "OK" });
-});
+  router.get("/", (req, res) => {
+    res.json({ message: "OK" });
+  });
 
-export default router;
+  return router;
+}

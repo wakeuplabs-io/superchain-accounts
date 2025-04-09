@@ -45,4 +45,4 @@ function errorHandler(err: unknown, req: Request, res: Response) {
   });
 }
 
-export default { notFound, errorHandler };
+export { notFound, errorHandler };
