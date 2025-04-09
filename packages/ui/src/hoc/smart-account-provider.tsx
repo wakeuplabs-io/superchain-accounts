@@ -5,18 +5,13 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { Address, Hex, http, numberToHex, zeroAddress } from "viem";
+import { Address, Hex, numberToHex, zeroAddress } from "viem";
 import {
   SimpleSmartAccountImplementation,
   toSimpleSmartAccount,
   ToSimpleSmartAccountParameters,
 } from "permissionless/accounts";
-import {
-  BundlerClient,
-  createBundlerClient,
-  SmartAccount,
-  UserOperation,
-} from "viem/account-abstraction";
+import { SmartAccount, UserOperation } from "viem/account-abstraction";
 import { transactionService } from "@/services";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
@@ -69,11 +64,8 @@ export function SuperChainAccountProvider({
 }: {
   children: ReactNode;
 }) {
-  const { getProvider } = useAuth();
-  const { chain, publicClient } = useWeb3();
-  const [bundlerClient, setBundlerClient] = useState<BundlerClient | null>(
-    null
-  );
+  const { chain, currentChainId } = useWeb3();
+  const { torus, initialize: initializeTorus } = useAuth();
 
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
@@ -84,13 +76,13 @@ export function SuperChainAccountProvider({
 
   const sendTransaction = useCallback(
     async (userOperation: SuperChainUserOperation) => {
-      if (account.status === "pending" || !publicClient || !bundlerClient || !account.instance) {
+      if (account.status === "pending" || !account.instance) {
         return;
       }
 
       try {
         const { account: _, ...preparedUserOperation } =
-          await bundlerClient.prepareUserOperation({
+          await chain.bundler.prepareUserOperation({
             account: account.instance,
             calls: [
               {
@@ -104,7 +96,7 @@ export function SuperChainAccountProvider({
         );
 
         await transactionService.sendUserOperation({
-          chainId: String(chain.data.id),
+          chainId: String(chain.id),
           operation: {
             ...formatUserOperation(preparedUserOperation),
             signature,
@@ -115,42 +107,41 @@ export function SuperChainAccountProvider({
         throw error;
       }
     },
-    [account, publicClient]
+    [account, chain]
   );
 
   useEffect(() => {
+
     async function initialize() {
-      if (!publicClient) {
-        return;
-      }
+      console.log("Initializing smart account...");
+      console.log({
+        owner: torus.current.provider,
+        client: chain.client,
+        entryPoint: {
+          address: chain.entryPointAddress,
+          version: "0.7",
+        },
+      })
+
+      // if (!torus.current.isInitialized) {
+      //   await initializeTorus()
+      // }
 
       const newSmartAccount = await toSimpleSmartAccount({
-        owner: getProvider() as ToSimpleSmartAccountParameters<"0.7">["owner"],
-        client: publicClient,
+        owner: torus.current.provider as ToSimpleSmartAccountParameters<"0.7">["owner"],
+        client: chain.client,
         entryPoint: {
           address: chain.entryPointAddress,
           version: "0.7",
         },
       });
-
-      if (!newSmartAccount) {
-        console.error("Failed to create smart account");
-        return;
-      }
-
-      const bundlerClient = createBundlerClient({
-        client: publicClient,
-        transport: http(chain.bundlerUrl),
-        paymaster: true,
-      });
+      console.log("newSmartAccount", newSmartAccount.address);
 
       const isDeployed = await newSmartAccount.isDeployed();
 
-      const balance = await publicClient.getBalance({
+      const balance = await chain.client.getBalance({
         address: newSmartAccount.address,
       });
-
-      setBundlerClient(bundlerClient);
 
       setAccount({
         balance,
@@ -160,23 +151,20 @@ export function SuperChainAccountProvider({
       });
     }
 
-    setAccount({
-      instance: null,
-      balance: 0n,
-      status: "pending",
-      address: zeroAddress,
-    });
 
-    initialize();
-  }, [chain, publicClient, getProvider]);
-
-  const value = {
-    account,
-    sendTransaction,
-  };
+    initialize()
+      .catch((error) => {
+        console.error("Error initializing smart account:", error);
+      })
+  }, [currentChainId, chain, torus]);
 
   return (
-    <SuperChainAccountContext.Provider value={value}>
+    <SuperChainAccountContext.Provider
+      value={{
+        account,
+        sendTransaction,
+      }}
+    >
       {children}
     </SuperChainAccountContext.Provider>
   );

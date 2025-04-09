@@ -4,13 +4,13 @@ import { QRCodeSVG } from "qrcode.react";
 import { Copy } from "lucide-react";
 import { useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { SmartAccountChain } from "@/hoc/web3-provider";
+import { ChainMetadata } from "@/hoc/web3-provider";
 
 interface ReceiveTokensDialogProps {
   isOpen: boolean;
   onClose: () => void;
   address: string;
-  chain: SmartAccountChain;
+  chain: ChainMetadata;
 }
 
 

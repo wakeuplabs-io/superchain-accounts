@@ -7,7 +7,7 @@ import superchainPointsRaffle from "@/config/abis/superchain-points-raffle";
 import { useSuperChainAccount } from "./use-smart-account";
 
 export const useSuperchainRaffle = () => {
-  const { publicClient } = useWeb3();
+  const { chain } = useWeb3();
   const {
     account: { address },
   } = useSuperChainAccount();
@@ -16,12 +16,14 @@ export const useSuperchainRaffle = () => {
 
   useEffect(() => {
     async function getClaimableTickets() {
-      if (!publicClient || !address) {
+      console.log("getClaimableTickets", chain.id, address)
+
+      if (!chain || !address) {
         return;
       }
 
       // from factory ready current raffle
-      const currentRaffle = await publicClient.readContract({
+      const currentRaffle = await chain.client.readContract({
         address: envParsed().SUPERCHAIN_POINTS_RAFFLE_FACTORY as `0x${string}`,
         functionName: "currentRaffle",
         abi: superchainPointsRaffleFactory,
@@ -32,7 +34,7 @@ export const useSuperchainRaffle = () => {
       }
 
       // read at raffle contract claimable tickets
-      const claimableTickets = await publicClient.readContract({
+      const claimableTickets = await chain.client.readContract({
         address: currentRaffle as `0x${string}`,
         functionName: "getClaimableTickets",
         abi: superchainPointsRaffle,
@@ -47,7 +49,7 @@ export const useSuperchainRaffle = () => {
     getClaimableTickets()
       .catch((e) => console.log("Error getting claimable tickets", e))
       .finally(() => setIsPending(false));
-  }, [address, publicClient]);
+  }, [address, chain]);
 
   return {
     isPending,

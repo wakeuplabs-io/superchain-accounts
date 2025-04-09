@@ -1,107 +1,110 @@
 import envParsed from "@/envParsed";
-import { createContext, useContext, ReactNode, useState, useRef, useEffect, useMemo } from "react";
-import { Address, Chain, createPublicClient, http, PublicClient } from "viem";
+import { createContext, ReactNode, useState, useMemo } from "react";
+import { Address, createPublicClient, http, PublicClient } from "viem";
 import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
 
 import optimismChainLogo from "@/assets/logos/optimism-chain-logo.svg";
 import baseChainLogo from "@/assets/logos/base-chain-logo.svg";
 import unichainChainLogo from "@/assets/logos/unichain-chain-logo.svg";
-
-const envVars = envParsed();
+import { BundlerClient, createBundlerClient } from "viem/account-abstraction";
 
 const DEFAULT_CHAIN_ID = 11155420; // Optimism Sepolia
 
-export interface SmartAccountChain {
-    data: Chain,
-    rpcUrl: string;
-    bundlerUrl: string;
-    entryPointAddress: Address;
-    logo: string;
-    order: number;
+export interface ChainMetadata {
+  id: number;
+  name: string;
+  order: number;
+  logo: string;
+  entryPointAddress: Address;
+  client: PublicClient;
+  bundler: BundlerClient;
 }
 
-export const supportedChains: Record<number, SmartAccountChain> = {
+export const supportedChains: Record<number, ChainMetadata> = {
   [optimismSepolia.id]: {
-    data: optimismSepolia,
-    rpcUrl: envVars.RPC_OPTIMISM_SEPOLIA,
-    bundlerUrl: envVars.BUNDLER_OPTIMISM_SEPOLIA,
-    entryPointAddress: envVars.ENTRYPOINT_OPTIMISM_SEPOLIA,
-    logo: optimismChainLogo,
     order: 1,
+    id: optimismSepolia.id,
+    name: optimismSepolia.name,
+    entryPointAddress: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
+    logo: optimismChainLogo,
+    client: createPublicClient({
+      // chain: optimismSepolia,
+      transport: http(envParsed().RPC_OPTIMISM_SEPOLIA),
+    }),
+    bundler: createBundlerClient({
+      client: createPublicClient({
+        // chain: optimismSepolia,
+        transport: http(envParsed().RPC_OPTIMISM_SEPOLIA),
+      }),
+      transport: http(envParsed().BUNDLER_OPTIMISM_SEPOLIA),
+      paymaster: true,
+    }),
   },
   [baseSepolia.id]: {
-    data: baseSepolia,
-    rpcUrl: envVars.RPC_BASE_SEPOLIA,
-    bundlerUrl: envVars.BUNDLER_BASE_SEPOLIA,
-    entryPointAddress: envVars.ENTRYPOINT_BASE_SEPOLIA,
-    logo: baseChainLogo,
     order: 2,
+    id: baseSepolia.id,
+    name: baseSepolia.name,
+
+    entryPointAddress: envParsed().ENTRYPOINT_BASE_SEPOLIA,
+    logo: baseChainLogo,
+    client: createPublicClient({
+      transport: http(envParsed().RPC_BASE_SEPOLIA),
+    }),
+    bundler: createBundlerClient({
+      client: createPublicClient({
+        transport: http(envParsed().RPC_BASE_SEPOLIA),
+      }),
+      transport: http(envParsed().BUNDLER_BASE_SEPOLIA),
+      paymaster: true,
+    }),
   },
   [unichainSepolia.id]: {
-    data: unichainSepolia,
-    rpcUrl: envVars.RPC_UNICHAIN_SEPOLIA,
-    bundlerUrl: envVars.BUNDLER_UNICHAIN_SEPOLIA,
-    entryPointAddress: envVars.ENTRYPOINT_UNICHAIN_SEPOLIA,
-    logo: unichainChainLogo,
     order: 3,
+    id: unichainSepolia.id,
+    name: unichainSepolia.name,
+    logo: unichainChainLogo,
+    entryPointAddress: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,
+    client: createPublicClient({
+      // chain: unichainSepolia,
+      transport: http(envParsed().RPC_UNICHAIN_SEPOLIA),
+    }),
+    bundler: createBundlerClient({
+      client: createPublicClient({
+        transport: http(envParsed().RPC_UNICHAIN_SEPOLIA),
+      }),
+      transport: http(envParsed().BUNDLER_UNICHAIN_SEPOLIA),
+      paymaster: true,
+    }),
   },
 };
 
 export type SupportedChainOptions = typeof supportedChains;
 
 interface Web3ContextType {
-  chain: SmartAccountChain;
-  publicClient: PublicClient | null;
-  updateChain: (chainId: number) => void;
+  chain: ChainMetadata;
+  currentChainId: number;
+  setCurrentChainId: (chainId: number) => void;
 }
 
-export const Web3Context = createContext<Web3ContextType | undefined>(undefined);
+export const Web3Context = createContext<Web3ContextType | undefined>(
+  undefined
+);
 
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const publicClients = useRef(new Map<number, PublicClient>());
-  const [chain, setChain] = useState<SmartAccountChain>(supportedChains[DEFAULT_CHAIN_ID]);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [currentChainId, setCurrentChainId] = useState(DEFAULT_CHAIN_ID);
 
-  const updateChain = (chainId: number) => {
-    const newChain = supportedChains[chainId];
-
-    if (!newChain) {
-      console.error(`Chain ID ${chainId} is not supported`);
-      return;
-    }
-    
-    if (!publicClients.current.has(chainId)) {
-      const publicClient = createPublicClient({
-        chain: newChain.data,
-        transport: http(newChain.rpcUrl),
-      });
-
-      publicClients.current.set(chainId,publicClient);
-    }
-
-    setChain(newChain);
-  };
-
-  const publicClient = useMemo(() => {
-    if (!publicClients.current.has(chain.data.id)) {
-      return null;
-    }
-
-    return publicClients.current.get(chain.data.id)!;
-  },[isInitialized, chain]);
-
-
-  useEffect(() => {
-    updateChain(DEFAULT_CHAIN_ID);
-    setIsInitialized(true);
-  },[]);
+  const chain = useMemo(() => {
+    return supportedChains[currentChainId];
+  }, [currentChainId]);
 
   return (
-    <Web3Context.Provider value={{
-      chain,
-      updateChain,
-      publicClient,
-    }}>
+    <Web3Context.Provider
+      value={{
+        chain,
+        currentChainId,
+        setCurrentChainId,
+      }}
+    >
       {children}
     </Web3Context.Provider>
   );
