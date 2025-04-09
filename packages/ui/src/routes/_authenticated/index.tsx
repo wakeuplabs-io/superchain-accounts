@@ -16,5 +16,4 @@ function Index() {
       <SmartAccountCard />
     </div>
   );
-  
 }
