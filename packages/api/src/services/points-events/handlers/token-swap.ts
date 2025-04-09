@@ -7,7 +7,6 @@ import {
 } from "@prisma/client";
 import { IPointsEventsHandler } from "..";
 
-
 export class TokenSwapPointsEventsHandler implements IPointsEventsHandler {
   constructor(
     private repo: PrismaClient,
@@ -30,10 +29,14 @@ export class TokenSwapPointsEventsHandler implements IPointsEventsHandler {
       },
       update: {},
       create: {
-        transaction: { connect: { hash: tx.hash } },
         type: PointEventType.TokenSwap,
-        data: "",
         value: this.pointsPerSwap,
+        data: "",
+
+        // transaction details
+        transaction: { connect: { hash: tx.hash } },
+        chainId: tx.chainId,
+        user: tx.from,
       },
     });
 

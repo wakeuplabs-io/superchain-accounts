@@ -45,6 +45,12 @@ export default $config({
       },
     });
 
+    // deploy cron job
+    new sst.aws.Cron(`${PROJECT_NAME}-cron`, {
+      function: "packages/api/src/cron.ts",
+      schedule: "rate(1 day)"
+    });
+
     // deploy ui
     const ui = new sst.aws.StaticSite(`${PROJECT_NAME}-ui`, {
       build: {

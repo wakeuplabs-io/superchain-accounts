@@ -7,12 +7,18 @@ export default function createRoutes(
   const router = Router();
 
   router.post("/submit", async (req, res) => {
-    // TODO:
+    // verify api key
+    if (req.headers["x-api-key"] !== process.env.API_KEY) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
     await pointsEventsService.submit();
   });
 
   router.get("/:address", async (req, res) => {
     const address = req.params.address;
+
+    // TODO: filter by chain, and limit
 
     const pointsEvents = await pointsEventsService.getUserPoints(address);
 

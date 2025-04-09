@@ -50,35 +50,47 @@ export class PointsEventsService implements IPointsEventsService {
     // get all non minted points
     const events = await this.repo.pointEvent.findMany({
       where: { minted: false },
-      include: { transaction: true },
     });
     if (events.length === 0) {
       return;
     }
 
-    // sum by address
-    const claimable = new Map<string, bigint>();
+    // group by chain id
+    const eventsByChain = new Map<string, PointEvent[]>();
     for (const event of events) {
-      if (!claimable.has(event.transaction.from)) {
-        claimable.set(event.transaction.from, BigInt(0));
+      if (!eventsByChain.has(event.chainId)) {
+        eventsByChain.set(event.chainId, []);
       }
-
-      claimable.set(
-        event.transaction.from,
-        claimable.get(event.transaction.from)! + BigInt(event.value)
-      );
+      eventsByChain.get(event.chainId)!.push(event);
     }
 
-    // add claimable in contract
-    await this.superchainPointsService.addClaimable(
-      Array.from(claimable.keys()),
-      Array.from(claimable.values())
-    );
+    // process for each chain
+    for (const [chainId, events] of eventsByChain) {
+      // sum by address
+      const claimable = new Map<string, bigint>();
+      for (const event of events) {
+        if (!claimable.has(event.user)) {
+          claimable.set(event.user, BigInt(0));
+        }
 
-    // mark as minted
-    await this.repo.pointEvent.updateMany({
-      where: { id: { in: events.map((e) => e.id) } },
-      data: { minted: true },
-    });
+        claimable.set(
+          event.user,
+          claimable.get(event.user)! + BigInt(event.value)
+        );
+      }
+
+      // add claimable in contract
+      await this.superchainPointsService.addClaimable(
+        chainId,
+        Array.from(claimable.keys()),
+        Array.from(claimable.values())
+      );
+
+      // mark as minted
+      await this.repo.pointEvent.updateMany({
+        where: { id: { in: events.map((e) => e.id) } },
+        data: { minted: true },
+      });
+    }
   }
 }

@@ -28,16 +28,30 @@ import buildTransactionsRoutes from "./routes/transactions/route";
 import buildBadgesRoutes from "./routes/badges/route";
 import buildHealthRoutes from "./routes/health/route";
 import { SuperchainBadgesService } from "./services/superchain-badges";
-
-const app = express();
+import { ClientFactory } from "./services/client-factory";
+import { BundlerFactory } from "./services/bundler-factory";
 
 // instantiate services
 
-const transactionService = new TransactionService(db);
+const clientFactory = new ClientFactory();
 
-const superchainPointsService = new SuperchainPointsService();
+const bundlerFactory = new BundlerFactory(clientFactory);
 
-const superchainBadgesService = new SuperchainBadgesService();
+const transactionService = new TransactionService(
+  db,
+  clientFactory,
+  bundlerFactory
+);
+
+const superchainPointsService = new SuperchainPointsService(
+  envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
+  clientFactory
+);
+
+const superchainBadgesService = new SuperchainBadgesService(
+  envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
+  clientFactory
+);
 
 const pointsEventsService = new PointsEventsService(
   db,
@@ -69,7 +83,11 @@ const badgesEventsService = new BadgeEventsService(
   new Map()
 );
 
-// devops middlewares
+// instantiate express
+
+const app = express();
+
+// middlewares
 
 app.use(morgan("dev"));
 app.use(helmet());
@@ -89,8 +107,6 @@ app.use(
     badgesEventsService
   )
 );
-
-// error middlewares
 
 app.use(errorMiddlewares.notFound);
 app.use(errorMiddlewares.errorHandler);

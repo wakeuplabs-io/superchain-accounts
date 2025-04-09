@@ -41,9 +41,13 @@ export class DaysActivePointsEventsHandler implements IPointsEventsHandler {
                 return await dbTx.pointEvent.create({
                   data: {
                     transaction: { connect: { hash: tx.hash } },
+                    chainId: tx.chainId,
+                    user: tx.from,
+
                     type: PointEventType.DaysActive,
                     data: String(config.count),
                     value: config.points,
+
                   },
                 });
               }

@@ -36,6 +36,9 @@ const envSchema = z
     ENTRYPOINT_OPTIMISM_SEPOLIA: z.string(),
     ENTRYPOINT_BASE_SEPOLIA: z.string(),
     DATABASE_URL: z.string(),
+    OWNER_PRIVATE_KEY: z.string().startsWith("0x"),
+    SUPERCHAIN_BADGES_ADDRESS: z.string().startsWith("0x"),
+    SUPERCHAIN_POINTS_ADDRESS: z.string().startsWith("0x"),
   })
   .required();
 

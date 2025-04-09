@@ -22,6 +22,8 @@ const mockBadgeEvent: BadgeEvent = {
   data: "0x0",
   minted: false,
   transactionHash: "0x123",
+  chainId: mockTransfer.chainId,
+  user: mockTransfer.from,
 };
 
 describe("BadgeEventsService", () => {

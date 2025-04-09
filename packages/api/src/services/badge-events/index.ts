@@ -48,33 +48,42 @@ export class BadgeEventsService implements IBadgesEventsService {
     // get all non minted points
     const events = await this.repo.badgeEvent.findMany({
       where: { minted: false },
-      include: { transaction: true },
     });
     if (events.length === 0) {
       return;
     }
 
-    // sum by address
-    const claimable = new Map<string, boolean>();
+    // group by chain id
+    const eventsByChain = new Map<string, BadgeEvent[]>();
     for (const event of events) {
-      const tokenId = this.badgeToTokenId.get(event.type)!.get(Number(event.data))!;
-      claimable.set(`${event.transaction.from}:${tokenId}`, true);
+      if (!eventsByChain.has(event.chainId)) {
+        eventsByChain.set(event.chainId, []);
+      }
+      eventsByChain.get(event.chainId)!.push(event);
     }
 
-    // add claimable in contract
-    await this.superchainBadgesService.addClaimable(
-      Array.from(claimable.keys()).map((k) => k.split(":")[0]),
-      Array.from(claimable.keys()).map((k) => BigInt(k.split(":")[1]))
-    );
+    // process for each chain
+    for (const [chainId, events] of eventsByChain) {
+      const claimable = new Map<string, boolean>();
+      for (const event of events) {
+        const tokenId = this.badgeToTokenId
+          .get(event.type)!
+          .get(Number(event.data))!;
+        claimable.set(`${event.user}:${tokenId}`, true);
+      }
 
-    // mark as minted
-    await this.repo.badgeEvent.updateMany({
-      where: { id: { in: events.map((e) => e.id) } },
-      data: { minted: true },
-    });
+      // add claimable in contract
+      await this.superchainBadgesService.addClaimable(
+        chainId,
+        Array.from(claimable.keys()).map((k) => k.split(":")[0]),
+        Array.from(claimable.keys()).map((k) => BigInt(k.split(":")[1]))
+      );
+
+      // mark as minted
+      await this.repo.pointEvent.updateMany({
+        where: { id: { in: events.map((e) => e.id) } },
+        data: { minted: true },
+      });
+    }
   }
 }
-
-
-
-

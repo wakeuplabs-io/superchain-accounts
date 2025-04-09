@@ -6,7 +6,9 @@ import {
 } from "@prisma/client";
 import { IPointsEventsHandler } from "..";
 
-export class TransactionSentPointsEventsHandler implements IPointsEventsHandler {
+export class TransactionSentPointsEventsHandler
+  implements IPointsEventsHandler
+{
   constructor(
     private repo: PrismaClient,
     private pointsPerTx: number,
@@ -26,6 +28,9 @@ export class TransactionSentPointsEventsHandler implements IPointsEventsHandler 
       update: {},
       create: {
         transaction: { connect: { hash: tx.hash } },
+        chainId: tx.chainId,
+        user: tx.from,
+
         type: PointEventType.TransactionsSent,
         data: "",
         value: this.pointsPerTx,
@@ -52,6 +57,8 @@ export class TransactionSentPointsEventsHandler implements IPointsEventsHandler 
               update: {},
               create: {
                 transaction: { connect: { hash: tx.hash } },
+                user: tx.from,
+                chainId: tx.chainId,
                 type: PointEventType.TransactionsSentMilestone,
                 data: String(config.count),
                 value: config.points,

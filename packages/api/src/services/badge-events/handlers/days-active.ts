@@ -29,7 +29,9 @@ export class DaysActiveBadgeEventsHandler implements BadgeEventsHandler {
           if (count >= threshold) {
             return this.repo.badgeEvent.upsert({
               where: {
-                type_data: {
+                type_data_user_chainId: {
+                  user: tx.from,
+                  chainId: tx.chainId,
                   type: BadgeEventType.DaysActive,
                   data: String(threshold),
                 },
@@ -37,6 +39,8 @@ export class DaysActiveBadgeEventsHandler implements BadgeEventsHandler {
               update: {},
               create: {
                 transaction: { connect: { hash: tx.hash } },
+                user: tx.from,
+                chainId: tx.chainId,
                 type: BadgeEventType.DaysActive,
                 data: String(threshold),
               },

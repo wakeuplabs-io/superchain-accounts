@@ -35,6 +35,8 @@ export class UniqueChainTransactionPointsEventsHandler
       update: {},
       create: {
         transaction: { connect: { hash: tx.hash } },
+        user: tx.from,
+        chainId: tx.chainId,
         type: PointEventType.UniqueChainUse,
         data: tx.chainId,
         value: this.pointsPerUniqueChainTransaction,

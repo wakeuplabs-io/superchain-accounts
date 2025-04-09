@@ -19,6 +19,8 @@ const mockTransfer: Transaction = {
 const mockPointEvent: PointEvent = {
   id: 1,
   transactionHash: mockTransfer.hash,
+  user: mockTransfer.from,
+  chainId: mockTransfer.chainId,
   type: PointEventType.TransactionsSent,
   data: "0x0",
   value: 1,
@@ -83,6 +85,7 @@ describe("PointsEventsService", () => {
     await service.submit();
 
     expect(superchainPointsService.addClaimable).toHaveBeenCalledWith(
+      tx.chainId,
       [tx.from],
       [BigInt(pointEvent.value)]
     );

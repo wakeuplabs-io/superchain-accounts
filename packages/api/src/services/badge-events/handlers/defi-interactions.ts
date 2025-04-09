@@ -28,7 +28,9 @@ export class DefiInteractionsBadgeEventsHandler implements BadgeEventsHandler {
           if (count >= threshold) {
             return this.repo.badgeEvent.upsert({
               where: {
-                type_data: {
+                type_data_user_chainId: {
+                  user: tx.from,
+                  chainId: tx.chainId,
                   type: BadgeEventType.DefiInteractions,
                   data: String(threshold),
                 },
@@ -36,6 +38,8 @@ export class DefiInteractionsBadgeEventsHandler implements BadgeEventsHandler {
               update: {},
               create: {
                 transaction: { connect: { hash: tx.hash } },
+                user: tx.from,
+                chainId: tx.chainId,
                 type: BadgeEventType.DefiInteractions,
                 data: String(threshold),
               },
