@@ -9,7 +9,8 @@
     "build": "rimraf dist && tsup ./src/index.ts --format cjs,esm --dts",
     "dev": "tsup ./src/index.ts --format cjs,esm --dts --watch",
     "lint": "tsc --noEmit && eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:ci": "echo \"No tests yet\""
   },
   "author": "",
   "license": "ISC",
