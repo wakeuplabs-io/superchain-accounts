@@ -3,8 +3,8 @@ name: Test All
 on:
   pull_request:
 
-jobs:   
-  build-packages:
+jobs:
+  test-packages:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -44,6 +44,7 @@ jobs:
       - name: Test All
         run: |
           npm run db:push --workspace=api
+          npm run build --workspace=schemas
           npm run test:ci --ws
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/db

@@ -43,7 +43,7 @@ jobs:
         run: npm ci
 
       - name: Build all
-        run: npm run build --ws
+        run: npm run build
 
       - name: Deploy
         run: npx sst deploy --stage=staging
