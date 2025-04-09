@@ -11,7 +11,7 @@ const envVars = envParsed();
 
 const DEFAULT_CHAIN_ID = 11155420; // Optimism Sepolia
 
-interface SmartAccountChain {
+export interface SmartAccountChain {
     data: Chain,
     rpcUrl: string;
     bundlerUrl: string;
