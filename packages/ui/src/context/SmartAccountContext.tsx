@@ -73,7 +73,7 @@ export function SuperChainAccountProvider({ children }: { children: ReactNode })
       const signature = await account.instance.signUserOperation(preparedUserOperation);
      
       await transactionService.sendUserOperation({
-        chainId: chain.data.id,
+        chainId: String(chain.data.id),
         operation: {
           ...formatUserOperation(preparedUserOperation),
           signature,
