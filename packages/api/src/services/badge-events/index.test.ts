@@ -1,5 +1,6 @@
 import {
   BadgeEvent,
+  BadgeEventType,
   PointEventType,
   Transaction,
   TransactionAction,
@@ -45,9 +46,13 @@ describe("BadgeEventsService", () => {
     // create service
     const service = new BadgeEventsService(
       db,
-      [handler1, handler2],
       superchainBadgesService,
-      new Map()
+      [handler1, handler2],
+      {
+        [BadgeEventType.TransactionsSent]: { 10: 10, 50: 50, 100: 100 },
+        [BadgeEventType.DaysActive]: { 10: 10, 50: 50, 100: 100 },
+        [BadgeEventType.DefiInteractions]: { 10: 10, 50: 50, 100: 100 },
+      }
     );
 
     const result = await service.handleNewTransaction(tx);

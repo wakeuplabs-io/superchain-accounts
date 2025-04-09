@@ -31,7 +31,7 @@ const SendUserOperationSchema = z.object({
     paymasterData: hexProp.optional(),
     paymasterPostOpGasLimit: hexProp.optional(),
   }),
-  chainId: z.number(),
+  chainId: z.string(),
 });
 
 export const normalizeSendUserOperation = (event: any) =>

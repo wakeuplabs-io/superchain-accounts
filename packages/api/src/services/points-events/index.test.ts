@@ -52,8 +52,8 @@ describe("PointsEventsService", () => {
     // create service
     const service = new PointsEventsService(
       db,
-      [handler1, handler2],
-      superchainPointsService
+      superchainPointsService,
+      [handler1, handler2]
     );
 
     // call service
@@ -79,7 +79,7 @@ describe("PointsEventsService", () => {
     };
 
     // create service
-    const service = new PointsEventsService(db, [], superchainPointsService);
+    const service = new PointsEventsService(db, superchainPointsService, []);
 
     // call submit
     await service.submit();
