@@ -1,9 +1,10 @@
 import { zeroAddress } from "viem";
 import { PrismaClient, Transaction } from "@prisma/client";
-import { BundlerFactory, CHAIN_DATA } from "./bundler-factory";
-import { ProviderFactory } from "./provider-factory";
+import { BundlerFactory, IBundlerFactory } from "./bundler-factory";
+import { ClientFactory, IClientFactory } from "./client-factory";
 import { Transaction as DomainTransaction } from "../domain/transaction";
 import axios from "axios";
+import { SMART_ACCOUNTS } from "@/config/blockchain";
 
 interface UserOperation {
   sender: string;
@@ -24,15 +25,26 @@ interface UserOperation {
   signature: string;
 }
 
+export interface ITransactionService {
+  sendUserOperation(
+    operation: UserOperation,
+    chainId: string
+  ): Promise<Transaction>;
+}
+
 export class TransactionService {
-  constructor(private repo: PrismaClient) {}
+  constructor(
+    private repo: PrismaClient,
+    private clientFactory: IClientFactory,
+    private bundlerFactory: IBundlerFactory
+  ) {}
 
   async sendUserOperation(
     operation: UserOperation,
-    chainId: number
+    chainId: string
   ): Promise<Transaction> {
-    const { bundlerUrl, entryPoint } = CHAIN_DATA[chainId];
-    const bundlerClient = BundlerFactory.getBundler(chainId);
+    const { bundlerUrl, entryPoint } = SMART_ACCOUNTS[chainId];
+    const bundlerClient = this.bundlerFactory.getBundler(chainId);
     const { initCode: _, ...opData } = operation;
 
     try {
@@ -47,7 +59,7 @@ export class TransactionService {
         throw Error("Transaction failed");
       }
 
-      const {receipt} = await bundlerClient.waitForUserOperationReceipt({
+      const { receipt } = await bundlerClient.waitForUserOperationReceipt({
         hash: data.result as `0x${string}`,
       });
 
@@ -55,7 +67,7 @@ export class TransactionService {
         throw Error("Transaction failed");
       }
 
-      const providerClient = ProviderFactory.getProvider(chainId);
+      const providerClient = this.clientFactory.getReadClient(chainId);
       const tx = await providerClient.getTransaction({
         hash: receipt.transactionHash,
       });
@@ -71,7 +83,6 @@ export class TransactionService {
           chainId: chainId.toString(),
         },
       });
-
     } catch (error) {
       console.error(error);
       throw Error("Transaction failed");

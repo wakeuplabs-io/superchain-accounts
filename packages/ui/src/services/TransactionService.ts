@@ -7,7 +7,7 @@ export class TransactionService {
     chainId,
     operation,
   }: {
-    chainId: number,
+    chainId: string,
     operation: any
   }
   ) {

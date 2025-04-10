@@ -1,0 +1,40 @@
+import { OWNER_PRIVATE_KEY } from "@/config/blockchain";
+import { IClientFactory } from "./client-factory";
+import superchainPointsAbi from "@/config/abis/superchain-points";
+
+export interface ISuperchainPointsService {
+  addClaimable(
+    chainId: string,
+    addresses: string[],
+    tokenIds: bigint[]
+  ): Promise<`0x${string}`>;
+}
+
+export class SuperchainPointsService implements ISuperchainPointsService {
+  constructor(
+    private address: `0x${string}`,
+    private clientFactory: IClientFactory
+  ) {}
+
+  async addClaimable(
+    chainId: string,
+    addresses: string[],
+    amounts: bigint[]
+  ): Promise<`0x${string}`> {
+    const client = this.clientFactory.getWriteClient(
+      chainId,
+      OWNER_PRIVATE_KEY
+    );
+
+    const tx = await client.writeContract({
+      address: this.address,
+      abi: superchainPointsAbi,
+      functionName: "addClaimable",
+      args: [addresses, amounts],
+      chain: client.chain,
+      account: client.account!,
+    });
+
+    return tx;
+  }
+}

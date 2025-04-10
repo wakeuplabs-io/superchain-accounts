@@ -31,12 +31,15 @@ model Transaction {
 }
 
 model PointEvent {
-  id     Int            @id @default(autoincrement())
-  type   PointEventType
-  data   String // Any extra data, like specs on the milestone or so on
-  minted Boolean        @default(false)
-  value  Int
+  id      Int            @id @default(autoincrement())
+  user    String
+  chainId String
+  type    PointEventType
+  data    String // Any extra data, like specs on the milestone or so on
+  minted  Boolean        @default(false)
+  value   Int
 
+  // transaction where the point or milestone has been achieved
   transaction     Transaction @relation(fields: [transactionHash], references: [hash])
   transactionHash String
 
@@ -52,14 +55,18 @@ enum PointEventType {
 }
 
 model BadgeEvent {
-  id     Int            @id @default(autoincrement())
-  type   BadgeEventType
-  data   String // Any extra data associated to the type, number of days active, etc
-  minted Boolean        @default(false)
+  id      Int            @id @default(autoincrement())
+  user    String
+  chainId String
+  type    BadgeEventType
+  data    String // Any extra data associated to the type, number of days active, etc
+  minted  Boolean        @default(false)
 
-  transactions Transaction[]
+  // transaction where the point or milestone has been achieved
+  transaction     Transaction @relation(fields: [transactionHash], references: [hash])
+  transactionHash String
 
-  @@unique([type, data])
+  @@unique([type, data, user, chainId])
 }
 
 enum BadgeEventType {

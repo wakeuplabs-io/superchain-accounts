@@ -41,8 +41,24 @@ export default $config({
         RPC_UNICHAIN_SEPOLIA: process.env.RPC_UNICHAIN_SEPOLIA!,
         ENTRYPOINT_UNICHAIN_SEPOLIA: process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
         ENTRYPOINT_OPTIMISM_SEPOLIA: process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
-        ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!
+        ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
+        OWNER_PRIVATE_KEY: process.env.OWNER_PRIVATE_KEY!,
+        SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
+        SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
+        CRONJOB_KEY: process.env.CRONJOB_KEY!,
       },
+    });
+
+    // deploy cron job
+    const cron = new sst.aws.Cron(`${PROJECT_NAME}-cron`, {
+      function: {
+        handler: "packages/api/src/cron.ts",
+        environment: {
+          API_URL: api.url,
+          CRONJOB_KEY: process.env.CRONJOB_KEY!,
+        },
+      },
+      schedule: "rate(1 day)",
     });
 
     // deploy ui
@@ -60,9 +76,11 @@ export default $config({
         VITE_RPC_BASE_SEPOLIA: process.env.RPC_BASE_SEPOLIA!,
         VITE_RPC_OPTIMISM_SEPOLIA: process.env.RPC_OPTIMISM_SEPOLIA!,
         VITE_RPC_UNICHAIN_SEPOLIA: process.env.RPC_UNICHAIN_SEPOLIA!,
-        VITE_ENTRYPOINT_UNICHAIN_SEPOLIA: process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
-        VITE_ENTRYPOINT_OPTIMISM_SEPOLIA: process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
-        VITE_ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!
+        VITE_ENTRYPOINT_UNICHAIN_SEPOLIA:
+          process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
+        VITE_ENTRYPOINT_OPTIMISM_SEPOLIA:
+          process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
+        VITE_ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
       },
     });
 

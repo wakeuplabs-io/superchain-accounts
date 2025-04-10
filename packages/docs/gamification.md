@@ -43,7 +43,7 @@ SC Points are awarded based on user engagement:
 | ------------------------ | ------------------------------------------------------------------------------------------ | -------------------- | --------------------- |
 | **Transaction Sent**     | Sending any transaction on OP Mainnet, Base, or other OP Chains.                           | 1 SC Point           | Per transaction       |
 | **Unique Chain Use**     | Interacting with a new OP Chain for the first time.                                        | 20 SC Points         | One-time per chain    |
-| **Days Active**          | Being active on-chain on OP Chains for a certain number of days per week.                  | 5 SC Points          | Weekly                |
+| **Days Active**          | Being active on-chain on OP Chains for a certain number of days.                  | 5 SC Points          | Weekly                |
 | **Milestone Completion** | Hitting transaction milestones (e.g., 100, 500 transactions).                              | 50 SC Points         | Per milestone         |
 | **Token Swap**           | Swapping tokens on DEXs (e.g., Uniswap, Velodrome).                                        | 2 SC Points          | Per swap              |
 
