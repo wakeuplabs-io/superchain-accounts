@@ -1,23 +1,33 @@
 import { PrismaClient, UserToken } from "@prisma/client";
 import tokenMetadata from "@/config/token-metadata.json";
-import { ImportUserTokenRequest } from "schemas";
+import { GetUserTokensRequest, ImportUserTokenRequest } from "schemas";
 import { Address, erc20Abi, getContract } from "viem";
 import { IClientFactory } from "./client-factory.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
 
 export interface IUserTokenService {
+  getUserTokens(data: GetUserTokensRequest): Promise<UserToken[]>;
   importToken(data: ImportUserTokenRequest): Promise<UserToken>;
 }
 
 export class UserTokenService implements IUserTokenService {
   constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
+  
+  getUserTokens({ userWallet, chainId}: GetUserTokensRequest): Promise<UserToken[]> {
+    return this.db.userToken.findMany({
+      where: {
+        userWallet,
+        chainId,
+      },
+    });
+  }
 
   async importToken(data: ImportUserTokenRequest) {
     const existingToken = await this.db.userToken.findFirst({
       where: {
         user: {
-          wallet: data.userAddress,
+          wallet: data.userWallet,
         },
         address: data.address,
         chainId: data.chainId,
@@ -37,10 +47,10 @@ export class UserTokenService implements IUserTokenService {
         user: {
           connectOrCreate: {
             where: {
-              wallet: data.userAddress,
+              wallet: data.userWallet,
             },
             create: {
-              wallet: data.userAddress,
+              wallet: data.userWallet,
             }
           }
         },

@@ -30,7 +30,7 @@ export const ImportTokensDialog = ({
     resolver: zodResolver(importUserTokenRequestSchema),
     defaultValues: {
       chainId: chain.id,
-      userAddress: account.instance?.address,
+      userWallet: account.instance?.address,
     }
   });
 
