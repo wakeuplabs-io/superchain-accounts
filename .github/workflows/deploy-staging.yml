@@ -66,6 +66,11 @@ jobs:
           SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: ${{ secrets.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS }}
           CRONJOB_KEY: ${{ secrets.CRONJOB_KEY }}
 
+      - name: Sync Database
+        run: npm -w api run db:push
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Save Outputs
         id: save-outputs
         run: |
