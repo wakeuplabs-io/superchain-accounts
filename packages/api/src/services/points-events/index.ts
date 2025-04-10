@@ -16,7 +16,7 @@ export interface IPointsEventsService {
     opts: { chainId?: string; limit?: number }
   ): Promise<PointEventWithTransaction[]>;
   handleNewTransaction(tx: Transaction): Promise<PointEvent[]>;
-  submit(): Promise<void>;
+  submit(): Promise<{ chainId: string; txHash: string }[]>;
 }
 
 export type PointEventWithTransaction = Prisma.PointEventGetPayload<{
@@ -27,7 +27,7 @@ export class PointsEventsService implements IPointsEventsService {
   constructor(
     private repo: PrismaClient,
     private superchainPointsService: ISuperchainPointsService,
-    private handlers: IPointsEventsHandler[],
+    private handlers: IPointsEventsHandler[]
   ) {}
 
   async getUserPoints(
@@ -49,13 +49,15 @@ export class PointsEventsService implements IPointsEventsService {
     return events.flat();
   }
 
-  async submit(): Promise<void> {
+  async submit(): Promise<{ chainId: string; txHash: string }[]> {
     // get all non minted points
     const events = await this.repo.pointEvent.findMany({
       where: { minted: false },
     });
+    console.log("events", events);
+
     if (events.length === 0) {
-      return;
+      return [];
     }
 
     // group by chain id
@@ -68,6 +70,7 @@ export class PointsEventsService implements IPointsEventsService {
     }
 
     // process for each chain
+    const res: { chainId: string; txHash: string }[] = [];
     for (const [chainId, events] of eventsByChain) {
       // sum by address
       const claimable = new Map<string, bigint>();
@@ -83,11 +86,12 @@ export class PointsEventsService implements IPointsEventsService {
       }
 
       // add claimable in contract
-      await this.superchainPointsService.addClaimable(
+      const txHash = await this.superchainPointsService.addClaimable(
         chainId,
         Array.from(claimable.keys()),
         Array.from(claimable.values())
       );
+      res.push({ chainId, txHash });
 
       // mark as minted
       await this.repo.pointEvent.updateMany({
@@ -95,5 +99,8 @@ export class PointsEventsService implements IPointsEventsService {
         data: { minted: true },
       });
     }
+
+    return res;
   }
+  
 }

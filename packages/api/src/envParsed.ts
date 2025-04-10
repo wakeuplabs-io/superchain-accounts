@@ -1,7 +1,5 @@
 import { z } from "zod";
-import dotenv from "dotenv";
-
-dotenv.config();
+import "dotenv/config";
 
 // NOTE: DO NOT destructure process.env
 
@@ -19,6 +17,10 @@ const env = {
   ENTRYPOINT_OPTIMISM_SEPOLIA: process.env.ENTRYPOINT_OPTIMISM_SEPOLIA,
   ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA,
   DATABASE_URL: process.env.DATABASE_URL,
+  OWNER_PRIVATE_KEY: process.env.OWNER_PRIVATE_KEY,
+  SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS,
+  SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS,
+  CRONJOB_KEY: process.env.CRONJOB_KEY,
 } as const;
 
 const envSchema = z

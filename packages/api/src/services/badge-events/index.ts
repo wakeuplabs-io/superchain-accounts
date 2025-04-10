@@ -17,7 +17,7 @@ export interface IBadgesEventsService {
     opts: { chainId?: string; limit?: number }
   ): Promise<BadgeEventWithTransaction[]>;
   handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]>;
-  submit(): Promise<void>;
+  submit(): Promise<{ chainId: string; txHash: string }[]>;
 }
 
 export type BadgeEventWithTransaction = Prisma.BadgeEventGetPayload<{
@@ -53,13 +53,13 @@ export class BadgeEventsService implements IBadgesEventsService {
     return events.flat();
   }
 
-  async submit(): Promise<void> {
+  async submit(): Promise<{ chainId: string; txHash: string }[]> {
     // get all non minted points
     const events = await this.repo.badgeEvent.findMany({
       where: { minted: false },
     });
     if (events.length === 0) {
-      return;
+      return [];
     }
 
     // group by chain id
@@ -72,6 +72,7 @@ export class BadgeEventsService implements IBadgesEventsService {
     }
 
     // process for each chain
+    const res: { chainId: string; txHash: string }[] = [];
     for (const [chainId, events] of eventsByChain) {
       const claimable = new Map<string, boolean>();
       for (const event of events) {
@@ -82,19 +83,26 @@ export class BadgeEventsService implements IBadgesEventsService {
 
         claimable.set(`${event.user}:${tokenId}`, true);
       }
+      if (claimable.size === 0) {
+        continue;
+      }
+      
 
       // add claimable in contract
-      await this.superchainBadgesService.addClaimable(
+      const txHash = await this.superchainBadgesService.addClaimable(
         chainId,
         Array.from(claimable.keys()).map((k) => k.split(":")[0]),
         Array.from(claimable.keys()).map((k) => BigInt(k.split(":")[1]))
       );
+      res.push({ chainId, txHash });
 
       // mark as minted
-      await this.repo.pointEvent.updateMany({
+      await this.repo.badgeEvent.updateMany({
         where: { id: { in: events.map((e) => e.id) } },
         data: { minted: true },
       });
     }
+
+    return res;
   }
 }

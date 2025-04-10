@@ -44,7 +44,7 @@ const transactionService = new TransactionService(
 );
 
 const superchainPointsService = new SuperchainPointsService(
-  envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
+  envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
   clientFactory
 );
 

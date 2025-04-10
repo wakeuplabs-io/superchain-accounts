@@ -65,6 +65,10 @@ jobs:
           ENTRYPOINT_UNICHAIN_SEPOLIA: ${{ secrets.ENTRYPOINT_UNICHAIN_SEPOLIA }}
           ENTRYPOINT_OPTIMISM_SEPOLIA: ${{ secrets.ENTRYPOINT_OPTIMISM_SEPOLIA }}
           ENTRYPOINT_BASE_SEPOLIA: ${{ secrets.ENTRYPOINT_BASE_SEPOLIA }}
+          OWNER_PRIVATE_KEY: ${{ secrets.OWNER_PRIVATE_KEY }}
+          SUPERCHAIN_BADGES_ADDRESS: ${{ secrets.SUPERCHAIN_BADGES_ADDRESS }}
+          SUPERCHAIN_POINTS_ADDRESS: ${{ secrets.SUPERCHAIN_POINTS_ADDRESS }}
+          CRONJOB_KEY: ${{ secrets.CRONJOB_KEY }}
 
       - name: Save Outputs
         id: save-outputs

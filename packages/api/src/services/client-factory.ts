@@ -40,6 +40,6 @@ export class ClientFactory implements IClientFactory {
       });
     }
 
-    return this.walletClients[chainId]!;
+    return this.walletClients[`${chainId}:${privateKey}`]!;
   }
 }

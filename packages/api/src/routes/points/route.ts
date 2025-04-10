@@ -13,7 +13,7 @@ export default function createRoutes(
       return res.status(401).send({ message: "Unauthorized" });
     }
 
-    await pointsEventsService.submit();
+    res.send({ data: { transactions: await pointsEventsService.submit() } });
   });
 
   router.get("/:address", async (req, res) => {
