@@ -54,7 +54,6 @@ export class PointsEventsService implements IPointsEventsService {
     const events = await this.repo.pointEvent.findMany({
       where: { minted: false },
     });
-    console.log("events", events);
 
     if (events.length === 0) {
       return [];

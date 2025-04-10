@@ -125,4 +125,4 @@ if (envParsed().NODE_ENV === "development") {
 
 // serverless handler
 
-export const handler = serverless(app);
+export default serverless(app);

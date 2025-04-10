@@ -16,8 +16,6 @@ export const useSuperchainRaffle = () => {
 
   useEffect(() => {
     async function getClaimableTickets() {
-      console.log("getClaimableTickets", chain.id, address)
-
       if (!chain || !address) {
         return;
       }
