@@ -2,7 +2,7 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import React from "react";
 import envParsed from "@/envParsed";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthContextType } from "@/hoc/auth-provider";
+import { AuthContextType } from "@/hooks/use-auth";
 
 const TanStackRouterDevtools = envParsed().PROD
   ? () => null // Render nothing in production

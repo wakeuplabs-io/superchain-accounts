@@ -12,7 +12,7 @@ import {
   toSimpleSmartAccount,
   ToSimpleSmartAccountParameters,
 } from "permissionless/accounts";
-import { SmartAccount, UserOperation } from "viem/account-abstraction";
+import { SmartAccount } from "viem/account-abstraction";
 import { transactionService } from "@/services";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
@@ -71,7 +71,7 @@ export function SuperChainAccountProvider({
   const sendTransaction = useCallback(
     async (userOperation: SuperChainUserOperation): Promise<`0x${string}`> => {
       if (account.status === "pending" || !account.instance) {
-        return;
+        return "0x0";
       }
 
       try {
