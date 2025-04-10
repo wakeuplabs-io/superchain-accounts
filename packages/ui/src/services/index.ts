@@ -1,7 +1,7 @@
 import envParsed from "@/envParsed";
 import axios from "axios";
-import { TransactionService } from "./TransactionService";
-import { TokenService } from "./TokenService";
+import { TransactionService } from "./transaction";
+import { TokenService } from "./token";
 
 const instance = axios.create({
   baseURL: envParsed().API_URL,

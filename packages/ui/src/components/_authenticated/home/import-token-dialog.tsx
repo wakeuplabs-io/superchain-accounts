@@ -1,4 +1,3 @@
-// src/components/ui/smart-account/ImportTokensDialog.tsx
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +26,7 @@ export const ImportTokensDialog = ({
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<ImportUserTokenRequest>({
+  const form = useForm({
     resolver: zodResolver(importUserTokenRequestSchema),
     defaultValues: {
       chainId: chain.data.id,
