@@ -29,7 +29,9 @@ export default $config({
     // deploy api
     const api = new sst.aws.Function(`${PROJECT_NAME}-api`, {
       handler: "packages/api/src/app.handler",
-      url: true,
+      url: {
+        cors: false,
+      },
       environment: {
         NODE_ENV: "production",
         DATABASE_URL: process.env.DATABASE_URL!,
