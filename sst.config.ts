@@ -28,7 +28,7 @@ export default $config({
 
     // deploy api
     const api = new sst.aws.Function(`${PROJECT_NAME}-api`, {
-      handler: "packages/api/src/app.ts",
+      handler: "packages/api/src/app.handler",
       url: true,
       environment: {
         NODE_ENV: "production",
@@ -52,7 +52,7 @@ export default $config({
     // deploy cron job
     const cron = new sst.aws.Cron(`${PROJECT_NAME}-cron`, {
       function: {
-        handler: "packages/api/src/cron.ts",
+        handler: "packages/api/src/cron.handler",
         environment: {
           API_URL: api.url,
           CRONJOB_KEY: process.env.CRONJOB_KEY!,
