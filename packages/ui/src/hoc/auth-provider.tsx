@@ -1,5 +1,5 @@
 import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
-import { createContext, ReactNode, useCallback, useMemo, useRef } from "react";
+import { createContext, ReactNode, useCallback, useRef } from "react";
 
 export interface AuthContextType {
   isAuthenticated: boolean;

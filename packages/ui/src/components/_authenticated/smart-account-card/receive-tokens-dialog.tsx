@@ -1,10 +1,9 @@
-// src/components/ui/ReceiveTokensDialog.tsx
 import * as Dialog from "@radix-ui/react-dialog";
 import { QRCodeSVG } from "qrcode.react";
 import { Copy } from "lucide-react";
 import { useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ChainMetadata } from "@/hoc/web3-provider";
+import { ChainMetadata } from "@/config/chains";
 
 interface ReceiveTokensDialogProps {
   isOpen: boolean;

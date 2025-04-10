@@ -37,7 +37,7 @@ export function SmartAccountCard() {
       <ReceiveTokensDialog
         isOpen={isReceiveDialogOpen}
         onClose={() => setIsReceiveDialogOpen(false)}
-        address={account.instance?.address}
+        address={account.instance?.address ?? ""}
         chain={chain}
       />
     </>
