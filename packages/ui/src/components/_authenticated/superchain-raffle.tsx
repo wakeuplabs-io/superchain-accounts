@@ -8,6 +8,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { useCountdown } from "@/hooks/use-countdown";
+import { useCallback } from "react";
+import { toast } from "@/hooks/use-toast";
 
 export const SuperchainRaffle: React.FC<{}> = () => {
   const {
@@ -16,7 +19,20 @@ export const SuperchainRaffle: React.FC<{}> = () => {
     isPending,
     prizeAmount,
     totalTickets,
+    revealedAt,
+    claimTickets,
   } = useSuperchainRaffle();
+
+  const { days, hours, minutes } = useCountdown(new Date(revealedAt));
+
+  const onClaim = useCallback(async () => {
+    claimTickets().then((tx) => {
+      toast({
+        title: "Tickets claimed",
+        description: `You have successfully claimed your tickets ${tx}`,
+      });
+    });
+  }, [claimTickets]);
 
   if (isPending) {
     return (
@@ -44,19 +60,19 @@ export const SuperchainRaffle: React.FC<{}> = () => {
         <div className="flex divide-x mb-6">
           {/* Days */}
           <div className="text-center flex-1">
-            <div className="text-2xl font-semibold">4</div>
+            <div className="text-2xl font-semibold">{days}</div>
             <div className="text-sm">Days</div>
           </div>
 
           {/* Hours */}
           <div className="text-center flex-1">
-            <div className="text-2xl font-semibold">4</div>
+            <div className="text-2xl font-semibold">{hours}</div>
             <div className="text-sm">Hours</div>
           </div>
 
           {/* Minutes */}
           <div className="text-center flex-1">
-            <div className="text-2xl font-semibold">4</div>
+            <div className="text-2xl font-semibold">{minutes}</div>
             <div className="text-sm">Minutes</div>
           </div>
         </div>
@@ -94,11 +110,11 @@ export const SuperchainRaffle: React.FC<{}> = () => {
 
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className="w-full">
+            <TooltipTrigger className="w-full" asChild>
               <Button
-                disabled={claimableTickets == 0}
+                // disabled={claimableTickets == 0}
                 className="w-full mt-8"
-                onClick={() => window.alert("Claim")}
+                onClick={onClaim}
               >
                 Claim Tickets
               </Button>

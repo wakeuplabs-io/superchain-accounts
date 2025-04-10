@@ -1,5 +1,5 @@
 import envParsed from "@/envParsed";
-import { Address, createPublicClient, http, PublicClient } from "viem";
+import { Address, Chain, createPublicClient, http, PublicClient } from "viem";
 import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
 import { BundlerClient, createBundlerClient } from "viem/account-abstraction";
 
@@ -17,22 +17,50 @@ export interface ChainMetadata {
   bundler: BundlerClient;
 }
 
+export const clients: { [chainId: number]: PublicClient } = {
+  [optimismSepolia.id]: createPublicClient({
+    chain: optimismSepolia as Chain,
+    transport: http(envParsed().RPC_OPTIMISM_SEPOLIA),
+  }),
+  [baseSepolia.id]: createPublicClient({
+    chain: baseSepolia as Chain,
+    transport: http(envParsed().RPC_BASE_SEPOLIA),
+  }),
+  [unichainSepolia.id]: createPublicClient({
+    chain: unichainSepolia as Chain,
+    transport: http(envParsed().RPC_UNICHAIN_SEPOLIA),
+  }),
+};
+
+export const bundlers: { [chainId: number]: BundlerClient } = {
+  [optimismSepolia.id]: createBundlerClient({
+    chain: optimismSepolia,
+    client: clients[optimismSepolia.id],
+    transport: http(envParsed().BUNDLER_OPTIMISM_SEPOLIA),
+    paymaster: true,
+  }),
+  [baseSepolia.id]: createBundlerClient({
+    chain: baseSepolia,
+    client: clients[baseSepolia.id],
+    transport: http(envParsed().BUNDLER_BASE_SEPOLIA),
+    paymaster: true,
+  }),
+  [unichainSepolia.id]: createBundlerClient({
+    chain: unichainSepolia,
+    client: clients[unichainSepolia.id],
+    transport: http(envParsed().BUNDLER_UNICHAIN_SEPOLIA),
+    paymaster: true,
+  }),
+};
+
 export const supportedChains: Record<number, ChainMetadata> = {
   [optimismSepolia.id]: {
     order: 1,
     id: optimismSepolia.id,
     name: optimismSepolia.name,
     logo: optimismChainLogo,
-    client: createPublicClient({
-      transport: http(envParsed().RPC_OPTIMISM_SEPOLIA),
-    }),
-    bundler: createBundlerClient({
-      client: createPublicClient({
-        transport: http(envParsed().RPC_OPTIMISM_SEPOLIA),
-      }),
-      transport: http(envParsed().BUNDLER_OPTIMISM_SEPOLIA),
-      paymaster: true,
-    }),
+    client: clients[optimismSepolia.id],
+    bundler: bundlers[optimismSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
   },
   [baseSepolia.id]: {
@@ -40,16 +68,8 @@ export const supportedChains: Record<number, ChainMetadata> = {
     id: baseSepolia.id,
     name: baseSepolia.name,
     logo: baseChainLogo,
-    client: createPublicClient({
-      transport: http(envParsed().RPC_BASE_SEPOLIA),
-    }),
-    bundler: createBundlerClient({
-      client: createPublicClient({
-        transport: http(envParsed().RPC_BASE_SEPOLIA),
-      }),
-      transport: http(envParsed().BUNDLER_BASE_SEPOLIA),
-      paymaster: true,
-    }),
+    client: clients[baseSepolia.id],
+    bundler: bundlers[baseSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_BASE_SEPOLIA,
   },
   [unichainSepolia.id]: {
@@ -57,16 +77,8 @@ export const supportedChains: Record<number, ChainMetadata> = {
     id: unichainSepolia.id,
     name: unichainSepolia.name,
     logo: unichainChainLogo,
-    client: createPublicClient({
-      transport: http(envParsed().RPC_UNICHAIN_SEPOLIA),
-    }),
-    bundler: createBundlerClient({
-      client: createPublicClient({
-        transport: http(envParsed().RPC_UNICHAIN_SEPOLIA),
-      }),
-      transport: http(envParsed().BUNDLER_UNICHAIN_SEPOLIA),
-      paymaster: true,
-    }),
+    client: clients[unichainSepolia.id],
+    bundler: bundlers[unichainSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,
   },
 };
