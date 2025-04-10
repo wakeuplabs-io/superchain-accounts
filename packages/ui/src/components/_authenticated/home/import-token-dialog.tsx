@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { importUserTokenRequestSchema, ImportUserTokenRequest } from "schemas";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
-import { tokenService } from "@/services";
+import { userService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
@@ -37,7 +37,7 @@ export const ImportTokensDialog = ({
   const onSubmit = async (values: ImportUserTokenRequest) => {
     try {
       setIsSubmitting(true);
-      const userToken = await tokenService.importToken(values);
+      const userToken = await userService.importToken(values);
       toast({
         title: "Token imported",
         description: `Token ${userToken.symbol} imported successfully`,

@@ -6,11 +6,11 @@ import { IClientFactory } from "./client-factory.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
 
-export interface ITokenService {
+export interface IUserTokenService {
   importToken(data: ImportUserTokenRequest): Promise<UserToken>;
 }
 
-export class TokenService implements ITokenService {
+export class UserTokenService implements IUserTokenService {
   constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
 
   async importToken(data: ImportUserTokenRequest) {
