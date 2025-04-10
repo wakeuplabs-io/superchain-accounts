@@ -18,6 +18,7 @@ export const importUserTokenRequestSchema = z.object({
 export type ImportUserTokenRequest = z.infer<typeof importUserTokenRequestSchema>
 
 const userTokenSchema = z.object({
+  id: z.number(),
   address: z.string().refine((val) => isAddress(val)),
   userAddress: z.string().refine((val) => isAddress(val)),
   chainId: z.number(),

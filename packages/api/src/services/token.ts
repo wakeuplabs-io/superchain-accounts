@@ -1,19 +1,17 @@
-import { PrismaClient } from "@prisma/client";
-import tokenMetadata from "./token-metadata.json";
+import { PrismaClient, UserToken } from "@prisma/client";
+import tokenMetadata from "@/config/token-metadata.json";
 import { ImportUserTokenRequest } from "schemas";
-import { ProviderFactory } from "./provider-factory.js";
-import { Address, getContract } from "viem";
+import { Address, erc20Abi, getContract } from "viem";
+import { IClientFactory } from "./client-factory.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
 
-const erc20Abi = [
-  { name: "name", type: "function", stateMutability: "view", outputs: [{ type: "string" }], inputs: [] },
-  { name: "symbol", type: "function", stateMutability: "view", outputs: [{ type: "string" }], inputs: [] },
-  { name: "decimals", type: "function", stateMutability: "view", outputs: [{ type: "uint8" }], inputs: [] },
-];
+export interface ITokenService {
+  importToken(data: ImportUserTokenRequest): Promise<UserToken>;
+}
 
-export class TokenService {
-  constructor(private readonly db: PrismaClient) {}
+export class TokenService implements ITokenService {
+  constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
 
   async importToken(data: ImportUserTokenRequest) {
     const existingToken = await this.db.userToken.findFirst({
@@ -48,7 +46,7 @@ export class TokenService {
   }
 
   private async getTokenData(chainId: number, address: Address) {
-    const client = ProviderFactory.getProvider(chainId);
+    const client = this.clientFactory.getReadClient(chainId.toString());
 
     const contract = getContract({
       address,

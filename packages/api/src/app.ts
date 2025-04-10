@@ -27,9 +27,11 @@ import buildPointsRoutes from "./routes/points/route";
 import buildTransactionsRoutes from "./routes/transactions/route";
 import buildBadgesRoutes from "./routes/badges/route";
 import buildHealthRoutes from "./routes/health/route";
+import buildTokensRoutes from "./routes/tokens-route";
 import { SuperchainBadgesService } from "./services/superchain-badges";
 import { ClientFactory } from "./services/client-factory";
 import { BundlerFactory } from "./services/bundler-factory";
+import { TokenService } from "./services/token";
 
 // instantiate services
 
@@ -87,6 +89,11 @@ const badgesEventsService = new BadgeEventsService(
   }
 );
 
+const tokenService = new TokenService(
+  db,
+  clientFactory,
+);
+
 // instantiate express
 
 const app = express();
@@ -111,6 +118,7 @@ app.use(
     badgesEventsService
   )
 );
+app.use("/token", buildTokensRoutes(tokenService));
 
 app.use(errorMiddlewares.notFound);
 app.use(errorMiddlewares.errorHandler);
