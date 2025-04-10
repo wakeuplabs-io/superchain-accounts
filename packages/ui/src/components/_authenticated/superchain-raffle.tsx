@@ -11,20 +11,15 @@ import {
 import { useCountdown } from "@/hooks/use-countdown";
 import { useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
+import emptySvg from "../../assets/empty.svg";
 
 export const SuperchainRaffle: React.FC<{}> = () => {
-  const {
-    claimableTickets,
-    claimedTickets,
-    isPending,
-    prizeAmount,
-    totalTickets,
-    revealedAt,
-    claimTickets,
-    isClaiming,
-  } = useSuperchainRaffle();
+  const { isPending, claimTickets, isClaiming, currentRaffle } =
+    useSuperchainRaffle();
 
-  const { days, hours, minutes } = useCountdown(new Date(revealedAt));
+  const { days, hours, minutes } = useCountdown(
+    new Date(currentRaffle?.revealedAt || 0)
+  );
 
   const onClaim = useCallback(async () => {
     claimTickets()
@@ -46,7 +41,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
     return (
       <div className="max-w-md">
         <div className="mb-4 font-medium">Superchain Raffle</div>
-        <div className="bg-white border rounded-lg p-8 space-y-4">
+        <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
           <Skeleton className="h-8 w-full rounded-md" />
           <Skeleton className="h-8 w-full rounded-md" />
@@ -55,10 +50,27 @@ export const SuperchainRaffle: React.FC<{}> = () => {
     );
   }
 
+  if (!currentRaffle) {
+    return (
+      <div className="max-w-md">
+        <div className="mb-4 font-medium">Superchain Raffle</div>
+        <div className="bg-white border rounded-lg p-8 flex flex-col justify-center items-center h-[430px]">
+          <img src={emptySvg} alt="" className="mb-11 h-20 w-20" />
+          <div className="text-center mb-6 font-medium">
+            Oops! No raffles currently ongoing
+          </div>
+          <div className="text-center text-muted-foreground">
+            Be alert! New raffles may start anytime
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md">
       <div className="mb-4 font-medium">Superchain Raffle</div>
-      <div className="bg-white border rounded-lg p-8">
+      <div className="bg-white border rounded-lg p-8 h-[430px]">
         <div className="flex gap-2 mb-4">
           <Clock className="w-5 h-5" />
           <span className="text-sm font-medium">Winner revealed in:</span>
@@ -92,7 +104,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
             <span className="text-xs">Jackpot</span>
           </div>
 
-          <span>+{prizeAmount} SCP</span>
+          <span>+{currentRaffle.jackpot} SCP</span>
         </div>
 
         {/* Tickets count */}
@@ -103,7 +115,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
               <span className="text-sm">Total tickets</span>
             </div>
 
-            <span>{totalTickets}</span>
+            <span>{currentRaffle.totalTickets}</span>
           </div>
 
           <div className="flex justify-between items-center">
@@ -112,29 +124,36 @@ export const SuperchainRaffle: React.FC<{}> = () => {
               <span className="text-sm">Your tickets</span>
             </div>
 
-            <span>{claimedTickets}</span>
+            <span>{currentRaffle.claimedTickets}</span>
           </div>
         </div>
 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger className="w-full" asChild>
-              <Button
-                disabled={claimableTickets == 0}
-                loading={isClaiming}
-                className="w-full mt-8"
-                onClick={onClaim}
-              >
-                Claim Tickets
-              </Button>
+              <span className="inline-block">
+                <Button
+                  disabled={currentRaffle.claimableTickets == 0}
+                  loading={isClaiming}
+                  className="w-full mt-8"
+                  onClick={onClaim}
+                >
+                  Claim{" "}
+                  {currentRaffle.claimableTickets > 0
+                    ? currentRaffle.claimableTickets
+                    : ""}{" "}
+                  Tickets
+                </Button>
+              </span>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <p>
-                {claimableTickets > 0
-                  ? claimedTickets === claimableTickets
-                    ? "Claimed all tickets"
-                    : `Claim ${claimableTickets} tickets`
-                  : "You're not eligible for this round"}
+                {currentRaffle.claimableTickets == 0 &&
+                currentRaffle.claimedTickets == 0
+                  ? "You're not eligible for this round"
+                  : currentRaffle.claimableTickets == 0
+                    ? "You have already claimed all your tickets"
+                    : `Claim ${currentRaffle.claimableTickets} tickets`}
               </p>
             </TooltipContent>
           </Tooltip>

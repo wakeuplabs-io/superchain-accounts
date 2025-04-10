@@ -52,7 +52,9 @@ type SuperChainAccount = {
 
 type SuperChainAccountContextType = {
   account: SuperChainAccount;
-  sendTransaction: (userOperation: SuperChainUserOperation) => Promise<void>;
+  sendTransaction: (
+    userOperation: SuperChainUserOperation
+  ) => Promise<`0x${string}`>;
 };
 
 export const SuperChainAccountContext = createContext<
@@ -75,7 +77,7 @@ export function SuperChainAccountProvider({
   });
 
   const sendTransaction = useCallback(
-    async (userOperation: SuperChainUserOperation) => {
+    async (userOperation: SuperChainUserOperation): Promise<`0x${string}`> => {
       if (account.status === "pending" || !account.instance) {
         return;
       }
@@ -84,24 +86,22 @@ export function SuperChainAccountProvider({
         const { account: _, ...preparedUserOperation } =
           await chain.bundler.prepareUserOperation({
             account: account.instance,
-            calls: [
-              {
-                ...userOperation,
-              },
-            ],
+            calls: [{ ...userOperation }],
           });
 
         const signature = await account.instance.signUserOperation(
           preparedUserOperation
         );
 
-        await transactionService.sendUserOperation({
+        const txHash = await transactionService.sendUserOperation({
           chainId: String(chain.id),
           operation: {
             ...formatUserOperation(preparedUserOperation),
             signature,
           },
         });
+
+        return txHash;
       } catch (error) {
         console.error("Error sending transaction:", error);
         throw error;
@@ -111,7 +111,6 @@ export function SuperChainAccountProvider({
   );
 
   useEffect(() => {
-
     async function initialize() {
       const newSmartAccount = await toSimpleSmartAccount({
         owner: getProvider() as ToSimpleSmartAccountParameters<"0.7">["owner"],
@@ -136,11 +135,9 @@ export function SuperChainAccountProvider({
       });
     }
 
-
-    initialize()
-      .catch((error) => {
-        console.error("Error initializing smart account:", error);
-      })
+    initialize().catch((error) => {
+      console.error("Error initializing smart account:", error);
+    });
   }, [currentChainId, chain, getProvider]);
 
   return (

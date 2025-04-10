@@ -15,30 +15,100 @@ export const useSuperchainRaffle = () => {
   const [isPending, setIsPending] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
 
-  const [claimableTickets, setClaimableTickets] = useState(0);
-  const [totalTickets, setTotalTickets] = useState(0);
-  const [prizeAmount, setPrizeAmount] = useState(0);
-  const [claimedTickets, setClaimedTickets] = useState(0);
-  const [revealedAt, setRevealedAt] = useState(0);
+  const [currentRaffle, setCurrentRaffle] = useState<{
+    address: `0x${string}`;
+    claimableTickets: number;
+    claimedTickets: number;
+    totalTickets: number;
+    revealedAt: number;
+    jackpot: number;
+  } | null>(null);
 
-  const claimTickets = useCallback(async () => {
-    setIsClaiming(true);
-    try {
+  useEffect(() => {
+    async function loadRaffle() {
+      if (!chain || !address) {
+        return;
+      }
+
+      // from factory ready current raffle
       const currentRaffle = (await chain.client.readContract({
+        abi: superchainPointsRaffleFactory,
+        functionName: "currentRaffle",
         address: envParsed()
           .SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
-        functionName: "currentRaffle",
-        abi: superchainPointsRaffleFactory,
         args: [],
       })) as `0x${string}`;
       if (!currentRaffle || currentRaffle === zeroAddress) {
+        return setCurrentRaffle(null);
+      }
+
+      const [
+        claimableTickets,
+        claimedTickets,
+        totalTickets,
+        prizeAmount,
+        revealedAt,
+      ] = await chain.client.multicall({
+        contracts: [
+          {
+            functionName: "getClaimableTickets",
+            abi: superchainPointsRaffle,
+            address: currentRaffle as `0x${string}`,
+            args: [address],
+          },
+          {
+            functionName: "getClaimedTickets",
+            abi: superchainPointsRaffle,
+            address: currentRaffle as `0x${string}`,
+            args: [address],
+          },
+          {
+            functionName: "getTotalTickets",
+            abi: superchainPointsRaffle,
+            address: currentRaffle as `0x${string}`,
+            args: [],
+          },
+          {
+            functionName: "getPrizeAmount",
+            abi: superchainPointsRaffle,
+            address: currentRaffle as `0x${string}`,
+            args: [],
+          },
+          {
+            functionName: "getRevealedAfter",
+            abi: superchainPointsRaffle,
+            address: currentRaffle as `0x${string}`,
+            args: [],
+          },
+        ],
+      });
+
+      setCurrentRaffle({
+        address: currentRaffle as `0x${string}`,
+        claimableTickets: Number(claimableTickets.result ?? 0),
+        claimedTickets: Number(claimedTickets.result ?? 0),
+        totalTickets: Number(totalTickets.result ?? 0),
+        revealedAt: Number(revealedAt.result ?? 0),
+        jackpot: Number(prizeAmount.result ?? 0),
+      });
+    }
+
+    setIsPending(true);
+    loadRaffle()
+      .catch((e) => setCurrentRaffle(null))
+      .finally(() => setIsPending(false));
+  }, [address, chain]);
+
+  const claimTickets = useCallback(async () => {
+    setIsClaiming(true);
+
+    try {
+      if (!currentRaffle) {
         throw new Error("No current raffle");
       }
 
-      console.log("currentRaffle", currentRaffle);
-
       const txHash = await sendTransaction({
-        to: currentRaffle,
+        to: currentRaffle.address,
         value: 0n,
         data: encodeFunctionData({
           abi: superchainPointsRaffle,
@@ -47,76 +117,23 @@ export const useSuperchainRaffle = () => {
         }),
       });
 
-      setClaimedTickets(claimableTickets);
+      setCurrentRaffle({
+        ...currentRaffle,
+        claimableTickets: 0,
+        claimedTickets: currentRaffle.claimedTickets + currentRaffle.claimableTickets,
+        totalTickets: currentRaffle.totalTickets + currentRaffle.claimableTickets,
+      });
 
       return txHash;
-    } catch (error) {
-      console.error(error);
     } finally {
       setIsClaiming(false);
     }
-  }, [chain, sendTransaction]);
-
-  useEffect(() => {
-    async function getClaimableTickets() {
-      if (!chain || !address) {
-        return;
-      }
-
-      // from factory ready current raffle
-      const currentRaffle = await chain.client.readContract({
-        address: envParsed()
-          .SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
-        functionName: "currentRaffle",
-        abi: superchainPointsRaffleFactory,
-        args: [],
-      });
-      if (!currentRaffle || currentRaffle === zeroAddress) {
-        return setClaimableTickets(0);
-      }
-
-      // read at raffle contract claimable tickets
-      const [claimableTickets, totalTickets, prizeAmount] = await Promise.all([
-        chain.client.readContract({
-          address: currentRaffle as `0x${string}`,
-          functionName: "getClaimableTickets",
-          abi: superchainPointsRaffle,
-          args: [address],
-        }),
-        chain.client.readContract({
-          address: currentRaffle as `0x${string}`,
-          functionName: "getTotalTickets",
-          abi: superchainPointsRaffle,
-          args: [],
-        }),
-        chain.client.readContract({
-          address: currentRaffle as `0x${string}`,
-          functionName: "getPrizeAmount",
-          abi: superchainPointsRaffle,
-          args: [],
-        }),
-      ]);
-
-      setClaimableTickets(Number(claimableTickets));
-      setTotalTickets(Number(totalTickets));
-      setPrizeAmount(Number(prizeAmount));
-    }
-
-    setIsPending(true);
-    setClaimableTickets(0);
-    getClaimableTickets()
-      .catch((e) => console.log("Error getting claimable tickets", e))
-      .finally(() => setIsPending(false));
-  }, [address, chain]);
+  }, [chain, sendTransaction, currentRaffle]);
 
   return {
     isPending,
-    claimableTickets,
-    claimedTickets,
-    totalTickets,
-    prizeAmount,
-    revealedAt,
-    claimTickets,
     isClaiming,
+    claimTickets,
+    currentRaffle,
   };
 };
