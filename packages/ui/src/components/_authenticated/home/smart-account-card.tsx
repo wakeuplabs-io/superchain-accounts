@@ -17,7 +17,7 @@ export function SmartAccountCard() {
   return (
     <>
       <div className="flex flex-col rounded-lg shadow-sm bg-white p-8 max-w-screen-xl gap-8">
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-wrap flex-row gap-4 items-center">
           <img className="w-16 h-16" src={chain.logo} />
           <div className="flex flex-col gap-1">
             <h2 className="text-3xl text-black font-semibold">
@@ -28,7 +28,7 @@ export function SmartAccountCard() {
             </span>
           </div>
         </div>
-        <div className="flex items-start gap-4 w-full">
+        <div className="flex flex-wrap items-start gap-4 w-full">
           <ActionButton
             text="Receive"
             icon={Download}

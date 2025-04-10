@@ -1,13 +1,13 @@
 import { Axios } from "axios";
-import { GetUserTokensRequest, ImportUserTokenRequest, UserToken } from "schemas";
+import { GetUserTokensRequest, GetUserTokensResponse, getUserTokensResponseScheme, ImportUserTokenRequest, UserToken } from "schemas";
 
 export class UserService  {
   constructor(private readonly axios: Axios) {}
 
-  async getUserTokens({userWallet, ...params}: GetUserTokensRequest): Promise<UserToken[]>  {
-    const { data } = await this.axios.get<UserToken[]>(`/users/${userWallet}/tokens`, { params });
+  async getUserTokens({userWallet, ...params}: GetUserTokensRequest): Promise<GetUserTokensResponse>  {
+    const { data } = await this.axios.get<GetUserTokensResponse>(`/users/${userWallet}/tokens`, { params });
 
-    return data;
+    return getUserTokensResponseScheme.parse(data);
   }
 
   async importToken(request: ImportUserTokenRequest): Promise<UserToken>  {

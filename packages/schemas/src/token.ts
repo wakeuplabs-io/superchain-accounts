@@ -5,10 +5,11 @@ const userTokenSchema = z.object({
   id: z.number(),
   address: z.string().refine((val) => isAddress(val)),
   userWallet: z.string().refine((val) => isAddress(val)),
+  decimals: z.number(),
   chainId: z.number(),
   name: z.string(),
   symbol: z.string(),
-  logo: z.string().optional(),
+  logoURI: z.string().optional(),
 });
 
 export type UserToken = z.infer<typeof userTokenSchema>;
