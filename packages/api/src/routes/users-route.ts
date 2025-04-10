@@ -15,9 +15,13 @@ export default function buildUserRoutes(userTokenService: IUserTokenService): Ro
       return res.status(400).send(requestData.error.issues);
     }
 
-    const userTokens = await userTokenService.getUserTokens(requestData.data);
-
-    return res.status(200).send(userTokens);
+    try {
+      const userTokens = await userTokenService.getUserTokens(requestData.data);
+      return res.status(200).send(userTokens);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({message: "Failed to get user tokens"});
+    }
   });
 
   router.post("/:wallet/tokens", async (req: Request, res: Response) => {

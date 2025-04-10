@@ -1,7 +1,7 @@
 import { PrismaClient, UserToken } from "@prisma/client";
 import tokenMetadata from "@/config/token-metadata.json";
 import { GetUserTokensRequest, ImportUserTokenRequest } from "schemas";
-import { Address, erc20Abi, getContract } from "viem";
+import { Address, erc20Abi, getAddress, getContract, PublicClient } from "viem";
 import { IClientFactory } from "./client-factory.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
@@ -11,16 +11,59 @@ export interface IUserTokenService {
   importToken(data: ImportUserTokenRequest): Promise<UserToken>;
 }
 
+async function fetchUserTokenBalance(client: PublicClient, userToken: UserToken): Promise<bigint> {
+  try {
+    const balance = await client.readContract({
+      address: getAddress(userToken.address),
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [getAddress(userToken.userWallet)],
+    });  
+    return balance;
+  } catch (error) {
+    console.error("Error getting balance", error);
+    return 0n;
+  }
+}
+
 export class UserTokenService implements IUserTokenService {
   constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
   
-  getUserTokens({ userWallet, chainId}: GetUserTokensRequest): Promise<UserToken[]> {
-    return this.db.userToken.findMany({
+  async getUserTokens({ userWallet, chainId}: GetUserTokensRequest) {
+    const userTokens = await this.db.userToken.findMany({
       where: {
         userWallet,
         chainId,
       },
     });
+
+    return await this.populateTokensBalance(userTokens, chainId);
+  }
+
+  async populateTokensBalance(userTokens: UserToken[], chainId: number | undefined) {
+    //TODO: IMPROVE THIS TO BE ABLE TO FETCH BALANCES FOR MULTIPLE CHAINS. FOR THE MOMENT RETURN ZERO FOR ALL TOKENS IF CHAINID IS NOT PROVIDED
+    if(!chainId) {
+      return userTokens.map(
+        (token) => {
+          return {
+            ...token,
+            balance: 0n,
+          };
+        }
+      );
+    }
+
+    const client = this.clientFactory.getReadClient(chainId.toString());
+
+    return Promise.all(userTokens.map(
+      async (token) => {
+        const balance = await fetchUserTokenBalance(client, token);
+        return {
+          ...token,
+          balance: balance.toString(),
+        };
+      }
+    ));
   }
 
   async importToken(data: ImportUserTokenRequest) {
