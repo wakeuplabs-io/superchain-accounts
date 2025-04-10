@@ -6,7 +6,6 @@ import "dotenv/config";
 const env = {
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
-  USERS_TABLE: process.env.USERS_TABLE,
   BUNDLER_UNICHAIN_SEPOLIA: process.env.BUNDLER_UNICHAIN_SEPOLIA,
   BUNDLER_OPTIMISM_SEPOLIA: process.env.BUNDLER_OPTIMISM_SEPOLIA,
   BUNDLER_BASE_SEPOLIA: process.env.BUNDLER_BASE_SEPOLIA,
@@ -27,7 +26,6 @@ const envSchema = z
   .object({
     NODE_ENV: z.enum(["development", "production"]).default("development"),
     PORT: z.string().default("5000"),
-    USERS_TABLE: z.string().default("users-staging-table"),
     BUNDLER_UNICHAIN_SEPOLIA: z.string(),
     BUNDLER_OPTIMISM_SEPOLIA: z.string(),
     BUNDLER_BASE_SEPOLIA: z.string(),

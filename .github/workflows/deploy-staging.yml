@@ -55,6 +55,8 @@ jobs:
       - name: Deploy
         run: npx sst deploy --stage=staging
         env:
+          PORT: 3000
+          NODE_ENV: production
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BUNDLER_UNICHAIN_SEPOLIA: ${{ secrets.BUNDLER_UNICHAIN_SEPOLIA}}
           BUNDLER_OPTIMISM_SEPOLIA: ${{ secrets.BUNDLER_OPTIMISM_SEPOLIA}}
