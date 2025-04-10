@@ -20,11 +20,8 @@ interface ISuperchainPointsRaffleErrors {
     /// @notice Error thrown when the ticket is not found
     error TicketNotFound();
 
-    /// @notice Users can claim only once
-    error TicketAlreadyClaimed();
-
-    /// @notice Error thrown when there are no eligible badges
-    error NoEligibleBadges();
+    /// @notice Error thrown when user has no tickets to claim, either because they are not eligible or they have already claimed
+    error NoTicketsToClaim();
 
     /// @notice Error thrown when the seed has already been used
     error SeedAlreadyUsed();
@@ -66,6 +63,16 @@ interface ISuperchainPointsRaffle is
     /// @notice Reveals the raffle winner and transfers the points
     /// @param _seed The seed used to generate the raffle
     function revealWinner(bytes32 _seed) external;
+
+    /// @notice Returns the amount of points that are distributed to the raffle winner
+    function getPrizeAmount() external view returns (uint256);
+
+    /// @notice Returns the total number of tickets that can be claimed
+    function getTotalTickets() external view returns (uint256);
+
+    /// @notice Returns the number of tickets that can be claimed
+    /// @param user The address of the user
+    function getClaimableTickets(address user) external view returns (uint256);
 
     /// @notice Claim tickets to participate in raffle
     function claimTickets() external;

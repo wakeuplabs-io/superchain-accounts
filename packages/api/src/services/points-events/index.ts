@@ -1,9 +1,7 @@
 import {
   PointEvent,
   Transaction,
-  PointEventType,
   PrismaClient,
-  TransactionAction,
   Prisma,
 } from "@prisma/client";
 import { ISuperchainPointsService } from "../superchain-points";
