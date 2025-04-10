@@ -3,8 +3,8 @@ name: Test All
 on:
   pull_request:
 
-jobs:   
-  build-packages:
+jobs:
+  test-packages:
     runs-on: ubuntu-latest
     services:
       postgres:

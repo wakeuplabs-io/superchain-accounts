@@ -34,6 +34,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         slate: "bg-custom-slate-50 text-custom-slate-400 hover:bg-custom-slate-90",
+        confirm: "bg-destructive text-destructive-foreground hover:bg-destructive/90"
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -65,6 +66,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
+        disabled
       >
         <LoaderCircle className={cn(loadingVariants({ size }))} />
       </Comp>

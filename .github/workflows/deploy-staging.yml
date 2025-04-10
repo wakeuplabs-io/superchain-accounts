@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-    secrets:
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      AWS_REGION:
-        required: true
 
 jobs:
   deploy:
@@ -50,7 +43,7 @@ jobs:
         run: npm ci
 
       - name: Build all
-        run: npm run build --ws
+        run: npm run build
 
       - name: Deploy
         run: npx sst deploy --stage=staging
