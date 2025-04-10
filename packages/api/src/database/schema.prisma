@@ -76,15 +76,23 @@ enum BadgeEventType {
   DefiInteractions
 }
 
-model UserToken {
-  id          Int     @id @default(autoincrement())
-  userAddress String
-  chainId     Int
-  address     String
-  name        String
-  symbol      String
-  decimals    Int
-  logoURI     String?
+model User {
+  wallet     String      @id
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  userTokens UserToken[]
+}
 
-  @@unique([userAddress, address])
+model UserToken {
+  id         Int     @id @default(autoincrement())
+  chainId    Int
+  user       User    @relation(fields: [userWallet], references: [wallet])
+  userWallet String
+  address    String
+  name       String
+  symbol     String
+  decimals   Int
+  logoURI    String?
+
+  @@unique([userWallet, address])
 }

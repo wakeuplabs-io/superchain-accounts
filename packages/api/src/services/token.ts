@@ -16,7 +16,9 @@ export class TokenService implements ITokenService {
   async importToken(data: ImportUserTokenRequest) {
     const existingToken = await this.db.userToken.findFirst({
       where: {
-        userAddress: data.userAddress,
+        user: {
+          wallet: data.userAddress,
+        },
         address: data.address,
         chainId: data.chainId,
       }
@@ -32,7 +34,16 @@ export class TokenService implements ITokenService {
 
     const userToken = await this.db.userToken.create({
       data: {
-        userAddress: data.userAddress,
+        user: {
+          connectOrCreate: {
+            where: {
+              wallet: data.userAddress,
+            },
+            create: {
+              wallet: data.userAddress,
+            }
+          }
+        },
         address: data.address,
         chainId: data.chainId,
         name: tokenData.name,
