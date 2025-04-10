@@ -28,8 +28,10 @@ export default $config({
 
     // deploy api
     const api = new sst.aws.Function(`${PROJECT_NAME}-api`, {
-      handler: "packages/api/src/app.ts",
-      url: true,
+      handler: "packages/api/src/app.handler",
+      url: {
+        cors: false,
+      },
       environment: {
         NODE_ENV: "production",
         DATABASE_URL: process.env.DATABASE_URL!,
@@ -46,13 +48,25 @@ export default $config({
         SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         CRONJOB_KEY: process.env.CRONJOB_KEY!,
+        PRISMA_QUERY_ENGINE_LIBRARY:
+          "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
       },
+      copyFiles: [
+        {
+          from: "node_modules/.prisma/client/",
+          to: ".prisma/client/",
+        },
+        {
+          from: "node_modules/@prisma/client/",
+          to: "@prisma/client/",
+        },
+      ],
     });
 
     // deploy cron job
     const cron = new sst.aws.Cron(`${PROJECT_NAME}-cron`, {
       function: {
-        handler: "packages/api/src/cron.ts",
+        handler: "packages/api/src/cron.handler",
         environment: {
           API_URL: api.url,
           CRONJOB_KEY: process.env.CRONJOB_KEY!,
@@ -83,8 +97,8 @@ export default $config({
         VITE_ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
         VITE_SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
-        VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
-
+        VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
+          process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
       },
     });
 

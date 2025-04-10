@@ -4,6 +4,7 @@ import { Copy } from "lucide-react";
 import { useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ChainMetadata } from "@/config/chains";
+import { shortenAddress } from "@/lib/address";
 
 interface ReceiveTokensDialogProps {
   isOpen: boolean;
@@ -12,8 +13,6 @@ interface ReceiveTokensDialogProps {
   chain: ChainMetadata;
 }
 
-
-
 export const ReceiveTokensDialog = ({
   isOpen,
   onClose,
@@ -21,10 +20,7 @@ export const ReceiveTokensDialog = ({
   chain,
 }: ReceiveTokensDialogProps) => {
   const { toast } = useToast();
-  const shortAddress = useMemo(
-    () => `${address.slice(0, 12)}...${address.slice(-4)}`,
-    [address]
-  );
+  const shortAddress = useMemo(() => shortenAddress(address), [address]);
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>

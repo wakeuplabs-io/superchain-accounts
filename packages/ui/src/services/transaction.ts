@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Axios } from "axios";
 
 export class TransactionService {
@@ -11,7 +12,7 @@ export class TransactionService {
     operation: any
   }
   ) {
-    const {data} = await this.axios.post(`/transactions/send`, {
+    const {data} = await this.axios.post("/transactions/send", {
       chainId,
       operation,
     });
