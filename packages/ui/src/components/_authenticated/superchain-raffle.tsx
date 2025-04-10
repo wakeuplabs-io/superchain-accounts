@@ -23,10 +23,10 @@ export const SuperchainRaffle: React.FC<{}> = () => {
 
   const onClaim = useCallback(async () => {
     claimTickets()
-      .then((tx) => {
+      .then(() => {
         toast({
           title: "Tickets claimed",
-          description: `You have successfully claimed your tickets ${tx}`,
+          description: `You have successfully claimed your tickets`,
         });
       })
       .catch((error) => {

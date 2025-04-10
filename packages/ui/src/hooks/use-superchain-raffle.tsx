@@ -6,6 +6,7 @@ import superchainPointsRaffleFactory from "@/config/abis/superchain-points-raffl
 import superchainPointsRaffle from "@/config/abis/superchain-points-raffle";
 import { useSuperChainAccount } from "./use-smart-account";
 
+
 export const useSuperchainRaffle = () => {
   const { chain } = useWeb3();
   const {
@@ -95,7 +96,7 @@ export const useSuperchainRaffle = () => {
 
     setIsPending(true);
     loadRaffle()
-      .catch((e) => setCurrentRaffle(null))
+      .catch(() => setCurrentRaffle(null))
       .finally(() => setIsPending(false));
   }, [address, chain]);
 
