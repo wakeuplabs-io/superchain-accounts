@@ -46,7 +46,19 @@ export default $config({
         SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         CRONJOB_KEY: process.env.CRONJOB_KEY!,
+        PRISMA_QUERY_ENGINE_LIBRARY:
+          "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
       },
+      copyFiles: [
+        {
+          from: "node_modules/.prisma/client/",
+          to: ".prisma/client/",
+        },
+        {
+          from: "node_modules/@prisma/client/",
+          to: "@prisma/client/",
+        },
+      ],
     });
 
     // deploy cron job
@@ -83,7 +95,8 @@ export default $config({
         VITE_ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
         VITE_SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
-        VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
+        VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
+          process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
       },
     });
 
