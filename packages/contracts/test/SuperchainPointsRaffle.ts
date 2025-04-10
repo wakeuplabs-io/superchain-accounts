@@ -67,6 +67,7 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(ethers.encodeBytes32String("demo"), owner.address),
+            0,
             prize,
             badges,
             badgesAllocations
@@ -98,6 +99,7 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
+            0,
             prize,
             badges,
             badgesAllocations
@@ -136,6 +138,7 @@ describe("SuperchainPointsRaffle", function () {
           .connect(addr1)
           .initialize(
             sealSeed(seed, addr1.address),
+            0,
             prize,
             badges,
             badgesAllocations
@@ -148,6 +151,7 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
+            0,
             prize,
             badges,
             badgesAllocations
@@ -170,6 +174,7 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
+            0,
             prize,
             badges,
             badgesAllocations
@@ -204,6 +209,7 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
+            0,
             prize,
             badges,
             badgesAllocations
@@ -234,7 +240,13 @@ describe("SuperchainPointsRaffle", function () {
       await expect(
         superchainPointsRaffle
           .connect(owner)
-          .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n])
+          .initialize(
+            sealSeed(seed, owner.address),
+            0,
+            10n,
+            [1n, 2n],
+            [10n, 100n]
+          )
       ).not.to.be.reverted;
 
       // add at least one participant so reveal doesn't revert on winner == zero address
@@ -261,7 +273,13 @@ describe("SuperchainPointsRaffle", function () {
       await expect(
         superchainPointsRaffle
           .connect(owner)
-          .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n])
+          .initialize(
+            sealSeed(seed, owner.address),
+            0,
+            10n,
+            [1n, 2n],
+            [10n, 100n]
+          )
       ).not.to.be.reverted;
 
       // add at least one participant so reveal doesn't revert on winner == zero address

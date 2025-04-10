@@ -15,7 +15,7 @@ export const ActionButton = ({ text, icon: Icon, className, isDisabled, onClick 
     <button
       disabled={isDisabled}
       onClick={onClick}
-      className={clsx("flex items-center justify-center gap-2 rounded-xl text-custom-slate-300 border border-custom-gray-200 hover:bg-gray-50 py-3 px-7 disabled:bg-gray-100", className)} >
+      className={clsx("flex items-center justify-center gap-2 rounded-xl text-slate-300 border border-gray-200 hover:bg-gray-50 py-3 px-7 disabled:bg-gray-100", className)} >
       <Icon className="w-5 h-5" />
       <span className="text-base">{text}</span>
     </button>

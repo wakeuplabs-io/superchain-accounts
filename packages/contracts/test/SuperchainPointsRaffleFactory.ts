@@ -120,7 +120,13 @@ describe("SuperchainPointsRaffleFactory", function () {
       const seed = ethers.encodeBytes32String("demo");
       await raffle
         .connect(owner)
-        .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n]);
+        .initialize(
+          sealSeed(seed, owner.address),
+          0n,
+          10n,
+          [1n, 2n],
+          [10n, 100n]
+        );
 
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await raffle.connect(addr1).claimTickets();

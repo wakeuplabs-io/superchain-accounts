@@ -14,6 +14,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
 
     bytes32 public sealedSeed;
     uint256 public storedBlockNumber;
+    uint256 public revealAfterTimestamp;
 
     IERC20 public superchainPoints;
     IERC1155 public superchainBadges;
@@ -23,7 +24,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
 
     uint256 public ticketCount;
     mapping(uint256 => address) public tickets;
-    mapping(address => bool) public ticketsClaimed;
+    mapping(address => uint256) public ticketsClaimed;
 
     uint256[] public eligibleBadges;
     mapping(uint256 => uint256) public badgeAllocations;
@@ -43,6 +44,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
     /// @inheritdoc ISuperchainPointsRaffle
     function initialize(
         bytes32 _sealedSeed,
+        uint256 _revealAfterTimestamp,
         uint256 _amount,
         uint256[] memory _badges,
         uint256[] memory _badgeAllocation
@@ -58,6 +60,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         // Store seed
         sealedSeed = _sealedSeed;
         storedBlockNumber = block.number + 1;
+        revealAfterTimestamp = _revealAfterTimestamp;
 
         // Store raffle details
         prize = _amount;
@@ -95,6 +98,8 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         // If we reveal in same block we can know block hash
         if (storedBlockNumber > block.number) {
             revert CannotRevealBeforeBlock(storedBlockNumber);
+        } else if (revealAfterTimestamp > block.timestamp) {
+            revert CannotRevealBeforeTimestamp(revealAfterTimestamp);
         }
 
         // Prevent owner from changing seed
@@ -141,7 +146,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         ) {
             tickets[i] = msg.sender;
         }
-        ticketsClaimed[msg.sender] = true;
+        ticketsClaimed[msg.sender] = ticketsAllocation;
         ticketCount += ticketsAllocation;
 
         emit TicketsClaimed(msg.sender, ticketsAllocation);
@@ -149,10 +154,6 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
 
     /// @inheritdoc ISuperchainPointsRaffle
     function getClaimableTickets(address user) public view returns (uint256) {
-        if (ticketsClaimed[user]) {
-            return 0;
-        }
-
         uint256 ticketsAllocation = 0;
         for (uint256 i = 0; i < eligibleBadges.length; i++) {
             if (superchainBadges.balanceOf(user, eligibleBadges[i]) > 0) {
@@ -162,7 +163,12 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
             }
         }
 
-        return ticketsAllocation;
+        return ticketsAllocation - ticketsClaimed[user];
+    }
+
+    /// @inheritdoc ISuperchainPointsRaffle
+    function getClaimedTickets(address user) public view returns (uint256) {
+        return ticketsClaimed[user];
     }
 
     /// @inheritdoc ISuperchainPointsRaffle
@@ -183,5 +189,10 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
     /// @inheritdoc ISuperchainPointsRaffle
     function isFinished() external view returns (bool) {
         return finished;
+    }
+
+    /// @inheritdoc ISuperchainPointsRaffle
+    function getRevealedAfter() external view returns (uint256) {
+        return revealAfterTimestamp;
     }
 }

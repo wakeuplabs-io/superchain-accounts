@@ -15,7 +15,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 import opSuperchainLogo from "@/assets/logos/op-superchain-logo.png";
@@ -55,7 +54,11 @@ export const Route = createFileRoute("/_authenticated")({
   },
   component: AuthenticatedLayout,
   // TODO: Add a pending component
-  pendingComponent: () => <span>Loading...</span>,
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen w-screen">
+      Loading...
+    </div>
+  ),
 });
 
 function AuthenticatedLayout() {
@@ -119,7 +122,6 @@ function AuthenticatedLayout() {
 
           <main className="flex flex-1 overflow-auto p-8 lg:p-16">
             <div className="w-full flex flex-col gap-4">
-              <SidebarTrigger />
               <Outlet />
             </div>
           </main>

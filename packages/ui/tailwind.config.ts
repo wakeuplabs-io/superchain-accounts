@@ -61,16 +61,7 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))"
-        },
-        "custom-slate": {
-          "50": "hsl(var(--custom-slate-50))",
-          "90": "hsl(var(--custom-slate-90))",
-          "300": "hsl(var(--custom-slate-300))",
-          "400": "hsl(var(--custom-slate-400))"
-        },
-        "custom-gray": {
-          "200": "hsl(var(--custom-gray-200))",
-        },
+        }
       }
     }
   },

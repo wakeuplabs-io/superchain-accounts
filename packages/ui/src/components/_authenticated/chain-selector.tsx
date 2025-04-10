@@ -16,7 +16,7 @@ export function ChainSelector() {
               key={c.id}
               onClick={() => setCurrentChainId(c.id)}
               className={clsx(
-                "flex justify-center items-center w-full lg:justify-start lg:w-auto lg:flex-none lg:min-w-[270px] gap-2 whitespace-nowrap rounded-full px-6 py-4 border-custom-gray-200 border text-gray-600 hover:bg-white",
+                "flex justify-center items-center w-full lg:justify-start lg:w-auto lg:flex-none lg:min-w-[270px] gap-2 whitespace-nowrap rounded-full px-6 py-4 border-gray-200 border text-gray-600 hover:bg-white",
                 { "bg-white": selected }
               )}
             >
@@ -26,7 +26,7 @@ export function ChainSelector() {
                   "hidden lg:flex lg:flex-row lg:items-baseline gap-2",
                   {
                     "text-black": selected,
-                    "text-custom-slate-400": !selected,
+                    "text-slate-400": !selected,
                   }
                 )}
               >
