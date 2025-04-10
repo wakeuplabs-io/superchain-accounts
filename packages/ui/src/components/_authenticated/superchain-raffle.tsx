@@ -21,17 +21,25 @@ export const SuperchainRaffle: React.FC<{}> = () => {
     totalTickets,
     revealedAt,
     claimTickets,
+    isClaiming,
   } = useSuperchainRaffle();
 
   const { days, hours, minutes } = useCountdown(new Date(revealedAt));
 
   const onClaim = useCallback(async () => {
-    claimTickets().then((tx) => {
-      toast({
-        title: "Tickets claimed",
-        description: `You have successfully claimed your tickets ${tx}`,
+    claimTickets()
+      .then((tx) => {
+        toast({
+          title: "Tickets claimed",
+          description: `You have successfully claimed your tickets ${tx}`,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: `There was an error claiming your tickets ${error}`,
+        });
       });
-    });
   }, [claimTickets]);
 
   if (isPending) {
@@ -112,7 +120,8 @@ export const SuperchainRaffle: React.FC<{}> = () => {
           <Tooltip>
             <TooltipTrigger className="w-full" asChild>
               <Button
-                // disabled={claimableTickets == 0}
+                disabled={claimableTickets == 0}
+                loading={isClaiming}
                 className="w-full mt-8"
                 onClick={onClaim}
               >

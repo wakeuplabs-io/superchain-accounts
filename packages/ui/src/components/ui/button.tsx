@@ -12,7 +12,7 @@ const loadingVariants = cva("animate-spin", {
       sm: "w-5 h-5",
       lg: "w-7 h-7",
       icon: "w-5 h-5",
-    }
+    },
   },
   defaultVariants: {
     size: "default",
@@ -52,28 +52,34 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
-  loading?: boolean
+  asChild?: boolean;
+  loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading = false,...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      disabled,
+      asChild = false,
+      loading = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : "button";
-    return loading ? (
-      //TODO: FIX LOADING STATE TO AVOID RESIZING WHEN LOADING
+    return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        disabled={disabled || loading}
         {...props}
       >
-        <LoaderCircle className={cn(loadingVariants({ size }))} />
+        {loading ? "Loading..." : children}
       </Comp>
-    ) :  (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
     );
   }
 );

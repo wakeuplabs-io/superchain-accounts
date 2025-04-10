@@ -13,6 +13,8 @@ export const useSuperchainRaffle = () => {
     sendTransaction,
   } = useSuperChainAccount();
   const [isPending, setIsPending] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
+
   const [claimableTickets, setClaimableTickets] = useState(0);
   const [totalTickets, setTotalTickets] = useState(0);
   const [prizeAmount, setPrizeAmount] = useState(0);
@@ -20,32 +22,39 @@ export const useSuperchainRaffle = () => {
   const [revealedAt, setRevealedAt] = useState(0);
 
   const claimTickets = useCallback(async () => {
-    const currentRaffle = (await chain.client.readContract({
-      address: envParsed()
-        .SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
-      functionName: "currentRaffle",
-      abi: superchainPointsRaffleFactory,
-      args: [],
-    })) as `0x${string}`;
-    if (!currentRaffle || currentRaffle === zeroAddress) {
-      throw new Error("No current raffle");
-    }
-
-    console.log("currentRaffle", currentRaffle)
-
-    const txHash = await sendTransaction({
-      to: currentRaffle,
-      value: 0n,
-      data: encodeFunctionData({
-        abi: superchainPointsRaffle,
-        functionName: "claimTickets",
+    setIsClaiming(true);
+    try {
+      const currentRaffle = (await chain.client.readContract({
+        address: envParsed()
+          .SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
+        functionName: "currentRaffle",
+        abi: superchainPointsRaffleFactory,
         args: [],
-      }),
-    });
+      })) as `0x${string}`;
+      if (!currentRaffle || currentRaffle === zeroAddress) {
+        throw new Error("No current raffle");
+      }
 
-    setClaimedTickets(claimableTickets);
+      console.log("currentRaffle", currentRaffle);
 
-    return txHash;
+      const txHash = await sendTransaction({
+        to: currentRaffle,
+        value: 0n,
+        data: encodeFunctionData({
+          abi: superchainPointsRaffle,
+          functionName: "claimTickets",
+          args: [],
+        }),
+      });
+
+      setClaimedTickets(claimableTickets);
+
+      return txHash;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsClaiming(false);
+    }
   }, [chain, sendTransaction]);
 
   useEffect(() => {
@@ -108,5 +117,6 @@ export const useSuperchainRaffle = () => {
     prizeAmount,
     revealedAt,
     claimTickets,
+    isClaiming,
   };
 };
