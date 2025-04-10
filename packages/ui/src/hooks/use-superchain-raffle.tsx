@@ -69,7 +69,7 @@ export const useSuperchainRaffle = () => {
             args: [],
           },
           {
-            functionName: "getPrizeAmount",
+            functionName: "getJackpot",
             abi: superchainPointsRaffle,
             address: currentRaffle as `0x${string}`,
             args: [],
@@ -88,7 +88,7 @@ export const useSuperchainRaffle = () => {
         claimableTickets: Number(claimableTickets.result ?? 0),
         claimedTickets: Number(claimedTickets.result ?? 0),
         totalTickets: Number(totalTickets.result ?? 0),
-        revealedAt: Number(revealedAt.result ?? 0),
+        revealedAt: Number(revealedAt.result ?? 0n) * 1000,
         jackpot: Number(prizeAmount.result ?? 0),
       });
     }

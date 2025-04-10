@@ -2,9 +2,9 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment, TaskArguments } from "hardhat/types";
 
 task("start-raffle", "Starts a raffle")
-  .addParam("prize", "Amount of points for prize")
+  .addParam("jackpot", "Amount of points for jackpot")
   .addParam("badges", "Badges that can participate separated by comma")
-  .addParam("revealAfter", "Timestamp to reveal winner")
+  .addParam("revealAfter", "Timestamp to reveal winner in seconds")
   .addParam("allocations", "Badge allocations separated by comma")
   .setAction(
     async (taskArguments: TaskArguments, hre: HardhatRuntimeEnvironment) => {
@@ -38,11 +38,11 @@ task("start-raffle", "Starts a raffle")
 
       // Mint points for raffle
       console.log(
-        `Minting ${taskArguments.prize} points to ${signer.address} for raffle deposit...`
+        `Minting ${taskArguments.jackpot} points to ${signer.address} for raffle deposit...`
       );
       const txMint = await token.mint(
         signer.address,
-        BigInt(taskArguments.prize)
+        BigInt(taskArguments.jackpot)
       );
       console.log(`Points minted with tx: ${txMint.hash}`);
 
@@ -78,7 +78,7 @@ task("start-raffle", "Starts a raffle")
           )
         ),
         BigInt(taskArguments.revealAfter),
-        BigInt(taskArguments.prize),
+        BigInt(taskArguments.jackpot),
         taskArguments.badges.split(",").map(BigInt),
         taskArguments.allocations.split(",").map(BigInt)
       );

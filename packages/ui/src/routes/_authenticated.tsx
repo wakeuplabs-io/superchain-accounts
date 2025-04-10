@@ -3,9 +3,10 @@ import {
   Outlet,
   redirect,
   useRouter,
+  useRouterState,
 } from "@tanstack/react-router";
 import { z } from "zod";
-import { LogOut, Lock, ScrollText } from "lucide-react";
+import { LogOut, Lock, ScrollText, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -53,7 +54,6 @@ export const Route = createFileRoute("/_authenticated")({
     }
   },
   component: AuthenticatedLayout,
-  // TODO: Add a pending component
   pendingComponent: () => (
     <div className="flex justify-center items-center h-screen w-screen">
       Loading...
@@ -63,6 +63,7 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const router = useRouter();
+  const routerState = useRouterState()
   const { logout } = useAuth();
 
   const onLogout = async () => {
@@ -93,10 +94,18 @@ function AuthenticatedLayout() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <AuthenticatedSidebarMenuButton
+                    Icon={User}
+                    text="Profile"
+                    route="/profile"
+                    isActive={routerState.location.pathname === "/profile"}
+                  />
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <AuthenticatedSidebarMenuButton
                     Icon={ScrollText}
                     text="Accounts"
                     route="/"
-                    isActive={router.state.location.pathname === "/"}
+                    isActive={routerState.location.pathname === "/"}
                   />
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -106,7 +115,8 @@ function AuthenticatedLayout() {
             <SidebarFooter>
               <div className="flex flex-col px-8 py-14 gap-9">
                 <div className="flex gap-4">
-                  <ActionButton icon={LogOut} onClick={onLogout} />
+                  {/* TODO: we need to redo this */}
+                  <ActionButton variant="dark"  icon={LogOut} onClick={onLogout} />
                   <ActionButton
                     variant="slate"
                     icon={Lock}

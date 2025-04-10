@@ -75,7 +75,7 @@ interface ISuperchainPointsRaffle is
     function getEligibleBadges() external view returns (uint256[] memory);
 
     /// @notice Returns the amount of points that are distributed to the raffle winner
-    function getPrizeAmount() external view returns (uint256);
+    function getJackpot() external view returns (uint256);
 
     /// @notice Returns the total number of tickets that can be claimed
     function getTotalTickets() external view returns (uint256);
@@ -91,6 +91,6 @@ interface ISuperchainPointsRaffle is
     /// @notice Claim tickets to participate in raffle
     function claimTickets() external;
 
-    /// @notice Returns true if the raffle is finished
-    function isFinished() external view returns (bool);
+    /// @notice Returns the address of the raffle winner
+    function getWinner() external view returns (address);
 }

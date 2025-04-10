@@ -1,6 +1,7 @@
 import hre from "hardhat";
 import { expect } from "chai";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { ZeroAddress } from "ethers";
 
 const { ethers } = hre;
 
@@ -88,7 +89,7 @@ describe("SuperchainPointsRaffleFactory", function () {
         "SuperchainPointsRaffle",
         await superchainPointsRaffleFactory.currentRaffle()
       );
-      expect(await raffle.isFinished()).to.equal(false);
+      expect(await raffle.getWinner()).to.equal(ZeroAddress);
 
       // second raffle should fail as first is ongoing
       await expect(

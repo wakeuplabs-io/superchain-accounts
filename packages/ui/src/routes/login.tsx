@@ -62,6 +62,7 @@ function Login() {
           <Button
             className="w-full max-w-xs py-10 text-2xl font-bold"
             size="lg"
+            variant="dark"
             onClick={doLogin}
             loading={isLoading}
           >
