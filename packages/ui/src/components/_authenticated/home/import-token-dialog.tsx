@@ -6,8 +6,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { importUserTokenRequestSchema, ImportUserTokenRequest } from "schemas";
-import { useWeb3 } from "@/context/Web3Context";
-import { useSuperChainAccount } from "@/context/SmartAccountContext";
+import { useWeb3 } from "@/hooks/use-web3";
+import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { tokenService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -29,7 +29,7 @@ export const ImportTokensDialog = ({
   const form = useForm({
     resolver: zodResolver(importUserTokenRequestSchema),
     defaultValues: {
-      chainId: chain.data.id,
+      chainId: chain.id,
       userAddress: account.instance?.address,
     }
   });

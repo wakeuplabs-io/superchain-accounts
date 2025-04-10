@@ -28,7 +28,7 @@ export function SmartAccountCard() {
             </span>
           </div>
         </div>
-        <div className="flex items-start w-full">
+        <div className="flex items-start gap-4 w-full">
           <ActionButton
             text="Receive"
             icon={Download}
