@@ -24,7 +24,8 @@ import { ActionButton } from "@/components/_authenticated/sidebar/action-button"
 import { AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar/authenticated-sidebar-menu-button";
 import { useAuth } from "@/hooks/use-auth";
 import { ClaimRaffleTicketsButton } from "@/components/_authenticated/sidebar/claim-raffle-tickets-button";
-import { SuperChainAccountProvider } from "@/hoc/smart-account-provider";
+import { SuperChainAccountProvider } from "@/hooks/use-smart-account";
+import { SuperchainRaffleProvider } from "@/hooks/use-superchain-raffle";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -63,7 +64,7 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const router = useRouter();
-  const routerState = useRouterState()
+  const routerState = useRouterState();
   const { logout } = useAuth();
 
   const onLogout = async () => {
@@ -73,70 +74,76 @@ function AuthenticatedLayout() {
 
   return (
     <SuperChainAccountProvider>
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "20rem",
-            "--sidebar-width-mobile": "20rem",
-          } as React.CSSProperties
-        }
-      >
-        <div className="flex w-full h-screen">
-          <Sidebar className="w-80">
-            <SidebarHeader className="px-8 py-12">
-              <SidebarMenu>
-                <SidebarMenuItem className="">
-                  <img src={opSuperchainLogo} className="h-[30px]" />
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarHeader>
-            <SidebarContent className="px-8">
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <AuthenticatedSidebarMenuButton
-                    Icon={User}
-                    text="Profile"
-                    route="/profile"
-                    isActive={routerState.location.pathname === "/profile"}
-                  />
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <AuthenticatedSidebarMenuButton
-                    Icon={ScrollText}
-                    text="Accounts"
-                    route="/"
-                    isActive={routerState.location.pathname === "/"}
-                  />
-                </SidebarMenuItem>
-              </SidebarMenu>
-              <hr className="my-4" />
-              <ClaimRaffleTicketsButton />
-            </SidebarContent>
-            <SidebarFooter>
-              <div className="flex flex-col px-8 py-14 gap-9">
-                <div className="flex gap-4">
-                  {/* TODO: we need to redo this */}
-                  <ActionButton variant="dark"  icon={LogOut} onClick={onLogout} />
-                  <ActionButton
-                    variant="slate"
-                    icon={Lock}
-                    onClick={() => console.log("locking")}
-                  />
+      <SuperchainRaffleProvider>
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "20rem",
+              "--sidebar-width-mobile": "20rem",
+            } as React.CSSProperties
+          }
+        >
+          <div className="flex w-full h-screen">
+            <Sidebar className="w-80">
+              <SidebarHeader className="px-8 py-12">
+                <SidebarMenu>
+                  <SidebarMenuItem className="">
+                    <img src={opSuperchainLogo} className="h-[30px]" />
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarHeader>
+              <SidebarContent className="px-8">
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <AuthenticatedSidebarMenuButton
+                      Icon={User}
+                      text="Profile"
+                      route="/profile"
+                      isActive={routerState.location.pathname === "/profile"}
+                    />
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <AuthenticatedSidebarMenuButton
+                      Icon={ScrollText}
+                      text="Accounts"
+                      route="/"
+                      isActive={routerState.location.pathname === "/"}
+                    />
+                  </SidebarMenuItem>
+                </SidebarMenu>
+                <hr className="my-4" />
+                <ClaimRaffleTicketsButton />
+              </SidebarContent>
+              <SidebarFooter>
+                <div className="flex flex-col px-8 py-14 gap-9">
+                  <div className="flex gap-4">
+                    {/* TODO: we need to redo this */}
+                    <ActionButton
+                      variant="dark"
+                      icon={LogOut}
+                      onClick={onLogout}
+                    />
+                    <ActionButton
+                      variant="slate"
+                      icon={Lock}
+                      onClick={() => console.log("locking")}
+                    />
+                  </div>
+                  <div className="h-[58px] bg-muted rounded-lg flex items-center justify-center">
+                    <img className="h-[30px]" src={wakeUpPowered} />
+                  </div>
                 </div>
-                <div className="h-[58px] bg-muted rounded-lg flex items-center justify-center">
-                  <img className="h-[30px]" src={wakeUpPowered} />
-                </div>
-              </div>
-            </SidebarFooter>
-          </Sidebar>
+              </SidebarFooter>
+            </Sidebar>
 
-          <main className="flex flex-1 overflow-auto p-8 lg:p-16">
-            <div className="w-full flex flex-col gap-4">
-              <Outlet />
-            </div>
-          </main>
-        </div>
-      </SidebarProvider>
+            <main className="flex flex-1 overflow-auto p-8 lg:p-16">
+              <div className="w-full flex flex-col gap-4">
+                <Outlet />
+              </div>
+            </main>
+          </div>
+        </SidebarProvider>
+      </SuperchainRaffleProvider>
     </SuperChainAccountProvider>
   );
 }

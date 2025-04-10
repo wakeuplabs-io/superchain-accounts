@@ -1,13 +1,48 @@
 import envParsed from "@/envParsed";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useWeb3 } from "./use-web3";
-import { useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import superchainPointsRaffleFactory from "@/config/abis/superchain-points-raffle-factory";
 import superchainPointsRaffle from "@/config/abis/superchain-points-raffle";
 import { useSuperChainAccount } from "./use-smart-account";
 
+type RaffleContextType = {
+  isPending: boolean;
+  isClaiming: boolean;
+  claimTickets: () => Promise<string | undefined>;
+  currentRaffle: {
+    address: `0x${string}`;
+    claimableTickets: number;
+    claimedTickets: number;
+    totalTickets: number;
+    revealedAt: number;
+    jackpot: number;
+  } | null;
+};
+
+const SuperchainRaffleContext = createContext<RaffleContextType | undefined>(
+  undefined
+);
 
 export const useSuperchainRaffle = () => {
+  const context = useContext(SuperchainRaffleContext);
+  if (!context) {
+    throw new Error(
+      "useSuperchainRaffle must be used within a SuperchainRaffleProvider"
+    );
+  }
+  return context;
+};
+
+export const SuperchainRaffleProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { chain } = useWeb3();
   const {
     account: { address },
@@ -121,8 +156,10 @@ export const useSuperchainRaffle = () => {
       setCurrentRaffle({
         ...currentRaffle,
         claimableTickets: 0,
-        claimedTickets: currentRaffle.claimedTickets + currentRaffle.claimableTickets,
-        totalTickets: currentRaffle.totalTickets + currentRaffle.claimableTickets,
+        claimedTickets:
+          currentRaffle.claimedTickets + currentRaffle.claimableTickets,
+        totalTickets:
+          currentRaffle.totalTickets + currentRaffle.claimableTickets,
       });
 
       return txHash;
@@ -131,10 +168,16 @@ export const useSuperchainRaffle = () => {
     }
   }, [chain, sendTransaction, currentRaffle]);
 
-  return {
-    isPending,
-    isClaiming,
-    claimTickets,
-    currentRaffle,
-  };
+  return (
+    <SuperchainRaffleContext.Provider
+      value={{
+        isPending,
+        isClaiming,
+        claimTickets,
+        currentRaffle,
+      }}
+    >
+      {children}
+    </SuperchainRaffleContext.Provider>
+  );
 };
