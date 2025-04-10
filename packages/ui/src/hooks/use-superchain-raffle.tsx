@@ -24,7 +24,7 @@ export const useSuperchainRaffle = () => {
 
       // from factory ready current raffle
       const currentRaffle = await chain.client.readContract({
-        address: envParsed().SUPERCHAIN_POINTS_RAFFLE_FACTORY as `0x${string}`,
+        address: envParsed().SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
         functionName: "currentRaffle",
         abi: superchainPointsRaffleFactory,
         args: [],
