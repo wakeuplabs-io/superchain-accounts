@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import { expect } from "chai";
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { loadFixture, time } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
 const { ethers } = hre;
 
@@ -131,7 +131,7 @@ describe("SuperchainPointsRaffleFactory", function () {
       await superchainPoints.approve(raffleAddress, ethers.MaxUint256);
 
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 86400;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       // initialize raffle
       await raffle
@@ -147,13 +147,8 @@ describe("SuperchainPointsRaffleFactory", function () {
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await raffle.connect(addr1).claimTickets();
 
-      // Advance time to reveal winner
-      await hre.ethers.provider.send("evm_setNextBlockTimestamp", [
-        revealAfter + 1000,
-      ]);
-      await hre.ethers.provider.send("evm_mine", []);
-
       // reveal winner
+      await time.increaseTo(revealAfter);
       await raffle.connect(owner).revealWinner(seed);
 
       await expect(superchainPointsRaffleFactory.connect(owner).createRaffle())

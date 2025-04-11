@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import { expect } from "chai";
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { loadFixture, time } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
 const { ethers } = hre;
 
@@ -60,7 +60,7 @@ describe("SuperchainPointsRaffle", function () {
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const balanceBefore = await superchainPoints.balanceOf(owner.address);
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       //  initialize raffle
       await expect(
@@ -92,7 +92,7 @@ describe("SuperchainPointsRaffle", function () {
       const jackpot = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       //  initialize raffle
       const seed = ethers.encodeBytes32String("demo");
@@ -114,13 +114,8 @@ describe("SuperchainPointsRaffle", function () {
       await superchainBadges.connect(owner).mint(addr2.address, 2n);
       await superchainPointsRaffle.connect(addr2).claimTickets();
 
-      // advance time
-      await hre.ethers.provider.send("evm_setNextBlockTimestamp", [
-        revealAfter + 1000,
-      ]);
-      await hre.network.provider.send("evm_mine");
-
       // select winner
+      await time.increaseTo(revealAfter);
       await expect(
         superchainPointsRaffle.connect(owner).revealWinner(seed)
       ).to.emit(superchainPointsRaffle, "RaffleWinner");
@@ -139,7 +134,7 @@ describe("SuperchainPointsRaffle", function () {
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       //  initialize raffle addr1
       await expect(
@@ -176,7 +171,7 @@ describe("SuperchainPointsRaffle", function () {
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       // initialize raffle owner
       await expect(
@@ -194,12 +189,7 @@ describe("SuperchainPointsRaffle", function () {
       // add participants so it doesn't revert on winner being zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await superchainPointsRaffle.connect(addr1).claimTickets();
-
-      // advance time
-      await hre.ethers.provider.send("evm_setNextBlockTimestamp", [
-        revealAfter + 1000,
-      ]);
-      await hre.network.provider.send("evm_mine");
+      await time.increaseTo(revealAfter);
 
       // reveal raffle addr1
       await expect(superchainPointsRaffle.connect(addr1).revealWinner(seed)).to
@@ -246,13 +236,9 @@ describe("SuperchainPointsRaffle", function () {
         superchainPointsRaffle,
         "CannotRevealBeforeTimestamp"
       );
-
-      await hre.ethers.provider.send("evm_setNextBlockTimestamp", [
-        revealAfter + 1000,
-      ]);
-      await hre.network.provider.send("evm_mine");
-
+      
       // reveal raffle owner
+      await time.increaseTo(revealAfter);
       await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not
         .to.be.reverted;
     });
@@ -265,7 +251,7 @@ describe("SuperchainPointsRaffle", function () {
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       //  initialize raffle
       await expect(
@@ -301,7 +287,7 @@ describe("SuperchainPointsRaffle", function () {
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
 
       //  initialize raffle
       await expect(
@@ -353,7 +339,7 @@ describe("SuperchainPointsRaffle", function () {
 
       // initialize
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
       await expect(
         superchainPointsRaffle
           .connect(owner)
@@ -369,12 +355,7 @@ describe("SuperchainPointsRaffle", function () {
       // add at least one participant so reveal doesn't revert on winner == zero address
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await superchainPointsRaffle.connect(addr1).claimTickets();
-
-      // advance time
-      await hre.ethers.provider.send("evm_setNextBlockTimestamp", [
-        revealAfter + 1000,
-      ]);
-      await hre.network.provider.send("evm_mine");
+      await time.increaseTo(revealAfter);
 
       // validate seed
       await expect(
@@ -393,7 +374,7 @@ describe("SuperchainPointsRaffle", function () {
 
       // initialize
       const seed = ethers.encodeBytes32String("demo");
-      const revealAfter = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+      const revealAfter = await time.latest() + 24 * 60 * 60;
       await expect(
         superchainPointsRaffle
           .connect(owner)
@@ -415,13 +396,8 @@ describe("SuperchainPointsRaffle", function () {
         .connect(owner)
         .transferOwnership(addr1.address);
 
-      // advance time
-      await hre.ethers.provider.send("evm_setNextBlockTimestamp", [
-        revealAfter + 1000,
-      ]);
-      await hre.network.provider.send("evm_mine");
-
       // validate seed. Addr1 is owner but didn't send seed so cannot reveal
+      await time.increaseTo(revealAfter);
       await expect(
         superchainPointsRaffle.connect(addr1).revealWinner(seed)
       ).to.be.revertedWithCustomError(superchainPointsRaffle, "InvalidSeed");

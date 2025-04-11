@@ -4,7 +4,7 @@
   "description": "Package for web3 related code like contracts and utils",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test --parallel",
+    "test": "npx hardhat test",
     "test:ci": "npx hardhat test",
     "build": "npx hardhat compile",
     "lint": "solhint 'contracts/**/*.sol'",
