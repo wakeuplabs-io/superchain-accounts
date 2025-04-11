@@ -1,4 +1,5 @@
 import { ChainSelector } from "@/components/_authenticated/chain-selector";
+import { SuperchainPoints } from "@/components/_authenticated/superchain-points";
 import { SuperchainRaffle } from "@/components/_authenticated/superchain-raffle";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -14,7 +15,11 @@ function Profile() {
         <ChainSelector />
       </div>
 
-      <SuperchainRaffle />
+      <div className="grid grid-cols-3 gap-6">
+        <SuperchainRaffle />
+
+        <SuperchainPoints />
+      </div>
     </div>
   );
 }
