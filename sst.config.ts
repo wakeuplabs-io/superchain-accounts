@@ -48,6 +48,7 @@ export default $config({
         SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         CRONJOB_KEY: process.env.CRONJOB_KEY!,
+        MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
         PRISMA_QUERY_ENGINE_LIBRARY:
           "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
       },

@@ -20,6 +20,7 @@ const env = {
   SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS,
   SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS,
   CRONJOB_KEY: process.env.CRONJOB_KEY,
+  MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS,
 } as const;
 
 const envSchema = z
@@ -40,6 +41,7 @@ const envSchema = z
     SUPERCHAIN_BADGES_ADDRESS: z.string().startsWith("0x"),
     SUPERCHAIN_POINTS_ADDRESS: z.string().startsWith("0x"),
     CRONJOB_KEY: z.string(),
+    MULTICALL_CONTRACT_ADDRESS: z.string().startsWith("0x"),
   })
   .required();
 

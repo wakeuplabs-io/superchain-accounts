@@ -1,29 +1,15 @@
 import { PrismaClient, UserToken } from "@prisma/client";
 import tokenMetadata from "@/config/token-metadata.json";
 import { GetUserTokensRequest, ImportUserTokenRequest } from "schemas";
-import { Address, erc20Abi, getAddress, getContract, PublicClient } from "viem";
+import { Address, erc20Abi, getAddress, getContract } from "viem";
 import { IClientFactory } from "./client-factory.js";
+import envParsed from "@/envParsed.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
 
 export interface IUserTokenService {
   getUserTokens(data: GetUserTokensRequest): Promise<UserToken[]>;
   importToken(data: ImportUserTokenRequest): Promise<UserToken>;
-}
-
-async function fetchUserTokenBalance(client: PublicClient, userToken: UserToken): Promise<bigint> {
-  try {
-    const balance = await client.readContract({
-      address: getAddress(userToken.address),
-      abi: erc20Abi,
-      functionName: "balanceOf",
-      args: [getAddress(userToken.userWallet)],
-    });  
-    return balance;
-  } catch (error) {
-    console.error("Error getting balance", error);
-    return 0n;
-  }
 }
 
 export class UserTokenService implements IUserTokenService {
@@ -43,15 +29,22 @@ export class UserTokenService implements IUserTokenService {
   async populateTokensBalance(userTokens: UserToken[], chainId: number ) {
     const client = this.clientFactory.getReadClient(chainId.toString());
 
-    return Promise.all(userTokens.map(
-      async (token) => {
-        const balance = await fetchUserTokenBalance(client, token);
-        return {
-          ...token,
-          balance: balance.toString(),
-        };
+    const balances = await client.multicall(
+      {
+        contracts: userTokens.map((token) => ({
+          address: getAddress(token.address),
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: [getAddress(token.userWallet)],
+        })),
+        multicallAddress: envParsed().MULTICALL_CONTRACT_ADDRESS as Address,
       }
-    ));
+    );
+
+    return userTokens.map((token, index) => ({
+      ...token,
+      balance: balances[index].status === "success" ? balances[index].result.toString() : "0",
+    }));
   }
 
   async importToken(data: ImportUserTokenRequest) {
