@@ -190,4 +190,9 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
     function getRevealedAfter() external view returns (uint256) {
         return revealAfterTimestamp;
     }
+
+    /// @inheritdoc ISuperchainPointsRaffle
+    function isOngoing() public view returns (bool) {
+        return initialized && winner == address(0);
+    }
 }

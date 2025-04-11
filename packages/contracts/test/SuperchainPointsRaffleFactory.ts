@@ -89,7 +89,18 @@ describe("SuperchainPointsRaffleFactory", function () {
         "SuperchainPointsRaffle",
         await superchainPointsRaffleFactory.currentRaffle()
       );
-      expect(await raffle.getWinner()).to.equal(ZeroAddress);
+
+      expect(await raffle.isOngoing()).to.equal(false);
+      expect(
+        await raffle.initialize(
+          hre.ethers.hexlify(hre.ethers.randomBytes(32)),
+          0,
+          0,
+          [],
+          []
+        )
+      ).not.to.be.reverted;
+      expect(await raffle.isOngoing()).to.equal(true);
 
       // second raffle should fail as first is ongoing
       await expect(
