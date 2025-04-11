@@ -56,7 +56,7 @@ Points minted with tx: 0xe76cad0a39096ce29e8663996513006a399a77cf1d7f3b0b8ac05cc
 `add-claimable-points`
 
 ```bash
-npx hardhat add-claimable-points --to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0 --amount 2 --network optimism-sepolia
+npx hardhat add-claimable-points --to 0xe93Af013F59cbCE3205589D401712560D0101fE4 --amount 2 --network optimism-sepolia
 Adding 2 points to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0
 Points added with tx: 0x253f80688f87889f447dd13231b42053dad3550a9de89352b13cd816e1db3a74
 ```

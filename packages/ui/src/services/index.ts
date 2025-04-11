@@ -1,6 +1,7 @@
 import envParsed from "@/envParsed";
 import axios from "axios";
 import { TransactionService } from "./transaction";
+import { PointsService } from "./points";
 import { UserService } from "./user";
 
 const instance = axios.create({
@@ -30,11 +31,7 @@ instance.interceptors.response.use(
   }
 );
 
+export const pointsService = new PointsService(instance);
+export const transactionService = new TransactionService(instance);
+export const userService = new UserService(instance);
 
-const transactionService = new TransactionService(instance);
-const userService = new UserService(instance);
-
-export {
-  transactionService,
-  userService,
-};

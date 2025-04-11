@@ -16,6 +16,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 import opSuperchainLogo from "@/assets/logos/op-superchain-logo.png";
@@ -136,8 +137,12 @@ function AuthenticatedLayout() {
               </SidebarFooter>
             </Sidebar>
 
-            <main className="flex flex-1 overflow-auto p-8 lg:p-16">
-              <div className="w-full flex flex-col gap-4">
+            <main className="bg-[linear-gradient(-21deg,_#FFFFFF,_#F3F3F3)] lg:bg-[linear-gradient(-57deg,_#FFFFFF,_#F3F3F3)] w-full">
+              <div className="md:hidden w-full flex items-end justify-start h-[114px] px-6 py-4 bg-[linear-gradient(-72deg,_#FFFFFF,_#F3F3F3)]">
+                <SidebarTrigger />
+              </div>
+
+              <div className="w-full flex flex-col gap-4 p-6 lg:p-8">
                 <Outlet />
               </div>
             </main>
