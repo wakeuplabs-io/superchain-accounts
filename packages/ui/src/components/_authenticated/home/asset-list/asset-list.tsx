@@ -10,7 +10,7 @@ export function AssetList() {
   const {account} = useSuperChainAccount();
 
   return (
-    <div className="flex flex-col rounded-lg border bg-white p-8 max-w-screen-xl gap-8">
+    <div className="flex flex-col rounded-lg shadow-sm bg-white p-8 max-w-screen-xl gap-8">
       <div className="flex flex-wrap items-baseline justify-between">
         <h1 className="text-base font-medium">Tokens</h1>
         {account.status !== "pending" && (

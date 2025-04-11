@@ -1,6 +1,6 @@
-import { TokenList } from "@/components/home/token-list/token-list";
-import { ChainSelector } from "@/components/chain-selector";
-import { SmartAccountCard } from "@/components/home/smart-account-card";
+import { AssetList } from "@/components/_authenticated/home/asset-list/asset-list";
+import { ChainSelector } from "@/components/_authenticated/chain-selector";
+import { SmartAccountCard } from "@/components/_authenticated/home/smart-account-card";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -16,8 +16,7 @@ function Index() {
       </div>
 
       <SmartAccountCard />
-      
-      <TokenList />
+      <AssetList />
     </div>
   );
 }
