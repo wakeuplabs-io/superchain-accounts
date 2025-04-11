@@ -1,23 +1,57 @@
 import { PrismaClient, UserToken } from "@prisma/client";
 import tokenMetadata from "@/config/token-metadata.json";
-import { ImportUserTokenRequest } from "schemas";
-import { Address, erc20Abi, getContract } from "viem";
+import { GetUserTokensRequest, ImportUserTokenRequest } from "schemas";
+import { Address, erc20Abi, getAddress, getContract } from "viem";
 import { IClientFactory } from "./client-factory.js";
+import envParsed from "@/envParsed.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
 
-export interface ITokenService {
+export interface IUserTokenService {
+  getUserTokens(data: GetUserTokensRequest): Promise<UserToken[]>;
   importToken(data: ImportUserTokenRequest): Promise<UserToken>;
 }
 
-export class TokenService implements ITokenService {
+export class UserTokenService implements IUserTokenService {
   constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
+  
+  async getUserTokens({ userWallet, chainId}: GetUserTokensRequest) {
+    const userTokens = await this.db.userToken.findMany({
+      where: {
+        userWallet,
+        chainId,
+      },
+    });
+
+    return await this.populateTokensBalance(userTokens, chainId);
+  }
+
+  private async populateTokensBalance(userTokens: UserToken[], chainId: number ) {
+    const client = this.clientFactory.getReadClient(chainId.toString());
+
+    const balances = await client.multicall(
+      {
+        contracts: userTokens.map((token) => ({
+          address: getAddress(token.address),
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: [getAddress(token.userWallet)],
+        })),
+        multicallAddress: envParsed().MULTICALL_CONTRACT_ADDRESS as Address,
+      }
+    );
+
+    return userTokens.map((token, index) => ({
+      ...token,
+      balance: balances[index].status === "success" ? balances[index].result.toString() : "0",
+    }));
+  }
 
   async importToken(data: ImportUserTokenRequest) {
     const existingToken = await this.db.userToken.findFirst({
       where: {
         user: {
-          wallet: data.userAddress,
+          wallet: data.userWallet,
         },
         address: data.address,
         chainId: data.chainId,
@@ -37,10 +71,10 @@ export class TokenService implements ITokenService {
         user: {
           connectOrCreate: {
             where: {
-              wallet: data.userAddress,
+              wallet: data.userWallet,
             },
             create: {
-              wallet: data.userAddress,
+              wallet: data.userWallet,
             }
           }
         },
