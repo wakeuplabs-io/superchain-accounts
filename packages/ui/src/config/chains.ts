@@ -15,6 +15,7 @@ export interface ChainMetadata {
   entryPointAddress: Address;
   client: PublicClient;
   bundler: BundlerClient;
+  scan: string;
 }
 
 export const clients: { [chainId: number]: PublicClient } = {
@@ -62,6 +63,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     client: clients[optimismSepolia.id],
     bundler: bundlers[optimismSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
+    scan: envParsed().SCAN_OPTIMISM_SEPOLIA,
   },
   [baseSepolia.id]: {
     order: 2,
@@ -71,6 +73,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     client: clients[baseSepolia.id],
     bundler: bundlers[baseSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_BASE_SEPOLIA,
+    scan: envParsed().SCAN_BASE_SEPOLIA,
   },
   [unichainSepolia.id]: {
     order: 3,
@@ -80,6 +83,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     client: clients[unichainSepolia.id],
     bundler: bundlers[unichainSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,
+    scan: envParsed().SCAN_UNICHAIN_SEPOLIA,
   },
 };
 
