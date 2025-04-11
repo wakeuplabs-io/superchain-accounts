@@ -15,7 +15,7 @@ function Profile() {
         <ChainSelector />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         <SuperchainRaffle />
 
         <SuperchainPoints />
