@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { importUserTokenRequestSchema, ImportUserTokenRequest } from "schemas";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
-import { tokenService } from "@/services";
+import { userService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useUserTokens } from "@/hooks/user-tokens/use-user-tokens";
 
 interface ImportTokensDialogProps {
   isOpen: boolean;
@@ -24,24 +25,26 @@ export const ImportTokensDialog = ({
   const { chain } = useWeb3();
   const { account } = useSuperChainAccount();
   const { toast } = useToast();
+  const { invalidateUserTokens } = useUserTokens();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(importUserTokenRequestSchema),
     defaultValues: {
       chainId: chain.id,
-      userAddress: account.instance?.address,
+      userWallet: account.instance?.address,
     }
   });
 
   const onSubmit = async (values: ImportUserTokenRequest) => {
     try {
       setIsSubmitting(true);
-      const userToken = await tokenService.importToken(values);
+      const userToken = await userService.importToken(values);
       toast({
         title: "Token imported",
         description: `Token ${userToken.symbol} imported successfully`,
       });
+      invalidateUserTokens();
       onClose();
     } catch (error) {
       let description = "";
@@ -86,7 +89,6 @@ export const ImportTokensDialog = ({
                   )}
                 />
                 <Button
-                  variant="confirm"
                   type="submit"
                   className="w-full"
                   loading={isSubmitting}
