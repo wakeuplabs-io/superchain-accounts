@@ -1,6 +1,7 @@
 import hre from "hardhat";
 import { expect } from "chai";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { ZeroAddress } from "ethers";
 
 const { ethers } = hre;
 
@@ -88,7 +89,18 @@ describe("SuperchainPointsRaffleFactory", function () {
         "SuperchainPointsRaffle",
         await superchainPointsRaffleFactory.currentRaffle()
       );
-      expect(await raffle.isFinished()).to.equal(false);
+
+      expect(await raffle.isOngoing()).to.equal(false);
+      expect(
+        await raffle.initialize(
+          hre.ethers.hexlify(hre.ethers.randomBytes(32)),
+          0,
+          0,
+          [],
+          []
+        )
+      ).not.to.be.reverted;
+      expect(await raffle.isOngoing()).to.equal(true);
 
       // second raffle should fail as first is ongoing
       await expect(
@@ -120,7 +132,13 @@ describe("SuperchainPointsRaffleFactory", function () {
       const seed = ethers.encodeBytes32String("demo");
       await raffle
         .connect(owner)
-        .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n]);
+        .initialize(
+          sealSeed(seed, owner.address),
+          0n,
+          10n,
+          [1n, 2n],
+          [10n, 100n]
+        );
 
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await raffle.connect(addr1).claimTickets();

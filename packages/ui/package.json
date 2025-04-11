@@ -17,7 +17,7 @@
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-toast": "^1.2.7",
-    "@radix-ui/react-tooltip": "^1.1.5",
+    "@radix-ui/react-tooltip": "^1.2.0",
     "@tanstack/react-query": "^5.40.0",
     "@tanstack/react-router": "^1.34.7",
     "@toruslabs/torus-embed": "^5.0.0",

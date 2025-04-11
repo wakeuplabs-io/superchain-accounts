@@ -14,6 +14,9 @@ interface ISuperchainPointsRaffleErrors {
     /// @notice Random pattern requires seed to be revealed in a future block
     error CannotRevealBeforeBlock(uint256);
 
+    /// @notice UX requires reveal after timestamp
+    error CannotRevealBeforeTimestamp(uint256 timestamp);
+
     /// @notice Error thrown when the seed doesn't match the sealed seed
     error InvalidSeed();
 
@@ -55,6 +58,7 @@ interface ISuperchainPointsRaffle is
     /// @param _badgeAllocation The number of tickets allocated to each badge
     function initialize(
         bytes32 _sealedSeed,
+        uint256 _revealAfterTimestamp,
         uint256 _amount,
         uint256[] memory _badges,
         uint256[] memory _badgeAllocation
@@ -64,8 +68,14 @@ interface ISuperchainPointsRaffle is
     /// @param _seed The seed used to generate the raffle
     function revealWinner(bytes32 _seed) external;
 
+    /// @notice Returns the timestamp at which the seed will be revealed
+    function getRevealedAfter() external view returns (uint256);
+
+    /// @notice Returns the badges that are eligible to participate in the raffle
+    function getEligibleBadges() external view returns (uint256[] memory);
+
     /// @notice Returns the amount of points that are distributed to the raffle winner
-    function getPrizeAmount() external view returns (uint256);
+    function getJackpot() external view returns (uint256);
 
     /// @notice Returns the total number of tickets that can be claimed
     function getTotalTickets() external view returns (uint256);
@@ -74,12 +84,16 @@ interface ISuperchainPointsRaffle is
     /// @param user The address of the user
     function getClaimableTickets(address user) external view returns (uint256);
 
+    /// @notice Returns the number of tickets already claimed
+    /// @param user The address of the user
+    function getClaimedTickets(address user) external view returns (uint256);
+
     /// @notice Claim tickets to participate in raffle
     function claimTickets() external;
 
-    /// @notice Returns the badges that are eligible to participate in the raffle
-    function getEligibleBadges() external view returns (uint256[] memory);
+    /// @notice Returns the address of the raffle winner
+    function getWinner() external view returns (address);
 
-    /// @notice Returns true if the raffle is finished
-    function isFinished() external view returns (bool);
+    /// @notice Returns whether the raffle is ongoing
+    function isOngoing() external view returns (bool);
 }

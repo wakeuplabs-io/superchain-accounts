@@ -1,4 +1,4 @@
-import { ChainSelector } from "@/components/_authenticated/home/chain-selector";
+import { ChainSelector } from "@/components/_authenticated/chain-selector";
 import { SmartAccountCard } from "@/components/_authenticated/home/smart-account-card";
 import { createFileRoute } from "@tanstack/react-router";
 

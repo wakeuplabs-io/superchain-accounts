@@ -52,11 +52,11 @@ describe("SuperchainPointsRaffle", function () {
   });
 
   describe("Raffle", function () {
-    it("Initialize should pull points for prize", async function () {
+    it("Initialize should pull points for jackpot", async function () {
       const { superchainPoints, superchainPointsRaffle, owner, addr1 } =
         await loadFixture(deploySuperchainPointsRaffleFixture);
 
-      const prize = 10n;
+      const jackpot = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const balanceBefore = await superchainPoints.balanceOf(owner.address);
@@ -67,14 +67,15 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(ethers.encodeBytes32String("demo"), owner.address),
-            prize,
+            0,
+            jackpot,
             badges,
             badgesAllocations
           )
       ).not.to.be.reverted;
 
       const balanceAfter = await superchainPoints.balanceOf(owner.address);
-      expect(balanceBefore - balanceAfter).to.equal(prize);
+      expect(balanceBefore - balanceAfter).to.equal(jackpot);
     });
 
     it("Should select a winner from participants and transfer points", async function () {
@@ -87,7 +88,7 @@ describe("SuperchainPointsRaffle", function () {
         addr2,
       } = await loadFixture(deploySuperchainPointsRaffleFixture);
 
-      const prize = 10n;
+      const jackpot = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
 
@@ -98,7 +99,8 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
-            prize,
+            0,
+            jackpot,
             badges,
             badgesAllocations
           )
@@ -116,8 +118,8 @@ describe("SuperchainPointsRaffle", function () {
       ).to.emit(superchainPointsRaffle, "RaffleWinner");
 
       // check winner balance
-      const winner = await superchainPointsRaffle.winner();
-      expect(await superchainPoints.balanceOf(winner)).to.equal(prize);
+      const winner = await superchainPointsRaffle.getWinner();
+      expect(await superchainPoints.balanceOf(winner)).to.equal(jackpot);
     });
 
     it("Only owner can initialize raffle", async function () {
@@ -125,7 +127,7 @@ describe("SuperchainPointsRaffle", function () {
         deploySuperchainPointsRaffleFixture
       );
 
-      const prize = 10n;
+      const jackpot = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
@@ -136,7 +138,8 @@ describe("SuperchainPointsRaffle", function () {
           .connect(addr1)
           .initialize(
             sealSeed(seed, addr1.address),
-            prize,
+            0,
+            jackpot,
             badges,
             badgesAllocations
           )
@@ -148,7 +151,8 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
-            prize,
+            0,
+            jackpot,
             badges,
             badgesAllocations
           )
@@ -159,7 +163,7 @@ describe("SuperchainPointsRaffle", function () {
       const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
         await loadFixture(deploySuperchainPointsRaffleFixture);
 
-      const prize = 10n;
+      const jackpot = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
@@ -170,7 +174,8 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
-            prize,
+            0,
+            jackpot,
             badges,
             badgesAllocations
           )
@@ -189,11 +194,56 @@ describe("SuperchainPointsRaffle", function () {
         .to.be.reverted;
     });
 
+    it("Only owner can reveal raffle after specified time", async function () {
+      const { superchainPointsRaffle, superchainBadges, owner, addr1 } =
+        await loadFixture(deploySuperchainPointsRaffleFixture);
+
+      const jackpot = 10n;
+      const badges = [1n, 2n];
+      const badgesAllocations = [10n, 100n];
+      const seed = ethers.encodeBytes32String("demo");
+
+      const now = Math.floor(Date.now() / 1000);
+      const revealAfterTimestamp = now + 24 * 60 * 60; // + 1 day
+
+      // initialize raffle owner
+      await expect(
+        superchainPointsRaffle
+          .connect(owner)
+          .initialize(
+            sealSeed(seed, owner.address),
+            revealAfterTimestamp,
+            jackpot,
+            badges,
+            badgesAllocations
+          )
+      ).not.to.be.reverted;
+
+      // add participants so it doesn't revert on winner being zero address
+      await superchainBadges.connect(owner).mint(addr1.address, 1n);
+      await superchainPointsRaffle.connect(addr1).claimTickets();
+
+      // reveal raffle addr1
+      await expect(
+        superchainPointsRaffle.connect(owner).revealWinner(seed)
+      ).to.be.revertedWithCustomError(
+        superchainPointsRaffle,
+        "CannotRevealBeforeTimestamp"
+      );
+
+      await hre.network.provider.send("evm_increaseTime", [86400 * 2]); // +2 day
+      await hre.network.provider.send("evm_mine");
+
+      // reveal raffle owner
+      await expect(superchainPointsRaffle.connect(owner).revealWinner(seed)).not
+        .to.be.reverted;
+    });
+
     it("Should assign points based on badge", async function () {
       const { superchainPointsRaffle, superchainBadges, owner, addr1, addr2 } =
         await loadFixture(deploySuperchainPointsRaffleFixture);
 
-      const prize = 10n;
+      const jackpot = 10n;
       const badges = [1n, 2n];
       const badgesAllocations = [10n, 100n];
       const seed = ethers.encodeBytes32String("demo");
@@ -204,7 +254,8 @@ describe("SuperchainPointsRaffle", function () {
           .connect(owner)
           .initialize(
             sealSeed(seed, owner.address),
-            prize,
+            0,
+            jackpot,
             badges,
             badgesAllocations
           )
@@ -234,7 +285,13 @@ describe("SuperchainPointsRaffle", function () {
       await expect(
         superchainPointsRaffle
           .connect(owner)
-          .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n])
+          .initialize(
+            sealSeed(seed, owner.address),
+            0,
+            10n,
+            [1n, 2n],
+            [10n, 100n]
+          )
       ).not.to.be.reverted;
 
       // add at least one participant so reveal doesn't revert on winner == zero address
@@ -261,7 +318,13 @@ describe("SuperchainPointsRaffle", function () {
       await expect(
         superchainPointsRaffle
           .connect(owner)
-          .initialize(sealSeed(seed, owner.address), 10n, [1n, 2n], [10n, 100n])
+          .initialize(
+            sealSeed(seed, owner.address),
+            0,
+            10n,
+            [1n, 2n],
+            [10n, 100n]
+          )
       ).not.to.be.reverted;
 
       // add at least one participant so reveal doesn't revert on winner == zero address
