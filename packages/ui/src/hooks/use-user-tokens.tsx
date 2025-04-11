@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useWeb3 } from "../use-web3";
-import { useSuperChainAccount } from "../use-smart-account";
+import { useWeb3 } from "@/hooks/use-web3";
+import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { userService } from "@/services";
 
 export function useUserTokens() {
