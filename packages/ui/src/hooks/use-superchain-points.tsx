@@ -25,6 +25,8 @@ export const useSuperchainPoints = () => {
       return events;
     },
     initialData: [],
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   const {
@@ -57,6 +59,7 @@ export const useSuperchainPoints = () => {
     },
     initialData: { balance: 0n, claimable: 0n },
     refetchOnMount: true,
+    staleTime: 0,
   });
 
   const { mutateAsync: claim, isPending: isClaiming } = useMutation({

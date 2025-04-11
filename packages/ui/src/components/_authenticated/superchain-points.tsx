@@ -33,7 +33,7 @@ export const SuperchainPoints: React.FC<{}> = () => {
         return BigInt(total) + BigInt(event.value);
       }, 0n)
     );
-  }, []);
+  }, [claimable, events]);
 
   if (isPending) {
     return (
@@ -70,7 +70,7 @@ export const SuperchainPoints: React.FC<{}> = () => {
     <div className="max-w-md">
       <div className="mb-4 font-medium">Claimable Rewards</div>
       <div className="bg-white border rounded-lg p-8 h-[430px] flex flex-col">
-        <ScrollArea className="flex-1">
+        <ScrollArea className="h-full">
           <ul className=" divide-y">
             {unknownAmount > 0n && (
               <li className="flex justify-between first:pt-0 pt-4 pb-4">

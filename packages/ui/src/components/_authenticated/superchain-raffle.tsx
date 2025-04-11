@@ -70,61 +70,63 @@ export const SuperchainRaffle: React.FC<{}> = () => {
   return (
     <div className="max-w-md">
       <div className="mb-4 font-medium">Superchain Raffle</div>
-      <div className="bg-white border rounded-lg p-8 h-[430px]">
-        <div className="flex gap-2 mb-4">
-          <Clock className="w-5 h-5" />
-          <span className="text-sm font-medium">Winner revealed in:</span>
-        </div>
-
-        {/* Countdown */}
-        <div className="flex divide-x mb-6">
-          {/* Days */}
-          <div className="text-center flex-1">
-            <div className="text-2xl font-semibold">{days}</div>
-            <div className="text-sm">Days</div>
+      <div className="bg-white border rounded-lg p-8 h-[430px] flex flex-col justify-between">
+        <div>
+          <div className="flex gap-2 mb-4">
+            <Clock className="w-5 h-5" />
+            <span className="text-sm font-medium">Winner revealed in:</span>
           </div>
 
-          {/* Hours */}
-          <div className="text-center flex-1">
-            <div className="text-2xl font-semibold">{hours}</div>
-            <div className="text-sm">Hours</div>
-          </div>
-
-          {/* Minutes */}
-          <div className="text-center flex-1">
-            <div className="text-2xl font-semibold">{minutes}</div>
-            <div className="text-sm">Minutes</div>
-          </div>
-        </div>
-
-        {/* Jackpot */}
-        <div className="flex justify-between items-center h-[72px] rounded-md bg-[#FFF7D5] p-6 mb-8">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-[#F7B139]" />
-            <span className="text-xs">Jackpot</span>
-          </div>
-
-          <span>+{currentRaffle.jackpot} SCP</span>
-        </div>
-
-        {/* Tickets count */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Ticket className="w-6 h-6" />
-              <span className="text-sm">Total tickets</span>
+          {/* Countdown */}
+          <div className="flex divide-x mb-6">
+            {/* Days */}
+            <div className="text-center flex-1">
+              <div className="text-2xl font-semibold">{days}</div>
+              <div className="text-sm">Days</div>
             </div>
 
-            <span>{currentRaffle.totalTickets}</span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Ticket className="w-6 h-6 text-red-500" />
-              <span className="text-sm">Your tickets</span>
+            {/* Hours */}
+            <div className="text-center flex-1">
+              <div className="text-2xl font-semibold">{hours}</div>
+              <div className="text-sm">Hours</div>
             </div>
 
-            <span>{currentRaffle.claimedTickets}</span>
+            {/* Minutes */}
+            <div className="text-center flex-1">
+              <div className="text-2xl font-semibold">{minutes}</div>
+              <div className="text-sm">Minutes</div>
+            </div>
+          </div>
+
+          {/* Jackpot */}
+          <div className="flex justify-between items-center h-[72px] rounded-md bg-[#FFF7D5] p-6 mb-8">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-6 h-6 text-[#F7B139]" />
+              <span className="text-xs">Jackpot</span>
+            </div>
+
+            <span>+{currentRaffle.jackpot} SCP</span>
+          </div>
+
+          {/* Tickets count */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Ticket className="w-6 h-6" />
+                <span className="text-sm">Total tickets</span>
+              </div>
+
+              <span>{currentRaffle.totalTickets}</span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Ticket className="w-6 h-6 text-red-500" />
+                <span className="text-sm">Your tickets</span>
+              </div>
+
+              <span>{currentRaffle.claimedTickets}</span>
+            </div>
           </div>
         </div>
 
