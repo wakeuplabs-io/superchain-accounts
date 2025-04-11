@@ -32,10 +32,10 @@ npx hardhat --help
 #   mint-badge            Mints badge to a specified address
 #   set-badge-uri         Sets badge uri
 
-#   add-claimable-points  Adds claimable points to user 
+#   add-claimable-points  Adds claimable points to user
 #   claim-points          Claims points
 #   mint-points           Mints points to a specified address
-  
+
 #   start-raffle          Starts a raffle
 #   finish-raffle         Finishes a raffle
 #   claim-raffle          Claim raffle tickets
@@ -45,8 +45,8 @@ npx hardhat --help
 
 ### Examples:
 
-
 `mint-points`
+
 ```bash
 npx hardhat mint-points --to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0 --amount 1 --network optimism-sepolia
 Minting 1 points to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0

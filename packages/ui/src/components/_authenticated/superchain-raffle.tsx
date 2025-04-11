@@ -105,7 +105,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
               <span className="text-xs">Jackpot</span>
             </div>
 
-            <span>+{currentRaffle.jackpot} SCP</span>
+            <span>+{currentRaffle.jackpot.toString()} SCP</span>
           </div>
 
           {/* Tickets count */}
@@ -116,7 +116,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
                 <span className="text-sm">Total tickets</span>
               </div>
 
-              <span>{currentRaffle.totalTickets}</span>
+              <span>{currentRaffle.totalTickets.toString()}</span>
             </div>
 
             <div className="flex justify-between items-center">
@@ -125,7 +125,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
                 <span className="text-sm">Your tickets</span>
               </div>
 
-              <span>{currentRaffle.claimedTickets}</span>
+              <span>{currentRaffle.claimedTickets.toString()}</span>
             </div>
           </div>
         </div>
@@ -135,25 +135,25 @@ export const SuperchainRaffle: React.FC<{}> = () => {
             <TooltipTrigger className="w-full" asChild>
               <span className="inline-block">
                 <Button
-                  disabled={currentRaffle.claimableTickets == 0}
                   loading={isClaiming}
+                  disabled={currentRaffle.claimableTickets == 0n}
                   className="w-full mt-8"
                   onClick={onClaim}
                 >
-                  Claim{" "}
-                  {currentRaffle.claimableTickets > 0
-                    ? currentRaffle.claimableTickets
-                    : ""}{" "}
-                  Tickets
+                  {`Claim ${
+                    currentRaffle.claimableTickets > 0n
+                      ? currentRaffle.claimableTickets.toString()
+                      : ""
+                  } Tickets`}
                 </Button>
               </span>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <p>
-                {currentRaffle.claimableTickets == 0 &&
-                currentRaffle.claimedTickets == 0
+                {currentRaffle.claimableTickets == 0n &&
+                currentRaffle.claimedTickets == 0n
                   ? "You're not eligible for this round"
-                  : currentRaffle.claimableTickets == 0
+                  : currentRaffle.claimableTickets == 0n
                     ? "You have already claimed all your tickets"
                     : `Claim ${currentRaffle.claimableTickets} tickets`}
               </p>

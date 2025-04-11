@@ -29,10 +29,7 @@ export const useSuperchainPoints = () => {
     refetchOnMount: true,
   });
 
-  const {
-    data: superchainPointsState,
-    isPending: isStatePending,
-  } = useQuery({
+  const { data: superchainPointsState, isPending: isStatePending } = useQuery({
     staleTime: 0,
     refetchOnMount: true,
     enabled: address != zeroAddress,
@@ -60,7 +57,6 @@ export const useSuperchainPoints = () => {
         claimable: (claimable.result as bigint) ?? 0,
       };
     },
-    
   });
 
   const { mutateAsync: claim, isPending: isClaiming } = useMutation({
@@ -83,7 +79,8 @@ export const useSuperchainPoints = () => {
   });
 
   return {
-    isPending: isStatePending || isEventsPending || superchainPointsState === undefined,
+    isPending:
+      isStatePending || isEventsPending || superchainPointsState === undefined,
     claimable: superchainPointsState?.claimable ?? 0n,
     balance: superchainPointsState?.balance ?? 0n,
     events: events ?? [],

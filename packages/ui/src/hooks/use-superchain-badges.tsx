@@ -14,10 +14,7 @@ export const useSuperchainBadges = () => {
   } = useSuperChainAccount();
   const queryClient = useQueryClient();
 
-  const {
-    data: superchainBadgesState,
-    isPending: isStatePending,
-  } = useQuery({
+  const { data: superchainBadgesState, isPending: isStatePending } = useQuery({
     refetchOnMount: true,
     enabled: address != zeroAddress,
     queryKey: ["superchainBadges", address ?? "0x0", chain.id],
@@ -28,7 +25,10 @@ export const useSuperchainBadges = () => {
             address: envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
             abi: superchainBadges,
             functionName: "balanceOfBatch",
-            args: [AVAILABLE_BADGES.map(() => address), AVAILABLE_BADGES.map((b) => b.id)],
+            args: [
+              AVAILABLE_BADGES.map(() => address),
+              AVAILABLE_BADGES.map((b) => b.id),
+            ],
           },
           {
             address: envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
@@ -40,11 +40,14 @@ export const useSuperchainBadges = () => {
       });
 
       return {
-        badges: AVAILABLE_BADGES.filter((_, i) => (balances.result as bigint[])![i] > 0n),
-        claimable: AVAILABLE_BADGES.filter((b) => (claimable.result as bigint[]).includes(b.id)),
+        badges: AVAILABLE_BADGES.filter(
+          (_, i) => (balances.result as bigint[])![i] > 0n
+        ),
+        claimable: AVAILABLE_BADGES.filter((b) =>
+          (claimable.result as bigint[]).includes(b.id)
+        ),
       };
     },
-    
   });
 
   const { mutateAsync: claim, isPending: isClaiming } = useMutation({
