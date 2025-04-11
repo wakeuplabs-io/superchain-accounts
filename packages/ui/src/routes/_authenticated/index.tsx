@@ -1,3 +1,4 @@
+import { TokenList } from "@/components/home/token-list/token-list";
 import { ChainSelector } from "@/components/chain-selector";
 import { SmartAccountCard } from "@/components/home/smart-account-card";
 import { createFileRoute } from "@tanstack/react-router";
@@ -13,7 +14,10 @@ function Index() {
         <p className="text-base text-black font-medium">Networks</p>
         <ChainSelector />
       </div>
+
       <SmartAccountCard />
+      
+      <TokenList />
     </div>
   );
 }

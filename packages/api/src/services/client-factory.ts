@@ -1,4 +1,4 @@
-import { OWNER_PRIVATE_KEY, TRANSPORTS_URLS } from "@/config/blockchain";
+import { TRANSPORTS_URLS } from "@/config/blockchain";
 import {
   createPublicClient,
   createWalletClient,
