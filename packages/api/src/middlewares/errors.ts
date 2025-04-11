@@ -19,6 +19,8 @@ function notFound(req: Request, res: Response, next: NextFunction) {
 function errorHandler(err: unknown, req: Request, res: Response) {
   console.error(err);
 
+  // TODO: handle error types, like zod and so on
+
   const statusCode =
     res.statusCode !== 200
       ? res.statusCode

@@ -1,14 +1,7 @@
 import { OWNER_PRIVATE_KEY } from "@/config/blockchain";
 import { IClientFactory } from "./client-factory";
 import superchainPointsAbi from "@/config/abis/superchain-points";
-
-export interface ISuperchainPointsService {
-  addClaimable(
-    chainId: string,
-    addresses: string[],
-    tokenIds: bigint[]
-  ): Promise<`0x${string}`>;
-}
+import { ISuperchainPointsService } from "@/domain/points";
 
 export class SuperchainPointsService implements ISuperchainPointsService {
   constructor(

@@ -3,26 +3,8 @@ import {
   PrismaClient,
   BadgeEventType,
   BadgeEvent,
-  Prisma,
 } from "@prisma/client";
-import { ISuperchainBadgesService } from "../superchain-badges";
-
-export interface BadgeEventsHandler {
-  handle(tx: Transaction): Promise<BadgeEvent[]>;
-}
-
-export interface IBadgesEventsService {
-  getUserBadges(
-    address: string,
-    opts: { chainId?: string; limit?: number }
-  ): Promise<BadgeEventWithTransaction[]>;
-  handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]>;
-  submit(): Promise<{ chainId: string; txHash: string }[]>;
-}
-
-export type BadgeEventWithTransaction = Prisma.BadgeEventGetPayload<{
-  include: { transaction: true };
-}>;
+import { BadgeEventsHandler, BadgeEventWithTransaction, IBadgesEventsService, ISuperchainBadgesService } from "@/domain/badges";
 
 export class BadgeEventsService implements IBadgesEventsService {
   constructor(

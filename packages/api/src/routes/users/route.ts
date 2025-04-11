@@ -1,4 +1,4 @@
-import { IUserTokenService } from "@/services/user-token";
+import { IUserTokenService } from "@/domain/users";
 import { Router, Request, Response } from "express";
 import { getUserTokensRequestSchema, importUserTokenRequestSchema } from "schemas";
 

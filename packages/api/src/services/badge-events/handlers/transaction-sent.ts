@@ -1,11 +1,10 @@
+import { BadgeEventsHandler } from "@/domain/badges";
 import {
-    Transaction,
-    PrismaClient,
-    BadgeEventType,
-    BadgeEvent,
-  } from "@prisma/client";
-  import { BadgeEventsHandler } from "..";
-  
+  Transaction,
+  PrismaClient,
+  BadgeEventType,
+  BadgeEvent,
+} from "@prisma/client";
 
 export class TransactionSentBadgeEventsHandler implements BadgeEventsHandler {
   constructor(

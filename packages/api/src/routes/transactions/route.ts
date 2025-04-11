@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import { normalizeSendUserOperation } from "./normalizer";
 import { ITransactionService } from "@/services/transactions";
-import { IPointsEventsService } from "@/services/points-events";
-import { IBadgesEventsService } from "@/services/badge-events";
+import { IPointsEventsService } from "@/domain/points";
+import { IBadgesEventsService } from "@/domain/badges";
 
 export default function buildTransactionsRoutes(
   transactionService: ITransactionService,

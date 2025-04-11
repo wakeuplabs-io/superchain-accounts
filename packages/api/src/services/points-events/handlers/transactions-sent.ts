@@ -4,7 +4,7 @@ import {
   PointEventType,
   PrismaClient,
 } from "@prisma/client";
-import { IPointsEventsHandler } from "..";
+import { IPointsEventsHandler } from "@/domain/points";
 
 export class TransactionSentPointsEventsHandler
   implements IPointsEventsHandler

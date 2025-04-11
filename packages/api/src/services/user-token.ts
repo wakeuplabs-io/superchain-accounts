@@ -4,13 +4,9 @@ import { GetUserTokensRequest, ImportUserTokenRequest } from "schemas";
 import { Address, erc20Abi, getAddress, getContract } from "viem";
 import { IClientFactory } from "./client-factory.js";
 import envParsed from "@/envParsed.js";
+import { IUserTokenService } from "@/domain/users.js";
 
 type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
-
-export interface IUserTokenService {
-  getUserTokens(data: GetUserTokensRequest): Promise<UserToken[]>;
-  importToken(data: ImportUserTokenRequest): Promise<UserToken>;
-}
 
 export class UserTokenService implements IUserTokenService {
   constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
