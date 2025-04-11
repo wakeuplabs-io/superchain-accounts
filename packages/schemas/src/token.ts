@@ -9,7 +9,7 @@ const userTokenSchema = z.object({
   chainId: z.number(),
   name: z.string(),
   symbol: z.string(),
-  logoURI: z.string().optional(),
+  logoURI: z.string().nullish(),
 });
 
 export type UserToken = z.infer<typeof userTokenSchema>;

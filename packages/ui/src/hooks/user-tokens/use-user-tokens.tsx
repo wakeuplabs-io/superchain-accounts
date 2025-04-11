@@ -6,12 +6,13 @@ import { userService } from "@/services";
 export function useUserTokens() {
   const {chain} = useWeb3();
   const {account} = useSuperChainAccount();
-  
+
   return useQuery({
     queryKey: ["user-tokens", account.address, chain.id],
     queryFn: () => userService.getUserTokens({userWallet: account.address, chainId: chain.id}),
     enabled: account.status !== "pending",
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 1, // 5 minutes
+    refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
 }

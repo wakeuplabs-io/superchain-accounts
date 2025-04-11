@@ -23,14 +23,18 @@ export function TokenList() {
         </a>
       </div>
       <ul>
-        {data.sort(({balance: balanceA}, {balance: balanceB}) => {
+        {data.length > 0 ? 
+          data.sort(({balance: balanceA}, {balance: balanceB}) => {
           // Sort by balance descending
-          if (balanceA > balanceB) return -1;
-          if (balanceA < balanceB) return 1;
-          return 0;
-        }).map(c => (
-          <TokenListItem token={c} key={c.address} />
-        ))}
+            if (balanceA > balanceB) return -1;
+            if (balanceA < balanceB) return 1;
+            return 0;
+          }).map(c => (
+            <TokenListItem token={c} key={c.address} />
+          )) 
+          :  
+          <li className="text-lg">No tokens imported</li>
+        }
       </ul>
     </div>
   );
