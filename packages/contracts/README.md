@@ -80,7 +80,7 @@ Badge minted with tx: 0x9a5ca7d2791acb9220d61ba51271c5806413ad05524c6be5deb987f3
 `add-claimable-badge`
 
 ```bash
-npx hardhat add-claimable-badge --to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0 --id 2 --network optimism-sepolia
+npx hardhat add-claimable-badge --to 0xe93Af013F59cbCE3205589D401712560D0101fE4 --id 1 --network optimism-sepolia
 Adding badge 2 to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0
 Badge added with tx: 0x720456173a135d1b4944a76f09dfbd78c90e6a18215e101833d0f3784934243b
 ```

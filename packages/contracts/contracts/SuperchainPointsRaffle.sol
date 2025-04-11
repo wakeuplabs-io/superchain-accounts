@@ -141,7 +141,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         ) {
             tickets[i] = msg.sender;
         }
-        ticketsClaimed[msg.sender] = ticketsAllocation;
+        ticketsClaimed[msg.sender] += ticketsAllocation;
         ticketCount += ticketsAllocation;
 
         emit TicketsClaimed(msg.sender, ticketsAllocation);

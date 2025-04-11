@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { pointsService } from "@/services";
 import envParsed from "@/envParsed";
 import superchainPoints from "@/config/abis/superchain-points";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, zeroAddress } from "viem";
 
 export const useSuperchainPoints = () => {
   const { chain } = useWeb3();
@@ -15,6 +15,7 @@ export const useSuperchainPoints = () => {
   const queryClient = useQueryClient();
 
   const { data: events, isPending: isEventsPending } = useQuery({
+    enabled: address != zeroAddress,
     queryKey: ["superchainPointsEvents", address ?? "0x0", chain.id],
     queryFn: async () => {
       const events = await pointsService.getUserPoints(
@@ -24,15 +25,17 @@ export const useSuperchainPoints = () => {
 
       return events;
     },
-    initialData: [],
     staleTime: 0,
     refetchOnMount: true,
   });
 
   const {
-    data: { balance, claimable },
+    data: superchainPointsState,
     isPending: isStatePending,
   } = useQuery({
+    staleTime: 0,
+    refetchOnMount: true,
+    enabled: address != zeroAddress,
     queryKey: ["superchainPointsState", address ?? "0x0", chain.id],
     queryFn: async () => {
       const [balance, claimable] = await chain.client.multicall({
@@ -57,9 +60,7 @@ export const useSuperchainPoints = () => {
         claimable: (claimable.result as bigint) ?? 0,
       };
     },
-    initialData: { balance: 0n, claimable: 0n },
-    refetchOnMount: true,
-    staleTime: 0,
+    
   });
 
   const { mutateAsync: claim, isPending: isClaiming } = useMutation({
@@ -82,11 +83,11 @@ export const useSuperchainPoints = () => {
   });
 
   return {
-    isPending: isStatePending || isEventsPending,
+    isPending: isStatePending || isEventsPending || superchainPointsState === undefined,
+    claimable: superchainPointsState?.claimable ?? 0n,
+    balance: superchainPointsState?.balance ?? 0n,
+    events: events ?? [],
     isClaiming,
     claim,
-    claimable,
-    balance,
-    events,
   };
 };
