@@ -11,25 +11,28 @@ export const SuperchainBadges: React.FC<{}> = () => {
   const { isPending, claim, claimable, isClaiming, badges } =
     useSuperchainBadges();
 
-  const onClaim = useCallback(async (tokenId: bigint) => {
-    claim(tokenId)
-      .then(() => {
-        toast({
-          title: "Badge claimed",
-          description: `You have successfully claimed your badge`,
+  const onClaim = useCallback(
+    async (tokenId: bigint) => {
+      claim(tokenId)
+        .then(() => {
+          toast({
+            title: "Badge claimed",
+            description: `You have successfully claimed your badge`,
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: "Error",
+            description: `There was an error claiming your badge ${error}`,
+          });
         });
-      })
-      .catch((error) => {
-        toast({
-          title: "Error",
-          description: `There was an error claiming your badge ${error}`,
-        });
-      });
-  }, [claim]);
+    },
+    [claim]
+  );
 
   if (isPending) {
     return (
-      <div className="max-w-md">
+      <div>
         <div className="mb-4 font-medium">Accomplishments</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
@@ -42,7 +45,7 @@ export const SuperchainBadges: React.FC<{}> = () => {
 
   if (claimable.length === 0 && badges.length === 0) {
     return (
-      <div className="max-w-md">
+      <div>
         <div className="mb-4 font-medium">Accomplishments</div>
         <div className="bg-white border rounded-lg p-8 flex flex-col justify-center items-center h-[430px]">
           <img src={emptySvg} alt="" className="mb-11 h-20 w-20" />
@@ -58,17 +61,17 @@ export const SuperchainBadges: React.FC<{}> = () => {
   }
 
   return (
-    <div className="max-w-md">
+    <div>
       <div className="mb-4 font-medium">Accomplishments</div>
       <ScrollArea className="h-full">
         <ul className="grid grid-cols">
           {claimable.map((badge) => (
             <li
               key={badge.id}
-              className="flex gap-2 items-center p-6 border rounded-lg bg-white border-primary h-[85px]"
+              className="flex gap-3 items-center p-6 border rounded-lg bg-white border-primary h-[85px]"
             >
               <img src={badge.imageUrl} alt="" className="h-[38px] w-[38px]" />
-              <div>
+              <div className="space-y-0.5">
                 <div className="font-semibold text-sm">{badge.name}</div>
                 <Button
                   onClick={() => onClaim(badge.id)}
@@ -86,10 +89,10 @@ export const SuperchainBadges: React.FC<{}> = () => {
           {badges.map((badge) => (
             <li
               key={badge.id}
-              className="flex gap-2 items-center p-6 border rounded-lg bg-white"
+              className="flex gap-3 items-center p-6 border rounded-lg bg-white h-[85px]"
             >
               <img src={badge.imageUrl} alt="" className="h-10 w-10" />
-              <div>
+              <div className="space-y-0.5">
                 <div className="font-semibold text-sm">{badge.name}</div>
                 <div className="text-xs">{badge.description}</div>
               </div>

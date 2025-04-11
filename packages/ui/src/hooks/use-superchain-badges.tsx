@@ -26,8 +26,8 @@ export const useSuperchainBadges = () => {
             abi: superchainBadges,
             functionName: "balanceOfBatch",
             args: [
-              AVAILABLE_BADGES.map(() => address),
-              AVAILABLE_BADGES.map((b) => b.id),
+              AVAILABLE_BADGES[chain.id].map(() => address),
+              AVAILABLE_BADGES[chain.id].map((b) => b.id),
             ],
           },
           {
@@ -40,10 +40,10 @@ export const useSuperchainBadges = () => {
       });
 
       return {
-        badges: AVAILABLE_BADGES.filter(
+        badges: AVAILABLE_BADGES[chain.id].filter(
           (_, i) => (balances.result as bigint[])![i] > 0n
         ),
-        claimable: AVAILABLE_BADGES.filter((b) =>
+        claimable: AVAILABLE_BADGES[chain.id].filter((b) =>
           (claimable.result as bigint[]).includes(b.id)
         ),
       };
