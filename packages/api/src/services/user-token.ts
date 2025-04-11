@@ -26,7 +26,7 @@ export class UserTokenService implements IUserTokenService {
     return await this.populateTokensBalance(userTokens, chainId);
   }
 
-  async populateTokensBalance(userTokens: UserToken[], chainId: number ) {
+  private async populateTokensBalance(userTokens: UserToken[], chainId: number ) {
     const client = this.clientFactory.getReadClient(chainId.toString());
 
     const balances = await client.multicall(
