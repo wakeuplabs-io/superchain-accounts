@@ -11,6 +11,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { userService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useUserTokens } from "@/hooks/user-tokens/use-user-tokens";
 
 interface ImportTokensDialogProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export const ImportTokensDialog = ({
   const { chain } = useWeb3();
   const { account } = useSuperChainAccount();
   const { toast } = useToast();
+  const { invalidateUserTokens } = useUserTokens();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
@@ -42,6 +44,7 @@ export const ImportTokensDialog = ({
         title: "Token imported",
         description: `Token ${userToken.symbol} imported successfully`,
       });
+      invalidateUserTokens();
       onClose();
     } catch (error) {
       let description = "";
