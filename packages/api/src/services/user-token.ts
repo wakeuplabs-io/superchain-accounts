@@ -40,19 +40,7 @@ export class UserTokenService implements IUserTokenService {
     return await this.populateTokensBalance(userTokens, chainId);
   }
 
-  async populateTokensBalance(userTokens: UserToken[], chainId: number | undefined) {
-    //TODO: IMPROVE THIS TO BE ABLE TO FETCH BALANCES FOR MULTIPLE CHAINS. FOR THE MOMENT RETURN ZERO FOR ALL TOKENS IF CHAINID IS NOT PROVIDED
-    if(!chainId) {
-      return userTokens.map(
-        (token) => {
-          return {
-            ...token,
-            balance: 0n,
-          };
-        }
-      );
-    }
-
+  async populateTokensBalance(userTokens: UserToken[], chainId: number ) {
     const client = this.clientFactory.getReadClient(chainId.toString());
 
     return Promise.all(userTokens.map(

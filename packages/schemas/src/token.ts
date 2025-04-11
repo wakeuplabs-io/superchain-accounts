@@ -15,7 +15,7 @@ const userTokenSchema = z.object({
 export type UserToken = z.infer<typeof userTokenSchema>;
 
 export const getUserTokensRequestSchema = z.object({
-  chainId: z.coerce.number().optional(),
+  chainId: z.coerce.number(),
   userWallet:  z
     .string({
       required_error: "User wallet is required",
