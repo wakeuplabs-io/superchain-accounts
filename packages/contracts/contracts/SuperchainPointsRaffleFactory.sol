@@ -29,7 +29,7 @@ contract SuperchainPointsRaffleFactory is ISuperchainPointsRaffleFactory, Ownabl
     }
 
     function createRaffle() public onlyOwner {
-        if (address(currentRaffle) != address(0) && currentRaffle.getWinner() == address(0)) {
+        if (address(currentRaffle) != address(0) && currentRaffle.isOngoing()) {
             revert OngoingRaffle();
         }
 

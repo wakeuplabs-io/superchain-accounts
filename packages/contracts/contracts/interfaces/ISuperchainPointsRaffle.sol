@@ -93,4 +93,7 @@ interface ISuperchainPointsRaffle is
 
     /// @notice Returns the address of the raffle winner
     function getWinner() external view returns (address);
+
+    /// @notice Returns whether the raffle is ongoing
+    function isOngoing() external view returns (bool);
 }
