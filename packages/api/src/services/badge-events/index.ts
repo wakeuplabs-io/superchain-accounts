@@ -11,20 +11,24 @@ export interface BadgeEventsHandler {
   handle(tx: Transaction): Promise<BadgeEvent[]>;
 }
 
-export interface IBadgesEventsService {
-  getUserBadges(
-    address: string,
-    opts: { chainId?: string; limit?: number }
-  ): Promise<BadgeEventWithTransaction[]>;
-  handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]>;
-  submit(): Promise<{ chainId: string; txHash: string }[]>;
-}
+
+// Since we dont have a domain layer. Why not this?
+export type IBadgesEventsService = InstanceType<typeof BadgeEventsService>;
+// export interface IBadgesEventsService {
+
+//   getUserBadges(
+//     address: string,
+//     opts: { chainId?: string; limit?: number }
+//   ): Promise<BadgeEventWithTransaction[]>;
+//   handleNewTransaction(tx: Transaction): Promise<BadgeEvent[]>;
+//   submit(): Promise<{ chainId: string; txHash: string }[]>;
+// }
 
 export type BadgeEventWithTransaction = Prisma.BadgeEventGetPayload<{
   include: { transaction: true };
 }>;
 
-export class BadgeEventsService implements IBadgesEventsService {
+export class BadgeEventsService {
   constructor(
     private repo: PrismaClient,
     private superchainBadgesService: ISuperchainBadgesService,
@@ -106,3 +110,4 @@ export class BadgeEventsService implements IBadgesEventsService {
     return res;
   }
 }
+

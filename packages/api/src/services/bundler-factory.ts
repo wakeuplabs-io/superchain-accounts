@@ -3,6 +3,7 @@ import { ClientFactory, IClientFactory } from "./client-factory";
 import { http } from "viem";
 import { SMART_ACCOUNTS } from "@/config/blockchain";
 
+// same to other interfaces
 export interface IBundlerFactory {
   getBundler(chainId: string): BundlerClient;
 }

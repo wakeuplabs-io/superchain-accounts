@@ -10,6 +10,7 @@ export interface ISuperchainBadgesService {
   ): Promise<`0x${string}`>;
 }
 
+// TODO: see sdk implementation and discuss in archi meeting
 export class SuperchainBadgesService implements ISuperchainBadgesService {
   constructor(
     private address: `0x${string}`,

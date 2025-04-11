@@ -9,17 +9,27 @@ export default function createRoutes(
 
   router.post("/submit", async (req, res) => {
     // verify api key
+    // TODO: this is a middleware
     if (req.headers["x-cron-key"] !== envParsed().CRONJOB_KEY) {
       return res.status(401).send({ message: "Unauthorized" });
     }
+
+
+    // Steps: 
+    // - validates
+    // - get events
+    // - format data
+    // - save
 
     res.send({ data: { transactions: await pointsEventsService.submit() } });
   });
 
   router.get("/:address", async (req, res) => {
     const address = req.params.address;
-    const chainId = req.query.chainId as string;
+    const chainId = req.query.chainId as string; // type ChainId
     const limit = req.query.limit;
+
+    // TODO: missing schema
 
     const pointsEvents = await pointsEventsService.getUserPoints(address, {
       chainId,
