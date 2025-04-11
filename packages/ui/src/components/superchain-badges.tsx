@@ -64,7 +64,7 @@ export const SuperchainBadges: React.FC<{}> = () => {
     <div>
       <div className="mb-4 font-medium">Accomplishments</div>
       <ScrollArea className="h-full">
-        <ul className="grid grid-cols">
+        <ul className="grid grid-cols gap-2">
           {claimable.map((badge) => (
             <li
               key={badge.id}
