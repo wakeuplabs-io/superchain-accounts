@@ -89,7 +89,6 @@ export const ImportTokensDialog = ({
                   )}
                 />
                 <Button
-                  variant="confirm"
                   type="submit"
                   className="w-full"
                   loading={isSubmitting}
