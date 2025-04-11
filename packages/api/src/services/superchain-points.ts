@@ -26,6 +26,7 @@ export class SuperchainPointsService implements ISuperchainPointsService {
       OWNER_PRIVATE_KEY
     );
 
+    // Missing simulate
     const tx = await client.writeContract({
       address: this.address,
       abi: superchainPointsAbi,

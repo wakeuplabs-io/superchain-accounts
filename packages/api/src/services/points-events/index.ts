@@ -10,6 +10,7 @@ export interface IPointsEventsHandler {
   handle(tx: Transaction): Promise<PointEvent[]>;
 }
 
+// same to BadgeEvents
 export interface IPointsEventsService {
   getUserPoints(
     address: string,
@@ -49,6 +50,7 @@ export class PointsEventsService implements IPointsEventsService {
     return events.flat();
   }
 
+  // TODO: I think the input should be the data formatted
   async submit(): Promise<{ chainId: string; txHash: string }[]> {
     // get all non minted points
     const events = await this.repo.pointEvent.findMany({
@@ -58,6 +60,9 @@ export class PointsEventsService implements IPointsEventsService {
     if (events.length === 0) {
       return [];
     }
+
+    // TODO: discuss this with the team in archi meeting
+    // this is business logic. I think this is not a service, maybe a controller.
 
     // group by chain id
     const eventsByChain = new Map<string, PointEvent[]>();

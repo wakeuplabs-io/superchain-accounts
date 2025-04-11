@@ -13,6 +13,9 @@ export interface IClientFactory {
   getWriteClient(chainId: string, privateKey: `0x${string}`): WalletClient;
 }
 
+// Why this? 
+// I think It would be more useful to have a single client for each chainId passing the chainId in the constructor
+// TODO: see sdk implementation and discuss in archi meeting
 export class ClientFactory implements IClientFactory {
   publicClients: {
     [chainId: string]: PublicClient | undefined;

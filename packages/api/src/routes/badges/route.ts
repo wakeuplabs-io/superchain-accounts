@@ -9,6 +9,7 @@ export default function buildBadgesRoutes(
 
   router.post("/submit", async (req, res) => {
     // verify api key
+    // Should not be a middleware? Is it only used here?
     if (req.headers["x-cron-key"] !== envParsed().CRONJOB_KEY) {
       return res.status(401).send({ message: "Unauthorized" });
     }
@@ -18,8 +19,10 @@ export default function buildBadgesRoutes(
 
   router.get("/:address", async (req, res) => {
     const address = req.params.address;
-    const chainId = req.query.chainId as string;
+    const chainId = req.query.chainId as string; // TODO: define a type for chainId
     const limit = req.query.limit;
+
+    // TODO: missing schema
 
     const badgesEvents = await badgeEventsService.getUserBadges(address, {
       chainId,
