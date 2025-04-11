@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter, useSearch } from "@tanstack/react-router";
-import { Button } from "@/components";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,

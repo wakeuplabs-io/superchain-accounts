@@ -1,10 +1,10 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCallback, useMemo } from "react";
 import { toast } from "@/hooks/use-toast";
-import emptySvg from "../../assets/empty.svg";
+import emptySvg from "@/assets/empty.svg";
 import { useSuperchainPoints } from "@/hooks/use-superchain-points";
-import { Button } from "../ui";
-import { ScrollArea } from "../ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const SuperchainPoints: React.FC<{}> = () => {
   const { isPending, claim, claimable, isClaiming, events } =

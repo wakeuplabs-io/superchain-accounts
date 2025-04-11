@@ -1,11 +1,11 @@
-import { Skeleton } from "../ui/skeleton";
 import { useCallback } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
-import { ScrollArea } from "../ui/scroll-area";
-import emptySvg from "../../assets/empty.svg";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSuperchainBadges } from "@/hooks/use-superchain-badges";
-import { Button } from "../ui";
+import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import emptySvg from "@/assets/empty.svg";
 
 export const SuperchainBadges: React.FC<{}> = () => {
   const { isPending, claim, claimable, isClaiming, badges } =

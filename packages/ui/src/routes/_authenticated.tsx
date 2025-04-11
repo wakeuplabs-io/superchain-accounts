@@ -21,10 +21,10 @@ import {
 
 import opSuperchainLogo from "@/assets/logos/op-superchain-logo.png";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
-import { ActionButton } from "@/components/_authenticated/sidebar/action-button";
-import { AuthenticatedSidebarMenuButton } from "@/components/_authenticated/sidebar/authenticated-sidebar-menu-button";
+import { ActionButton } from "@/components/sidebar/action-button";
+import { AuthenticatedSidebarMenuButton } from "@/components/sidebar/authenticated-sidebar-menu-button";
 import { useAuth } from "@/hooks/use-auth";
-import { ClaimRaffleTicketsButton } from "@/components/_authenticated/sidebar/claim-raffle-tickets-button";
+import { ClaimRaffleTicketsButton } from "@/components/sidebar/claim-raffle-tickets-button";
 import { SuperChainAccountProvider } from "@/hooks/use-smart-account";
 
 const authenticatedSearchSchema = z.object({

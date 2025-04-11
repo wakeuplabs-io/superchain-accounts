@@ -1,17 +1,17 @@
 import { Clock, Ticket, Trophy } from "lucide-react";
-import { Button } from "../ui";
 import { useSuperchainRaffle } from "@/hooks/use-superchain-raffle";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
+} from "./ui/tooltip";
 import { useCountdown } from "@/hooks/use-countdown";
 import { useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
-import emptySvg from "../../assets/empty.svg";
+import emptySvg from "@/assets/empty.svg";
 
 export const SuperchainRaffle: React.FC<{}> = () => {
   const { isPending, claimTickets, isClaiming, currentRaffle } =
