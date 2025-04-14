@@ -59,9 +59,10 @@ export class TransactionService {
         throw Error("Transaction failed");
       }
 
-      const { receipt } = await bundlerClient.waitForUserOperationReceipt({
+      const { receipt, sender } = await bundlerClient.waitForUserOperationReceipt({
         hash: data.result as `0x${string}`,
       });
+
 
       if (receipt.status !== "success") {
         throw Error("Transaction failed");
@@ -75,7 +76,7 @@ export class TransactionService {
       return await this.repo.transaction.create({
         data: {
           hash: tx.hash as string,
-          from: tx.from as string,
+          from: sender as string,
           to: tx.to ?? (zeroAddress as string),
           value: tx.value.toString() as string,
           data: tx.input as string,
