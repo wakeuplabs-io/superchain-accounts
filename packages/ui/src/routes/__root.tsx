@@ -1,16 +1,16 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import React from "react";
 import envParsed from "@/envParsed";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthContextType } from "@/hooks/use-auth";
 
 const TanStackRouterDevtools = envParsed().PROD
   ? () => null // Render nothing in production
-  : React.lazy(() =>
-      import("@tanstack/router-devtools").then((res) => ({
-        default: res.TanStackRouterDevtools,
-      }))
-    );
+  : () => null
+  // : React.lazy(() =>
+  //     import("@tanstack/router-devtools").then((res) => ({
+  //       default: res.TanStackRouterDevtools,
+  //     }))
+  //   );
 
 export const Route = createRootRouteWithContext<{
   auth: AuthContextType | null;
