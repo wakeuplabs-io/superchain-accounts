@@ -8,27 +8,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TransactionAction {
-  TRANSFER
-  SWAP
-  UNKNOWN
+model User {
+  wallet    String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userTokens  UserToken[]
+}
+
+model UserToken {
+  id         Int     @id @default(autoincrement())
+  chainId    Int
+  user       User    @relation(fields: [userWallet], references: [wallet])
+  userWallet String
+  address    String
+  name       String
+  symbol     String
+  decimals   Int
+  logoURI    String?
+
+  @@unique([userWallet, address, chainId])
 }
 
 model Transaction {
-  hash    String @id
+  hash    String            @id
   from    String
   to      String
   value   String
   data    String
   chainId String
+  action  TransactionAction
 
-  action    TransactionAction
-  timestamp DateTime          @default(now())
+  timestamp DateTime @default(now())
 
   pointEvents PointEvent[]
   badgeEvents BadgeEvent[]
 
   @@unique([hash, from])
+}
+
+enum TransactionAction {
+  ClaimPoints
+  ClaimBadge
+  Transfer
+  Swap
+  Unknown
 }
 
 model PointEvent {
@@ -74,25 +98,4 @@ enum BadgeEventType {
   TransactionsSent
   DaysActive
   DefiInteractions
-}
-
-model User {
-  wallet     String      @id
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  userTokens UserToken[]
-}
-
-model UserToken {
-  id         Int     @id @default(autoincrement())
-  chainId    Int
-  user       User    @relation(fields: [userWallet], references: [wallet])
-  userWallet String
-  address    String
-  name       String
-  symbol     String
-  decimals   Int
-  logoURI    String?
-
-  @@unique([userWallet, address, chainId])
 }

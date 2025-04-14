@@ -1,5 +1,4 @@
-import { BadgeEvent, Prisma } from "@prisma/client";
-import { Transaction } from "./transaction";
+import { BadgeEvent, Prisma, Transaction } from "@prisma/client";
 
 export interface BadgeEventsHandler {
   handle(tx: Transaction): Promise<BadgeEvent[]>;

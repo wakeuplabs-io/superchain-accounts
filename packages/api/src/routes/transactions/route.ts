@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { normalizeSendUserOperation } from "./normalizer";
-import { ITransactionService } from "@/services/transactions";
+import { ITransactionService } from "@/domain/transaction";
 import { IPointsEventsService } from "@/domain/points";
 import { IBadgesEventsService } from "@/domain/badges";
 

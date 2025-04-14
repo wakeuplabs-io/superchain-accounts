@@ -2,8 +2,14 @@ import {
   PointEvent,
   Transaction,
   PrismaClient,
+  TransactionAction,
 } from "@prisma/client";
-import { IPointsEventsHandler, IPointsEventsService, ISuperchainPointsService, PointEventWithTransaction } from "@/domain/points";
+import {
+  IPointsEventsHandler,
+  IPointsEventsService,
+  ISuperchainPointsService,
+  PointEventWithTransaction,
+} from "@/domain/points";
 
 export class PointsEventsService implements IPointsEventsService {
   constructor(
@@ -16,8 +22,19 @@ export class PointsEventsService implements IPointsEventsService {
     address: string,
     opts: { chainId?: string; limit?: number }
   ): Promise<PointEventWithTransaction[]> {
+    const lastClaimed = await this.repo.transaction.findFirst({
+      where: { from: address, action: TransactionAction.ClaimPoints },
+      orderBy: { timestamp: "desc" },
+    });
+
     return this.repo.pointEvent.findMany({
-      where: { transaction: { from: address }, chainId: opts?.chainId },
+      where: {
+        transaction: {
+          from: address,
+          timestamp: { gte: lastClaimed?.timestamp },
+        },
+        chainId: opts?.chainId,
+      },
       include: { transaction: true },
       take: opts?.limit,
     });
@@ -83,5 +100,4 @@ export class PointsEventsService implements IPointsEventsService {
 
     return res;
   }
-  
 }

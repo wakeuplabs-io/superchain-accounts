@@ -24,7 +24,7 @@ interface ISuperchainPointsEvents {
     /// @notice Emitted when tokens are claimed
     /// @param account The account that claimed the tokens
     /// @param amount The amount of tokens claimed
-    event TokensClaimed(address account, uint256 amount);
+    event Claimed(address account, uint256 amount);
 }
 
 interface ISuperchainPoints is

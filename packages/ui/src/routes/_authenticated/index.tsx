@@ -16,6 +16,7 @@ function Index() {
       </div>
 
       <SmartAccountCard />
+      
       <AssetList />
     </div>
   );

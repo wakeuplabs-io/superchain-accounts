@@ -2,7 +2,7 @@ import { PointEventType, Transaction, TransactionAction } from "@prisma/client";
 import { TokenSwapPointsEventsHandler } from "./token-swap";
 
 const mockTransfer: Transaction = {
-  action: TransactionAction.TRANSFER,
+  action: TransactionAction.Transfer,
   data: "0x0",
   from: "0x123",
   to: "0x123",
@@ -21,7 +21,7 @@ describe("TokenSwapPointsEventsHandler", () => {
     // first chain interaction should assign points
     const res = await handler.handle(
       await db.transaction.create({
-        data: { ...mockTransfer, action: TransactionAction.SWAP },
+        data: { ...mockTransfer, action: TransactionAction.Swap },
       })
     );
 
@@ -41,7 +41,7 @@ describe("TokenSwapPointsEventsHandler", () => {
 
   it("Should not assign if already assigned", async () => {
     const tx = await db.transaction.create({
-      data: { ...mockTransfer, action: TransactionAction.SWAP },
+      data: { ...mockTransfer, action: TransactionAction.Swap },
     });
 
     await handler.handle(tx);
@@ -52,7 +52,7 @@ describe("TokenSwapPointsEventsHandler", () => {
 
   it("Should not assign if not a swap", async () => {
     const tx = await db.transaction.create({
-      data: { ...mockTransfer, action: TransactionAction.TRANSFER },
+      data: { ...mockTransfer, action: TransactionAction.Transfer },
     });
 
     await handler.handle(tx);

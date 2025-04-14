@@ -14,7 +14,7 @@ export class TokenSwapPointsEventsHandler implements IPointsEventsHandler {
   ) {}
 
   async handle(tx: Transaction): Promise<PointEvent[]> {
-    if (tx.action !== TransactionAction.SWAP) {
+    if (tx.action !== TransactionAction.Swap) {
       return [];
     }
 
