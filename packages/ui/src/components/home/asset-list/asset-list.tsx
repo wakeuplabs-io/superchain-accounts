@@ -24,8 +24,7 @@ export function AssetList() {
         {!isPending && (
           error ? 
             <li className="text-lg">There was an error loading the token list...</li> 
-            : (data.length > 0 
-              ? 
+            : (data.length > 0 ? 
               data.sort((a, b) => {
                 // Sort native token first
                 if(a.native) return -1;
