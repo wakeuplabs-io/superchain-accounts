@@ -2,11 +2,10 @@ import {
   createFileRoute,
   Outlet,
   redirect,
-  useRouter,
   useRouterState,
 } from "@tanstack/react-router";
 import { z } from "zod";
-import { LogOut, Lock, ScrollText, User } from "lucide-react";
+import { ScrollText, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -21,11 +20,10 @@ import {
 
 import opSuperchainLogo from "@/assets/logos/op-superchain-logo.png";
 import wakeUpPowered from "@/assets/logos/wakeup-powered.svg";
-import { ActionButton } from "@/components/sidebar/action-button";
 import { AuthenticatedSidebarMenuButton } from "@/components/sidebar/authenticated-sidebar-menu-button";
-import { useAuth } from "@/hooks/use-auth";
 import { ClaimRaffleTicketsButton } from "@/components/sidebar/claim-raffle-tickets-button";
 import { SuperChainAccountProvider } from "@/hooks/use-smart-account";
+import { AccountButton } from "@/components/sidebar/account-button";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -63,14 +61,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const router = useRouter();
   const routerState = useRouterState();
-  const { logout } = useAuth();
-
-  const onLogout = async () => {
-    await logout();
-    router.history.push("/login");
-  };
 
   return (
     <SuperChainAccountProvider>
@@ -113,24 +104,13 @@ function AuthenticatedLayout() {
               <hr className="my-4" />
               <ClaimRaffleTicketsButton />
             </SidebarContent>
-            <SidebarFooter>
-              <div className="flex flex-col px-8 py-14 gap-9">
-                <div className="flex gap-4">
-                  {/* TODO: we need to redo this */}
-                  <ActionButton
-                    variant="dark"
-                    icon={LogOut}
-                    onClick={onLogout}
-                  />
-                  <ActionButton
-                    variant="slate"
-                    icon={Lock}
-                    onClick={() => console.log("locking")}
-                  />
-                </div>
-                <div className="h-[58px] bg-muted rounded-lg flex items-center justify-center">
-                  <img className="h-[30px]" src={wakeUpPowered} />
-                </div>
+            <SidebarFooter className="flex flex-col px-8 py-14 gap-4">
+              <AccountButton />
+
+              <hr className="border-sidebar-accent" />
+
+              <div className="h-[58px] bg-sidebar-accent rounded-lg flex items-center justify-center">
+                <img className="h-[30px]" src={wakeUpPowered} />
               </div>
             </SidebarFooter>
           </Sidebar>
