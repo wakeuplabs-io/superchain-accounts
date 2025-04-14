@@ -70,7 +70,7 @@ export const SuperchainBadges: React.FC<{}> = () => {
               key={badge.id}
               className="flex gap-3 items-center p-6 border rounded-lg bg-white border-primary h-[85px]"
             >
-              <img src={badge.imageUrl} alt="" className="h-[38px] w-[38px]" />
+              <img src={badge.image} alt="" className="h-[38px] w-[38px]" />
               <div className="space-y-0.5">
                 <div className="font-semibold text-sm">{badge.name}</div>
                 <Button
@@ -91,7 +91,7 @@ export const SuperchainBadges: React.FC<{}> = () => {
               key={badge.id}
               className="flex gap-3 items-center p-6 border rounded-lg bg-white h-[85px]"
             >
-              <img src={badge.imageUrl} alt="" className="h-10 w-10" />
+              <img src={badge.image} alt="" className="h-10 w-10" />
               <div className="space-y-0.5">
                 <div className="font-semibold text-sm">{badge.name}</div>
                 <div className="text-xs">{badge.description}</div>
