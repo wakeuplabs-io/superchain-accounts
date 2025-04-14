@@ -27,7 +27,6 @@ type SuperChainAccountStatus = "pending" | "initialized" | "deployed";
 
 type SuperChainAccount = {
   instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">> | null;
-  balance: bigint;
   status: SuperChainAccountStatus;
   address: Address;
 };
@@ -63,7 +62,6 @@ export function SuperChainAccountProvider({
 
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
-    balance: 0n,
     status: "pending",
     address: zeroAddress,
   });
@@ -134,12 +132,7 @@ export function SuperChainAccountProvider({
 
       const isDeployed = await newSmartAccount.isDeployed();
 
-      const balance = await chain.client.getBalance({
-        address: newSmartAccount.address,
-      });
-
       setAccount({
-        balance,
         instance: newSmartAccount,
         status: isDeployed ? "deployed" : "initialized",
         address: newSmartAccount.address,
