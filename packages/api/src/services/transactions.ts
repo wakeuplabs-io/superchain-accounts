@@ -1,41 +1,21 @@
-import { zeroAddress } from "viem";
-import { PrismaClient, Transaction } from "@prisma/client";
-import { BundlerFactory, IBundlerFactory } from "./bundler-factory";
-import { ClientFactory, IClientFactory } from "./client-factory";
-import { Transaction as DomainTransaction } from "../domain/transaction";
+import {
+  Address,
+  decodeEventLog,
+  decodeFunctionData,
+  erc20Abi,
+  parseAbi,
+  TransactionReceipt,
+} from "viem";
+import { PrismaClient, Transaction, TransactionAction } from "@prisma/client";
+import { IBundlerFactory } from "./bundler-factory";
 import axios from "axios";
 import { SMART_ACCOUNTS } from "@/config/blockchain";
+import { ITransactionService, UserOperation } from "@/domain/transaction";
+import envParsed from "@/envParsed";
 
-interface UserOperation {
-  sender: string;
-  nonce: string;
-  factory?: string;
-  factoryData?: string;
-  initCode: string;
-  callData: string;
-  callGasLimit: string;
-  verificationGasLimit: string;
-  preVerificationGas: string;
-  maxPriorityFeePerGas: string;
-  maxFeePerGas: string;
-  paymaster?: string;
-  paymasterVerificationGasLimit?: string;
-  paymasterData?: string | null;
-  paymasterPostOpGasLimit?: string;
-  signature: string;
-}
-
-export interface ITransactionService {
-  sendUserOperation(
-    operation: UserOperation,
-    chainId: string
-  ): Promise<Transaction>;
-}
-
-export class TransactionService {
+export class TransactionService implements ITransactionService {
   constructor(
     private repo: PrismaClient,
-    private clientFactory: IClientFactory,
     private bundlerFactory: IBundlerFactory
   ) {}
 
@@ -59,27 +39,38 @@ export class TransactionService {
         throw Error("Transaction failed");
       }
 
-      const { receipt } = await bundlerClient.waitForUserOperationReceipt({
-        hash: data.result as `0x${string}`,
-      });
+      const { receipt, logs } = await bundlerClient.waitForUserOperationReceipt(
+        {
+          hash: data.result as `0x${string}`,
+        }
+      );
+
 
       if (receipt.status !== "success") {
         throw Error("Transaction failed");
       }
 
-      const providerClient = this.clientFactory.getReadClient(chainId);
-      const tx = await providerClient.getTransaction({
-        hash: receipt.transactionHash,
+      const decoded = decodeFunctionData({
+        abi: parseAbi([
+          "function execute(address target, uint256 value, bytes data)",
+        ]),
+        data: opData.callData as `0x${string}`,
       });
+
 
       return await this.repo.transaction.create({
         data: {
-          hash: tx.hash as string,
-          from: tx.from as string,
-          to: tx.to ?? (zeroAddress as string),
-          value: tx.value.toString() as string,
-          data: tx.input as string,
-          action: DomainTransaction.typeFromReceipt(receipt),
+          hash: receipt.transactionHash,
+          from: opData.sender as string,
+          to: decoded.args[0],
+          value: "0x" + decoded.args[1].toString(16),
+          data: decoded.args[2],
+          action: this.typeFromReceipt({
+            to: decoded.args[0],
+            data: decoded.args[2],
+            value: decoded.args[1],
+            logs,
+          }),
           chainId: chainId.toString(),
         },
       });
@@ -87,5 +78,65 @@ export class TransactionService {
       console.error(error);
       throw Error("Transaction failed");
     }
+  }
+
+  typeFromReceipt({
+    to,
+    data,
+    value,
+    logs,
+  }: {
+    to: Address;
+    data: `0x${string}`;
+    value: bigint;
+    logs: TransactionReceipt["logs"];
+  }): TransactionAction {
+    if (to === envParsed().SUPERCHAIN_POINTS_ADDRESS) {
+      try {
+        decodeFunctionData({
+          abi: parseAbi(["function claim()"]),
+          data,
+        });
+
+        return TransactionAction.ClaimPoints;
+      } catch {}
+    }
+
+    if (to === envParsed().SUPERCHAIN_BADGES_ADDRESS) {
+      try {
+        decodeFunctionData({
+          abi: parseAbi(["function claim(uint256 tokenId)"]),
+          data,
+        });
+
+        return TransactionAction.ClaimBadge;
+      } catch {}
+    }
+
+    if (value !== 0n && data === "0x") {
+      return TransactionAction.Transfer;
+    }
+
+    const transferLogs = logs.filter((log) => {
+      try {
+        const decoded = decodeEventLog({
+          abi: erc20Abi,
+          data: log.data,
+          topics: log.topics,
+          eventName: "Transfer",
+        });
+        return !!decoded;
+      } catch {
+        return false;
+      }
+    });
+
+    if (transferLogs.length === 1) {
+      return TransactionAction.Transfer;
+    } else if (transferLogs.length > 2) {
+      return TransactionAction.Swap;
+    }
+
+    return TransactionAction.Unknown;
   }
 }

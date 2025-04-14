@@ -53,7 +53,7 @@ contract SuperchainPoints is ISuperchainPoints, ERC20, Ownable {
 
         _mint(msg.sender, amountToClaim);
 
-        emit TokensClaimed(msg.sender, amountToClaim);
+        emit Claimed(msg.sender, amountToClaim);
     }
 
     /// @notice Allows owner to mint tokens

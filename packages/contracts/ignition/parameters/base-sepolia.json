@@ -1,6 +1,7 @@
 {
   "SuperchainBadgesModule": {
-    "Owner": "0xF754D0f4de0e815b391D997Eeec5cD07E59858F0"
+    "Owner": "0xF754D0f4de0e815b391D997Eeec5cD07E59858F0",
+    "BaseURI": "https://superchain-badges.s3.us-east-1.amazonaws.com/84532"
   },
   "SuperchainPointsModule": {
     "Owner": "0xF754D0f4de0e815b391D997Eeec5cD07E59858F0",

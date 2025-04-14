@@ -17,7 +17,7 @@ export const AVAILABLE_BADGES: { [chainId: number]: Badge[] } = {
     {
       id: 1n,
       name: "OP Days Active",
-      description: "25 Days active on Optimism ",
+      description: "25 Days active on Optimism",
       image: optimismBadge,
     },
     {

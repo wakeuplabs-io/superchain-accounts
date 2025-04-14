@@ -39,11 +39,7 @@ const clientFactory = new ClientFactory();
 
 const bundlerFactory = new BundlerFactory(clientFactory);
 
-const transactionService = new TransactionService(
-  db,
-  clientFactory,
-  bundlerFactory
-);
+const transactionService = new TransactionService(db, bundlerFactory);
 
 const superchainPointsService = new SuperchainPointsService(
   envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
@@ -89,10 +85,7 @@ const badgesEventsService = new BadgeEventsService(
   }
 );
 
-const userTokenService = new UserTokenService(
-  db,
-  clientFactory,
-);
+const userTokenService = new UserTokenService(db, clientFactory);
 
 // instantiate express
 

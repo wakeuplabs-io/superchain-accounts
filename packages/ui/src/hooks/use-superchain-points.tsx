@@ -14,26 +14,11 @@ export const useSuperchainPoints = () => {
   } = useSuperChainAccount();
   const queryClient = useQueryClient();
 
-  const { data: events, isPending: isEventsPending } = useQuery({
-    enabled: address != zeroAddress,
-    queryKey: ["superchainPointsEvents", address ?? "0x0", chain.id],
-    queryFn: async () => {
-      const events = await pointsService.getUserPoints(
-        address,
-        String(chain.id)
-      );
-
-      return events;
-    },
-    staleTime: 0,
-    refetchOnMount: true,
-  });
-
-  const { data: superchainPointsState, isPending: isStatePending } = useQuery({
+  const { data, isPending: isStatePending } = useQuery({
     staleTime: 0,
     refetchOnMount: true,
     enabled: address != zeroAddress,
-    queryKey: ["superchainPointsState", address ?? "0x0", chain.id],
+    queryKey: ["superchainPoints", address ?? "0x0", chain.id],
     queryFn: async () => {
       const [balance, claimable] = await chain.client.multicall({
         contracts: [
@@ -52,9 +37,15 @@ export const useSuperchainPoints = () => {
         ],
       });
 
+      const events = await pointsService.getUserPoints(
+        address,
+        String(chain.id)
+      );
+
       return {
         balance: (balance.result as bigint) ?? 0,
         claimable: (claimable.result as bigint) ?? 0,
+        events,
       };
     },
   });
@@ -73,17 +64,16 @@ export const useSuperchainPoints = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["superchainPointsState", address ?? "0x0", chain.id],
+        queryKey: ["superchainPoints", address ?? "0x0", chain.id],
       });
     },
   });
 
   return {
-    isPending:
-      isStatePending || isEventsPending || superchainPointsState === undefined,
-    claimable: superchainPointsState?.claimable ?? 0n,
-    balance: superchainPointsState?.balance ?? 0n,
-    events: events ?? [],
+    isPending: isStatePending || data === undefined,
+    claimable: data?.claimable ?? 0n,
+    balance: data?.balance ?? 0n,
+    events: data?.events ?? [],
     isClaiming,
     claim,
   };

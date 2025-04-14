@@ -5,6 +5,7 @@ import emptySvg from "@/assets/empty.svg";
 import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { shortenAddress } from "@/lib/address";
 
 export const SuperchainPoints: React.FC<{}> = () => {
   const { isPending, claim, claimable, isClaiming, events } =
@@ -26,10 +27,18 @@ export const SuperchainPoints: React.FC<{}> = () => {
       });
   }, [claim]);
 
+  const claimableEvents = useMemo(() => {
+    return events.filter((event) => event.minted == true);
+  }, [events]);
+
+  const notYetClaimableEvents = useMemo(() => {
+    return events.filter((event) => event.minted == false);
+  }, [events]);
+
   const unknownAmount = useMemo(() => {
     return (
       claimable -
-      events.reduce((total, event) => {
+      claimableEvents.reduce((total, event) => {
         return BigInt(total) + BigInt(event.value);
       }, 0n)
     );
@@ -48,7 +57,7 @@ export const SuperchainPoints: React.FC<{}> = () => {
     );
   }
 
-  if (claimable === 0n) {
+  if (events.length === 0 && claimable === 0n) {
     return (
       <div>
         <div className="mb-4 font-medium">Claimable Rewards</div>
@@ -71,7 +80,7 @@ export const SuperchainPoints: React.FC<{}> = () => {
       <div className="mb-4 font-medium">Claimable Rewards</div>
       <div className="bg-white border rounded-lg p-8 h-[430px] flex flex-col">
         <ScrollArea className="h-full">
-          <ul className=" divide-y">
+          <ul className="divide-y">
             {unknownAmount > 0n && (
               <li className="flex justify-between first:pt-0 pt-4 pb-4">
                 <span className="font-semibold">Unknown</span>
@@ -81,20 +90,41 @@ export const SuperchainPoints: React.FC<{}> = () => {
               </li>
             )}
 
-            {events.map((event) => (
+            {claimableEvents.map((event) => (
               <li
                 key={event.id}
                 className="flex justify-between first:pt-0 pt-4 pb-4"
               >
-                <span>{event.type}</span>
+                <div>
+                  <div>{event.type}</div>
+                  <div className="text-xs">{shortenAddress(event.transactionHash)}</div>
+                </div>
+                <span className="font-semibold">{event.value} points</span>
+              </li>
+            ))}
+
+            {notYetClaimableEvents.map((event) => (
+              <li
+                key={event.id}
+                className="flex justify-between first:pt-0 pt-4 pb-4 opacity-50"
+              >
+                <div>
+                  <div>{event.type}</div>
+                  <div className="text-xs">Not yet claimable</div>
+                </div>
                 <span className="font-semibold">{event.value} points</span>
               </li>
             ))}
           </ul>
         </ScrollArea>
 
-        <Button className="w-full" loading={isClaiming} onClick={onClaim}>
-          Claim {claimable.toString()} Points
+        <Button
+          className="w-full"
+          loading={isClaiming}
+          onClick={onClaim}
+          disabled={claimable <= 0}
+        >
+          Claim {claimable > 0n && claimable.toString()} Points
         </Button>
       </div>
     </div>

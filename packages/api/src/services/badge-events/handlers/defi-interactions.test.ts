@@ -2,7 +2,7 @@ import { BadgeEventType, Transaction, TransactionAction } from "@prisma/client";
 import { DefiInteractionsBadgeEventsHandler } from "./defi-interactions";
 
 const mockTransfer: Transaction = {
-  action: TransactionAction.TRANSFER,
+  action: TransactionAction.Transfer,
   data: "0x0",
   from: "0x123",
   to: "0x123",
@@ -20,7 +20,7 @@ describe("DefiInteractionsBadgeEventsHandler", () => {
   it("Should assign badge if defi interactions count threshold met", async () => {
     const res = await handler.handle(
       await db.transaction.create({
-        data: { ...mockTransfer, action: TransactionAction.SWAP },
+        data: { ...mockTransfer, action: TransactionAction.Swap },
       })
     );
 
@@ -33,7 +33,7 @@ describe("DefiInteractionsBadgeEventsHandler", () => {
         data: {
           ...mockTransfer,
           hash: mockTransfer.hash + "2",
-          action: TransactionAction.SWAP,
+          action: TransactionAction.Swap,
         },
       })
     );
@@ -54,14 +54,14 @@ describe("DefiInteractionsBadgeEventsHandler", () => {
   it("Should not assign if already assigned", async () => {
     await handler.handle(
       await db.transaction.create({
-        data: { ...mockTransfer, action: TransactionAction.SWAP },
+        data: { ...mockTransfer, action: TransactionAction.Swap },
       })
     );
     await handler.handle(
       await db.transaction.create({
         data: {
           ...mockTransfer,
-          action: TransactionAction.SWAP,
+          action: TransactionAction.Swap,
           hash: mockTransfer.hash + "2",
         },
       })
@@ -70,7 +70,7 @@ describe("DefiInteractionsBadgeEventsHandler", () => {
       await db.transaction.create({
         data: {
           ...mockTransfer,
-          action: TransactionAction.SWAP,
+          action: TransactionAction.Swap,
           hash: mockTransfer.hash + "3",
         },
       })

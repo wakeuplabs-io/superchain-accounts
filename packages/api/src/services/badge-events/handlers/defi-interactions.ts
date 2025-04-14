@@ -18,7 +18,7 @@ export class DefiInteractionsBadgeEventsHandler implements BadgeEventsHandler {
       where: {
         from: tx.from,
         // so far we only support swaps
-        action: { in: [TransactionAction.SWAP] },
+        action: { in: [TransactionAction.Swap] },
       },
     });
 

@@ -2,7 +2,7 @@ import { PointEventType, Transaction, TransactionAction } from "@prisma/client";
 import { TransactionSentPointsEventsHandler } from "./transactions-sent";
 
 const mockTransfer: Transaction = {
-  action: TransactionAction.TRANSFER,
+  action: TransactionAction.Transfer,
   data: "0x0",
   from: "0x123",
   to: "0x123",

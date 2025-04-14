@@ -16,6 +16,7 @@ import { SmartAccount } from "viem/account-abstraction";
 import { transactionService } from "@/services";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SuperChainUserOperation {
   to: Address;
@@ -59,6 +60,7 @@ export function SuperChainAccountProvider({
 }) {
   const { chain, currentChainId } = useWeb3();
   const { getProvider } = useAuth();
+  const queryClient = useQueryClient();
 
   const [account, setAccount] = useState<SuperChainAccount>({
     instance: null,
@@ -109,6 +111,15 @@ export function SuperChainAccountProvider({
             signature,
           },
         });
+
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: ["superchainPoints", account.address, chain.id],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ["superchainBadges", account.address, chain.id],
+          }),
+        ]);
 
         return txHash;
       } catch (error) {
