@@ -73,7 +73,7 @@ export default $config({
           CRONJOB_KEY: process.env.CRONJOB_KEY!,
         },
       },
-      schedule: "rate(1 day)",
+      schedule: "cron(0 12 * * ? *)",
     });
 
     // deploy ui

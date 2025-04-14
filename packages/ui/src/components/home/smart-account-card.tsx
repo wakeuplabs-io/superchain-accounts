@@ -5,6 +5,7 @@ import { ReceiveTokensDialog } from "@/components/home/receive-tokens-dialog";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { ImportTokensDialog } from "./import-token-dialog";
+import { Button } from "../ui";
 
 export function SmartAccountCard() {
   const { chain } = useWeb3();
@@ -16,41 +17,41 @@ export function SmartAccountCard() {
 
   return (
     <>
-      <div className="flex flex-col rounded-lg shadow-sm bg-white p-8 max-w-screen-xl gap-8">
+      <div className="flex flex-col rounded-lg border bg-white p-8 max-w-screen-xl gap-8">
         <div className="flex flex-wrap flex-row gap-4 items-center">
           <img className="w-16 h-16" src={chain.logo} />
           <div className="flex flex-col gap-1">
-            <h2 className="text-3xl text-black font-semibold">
-              {chain.name}
-            </h2>
+            <h2 className="text-3xl text-black font-semibold">{chain.name}</h2>
             <span className="text-base text-black font-normal">
               Smart Account
             </span>
           </div>
         </div>
         <div className="flex flex-wrap items-start gap-4 w-full">
-          <ActionButton
-            text="Receive"
-            icon={Download}
-            onClick={() => setIsReceiveDialogOpen(true)}
-          />
-          <ActionButton 
-            text='Import tokens' 
-            icon={CloudDownload} 
-            onClick={() => setIsImportDialogOpen(true)} 
-          />
+          <Button className="gap-2 px-6" size="lg" variant="outline" onClick={() => setIsReceiveDialogOpen(true)}>
+            <Download className="w-5 h-5" />
+            <span className="text-base">Receive</span>
+          </Button>
+          <Button className="gap-2 px-6" size="lg" variant="outline" onClick={() => setIsImportDialogOpen(true)}>
+            <CloudDownload className="w-5 h-5" />
+            <span className="text-base">Import Tokens</span>
+          </Button>
         </div>
       </div>
-      {isReceiveDialogOpen && <ReceiveTokensDialog
-        isOpen={isReceiveDialogOpen}
-        onClose={() => setIsReceiveDialogOpen(false)}
-        address={account.instance?.address ?? ""}
-        chain={chain}
-      />}
-      {isImportDialogOpen && <ImportTokensDialog
-        isOpen={isImportDialogOpen}
-        onClose={()=>setIsImportDialogOpen(false)}
-      />}
+      {isReceiveDialogOpen && (
+        <ReceiveTokensDialog
+          isOpen={isReceiveDialogOpen}
+          onClose={() => setIsReceiveDialogOpen(false)}
+          address={account.instance?.address ?? ""}
+          chain={chain}
+        />
+      )}
+      {isImportDialogOpen && (
+        <ImportTokensDialog
+          isOpen={isImportDialogOpen}
+          onClose={() => setIsImportDialogOpen(false)}
+        />
+      )}
     </>
   );
 }

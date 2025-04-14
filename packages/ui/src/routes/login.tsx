@@ -51,7 +51,7 @@ function Login() {
             src={optimismLogo}
             className="w-[150px] self-center mt-10 mb-12"
           />
-          <CardTitle className="text-4xl font-bold">
+          <CardTitle className="text-3xl font-bold">
             Welcome to Superchain!
           </CardTitle>
           <CardDescription className="text-2xl text-inherit font-light !mt-4">
