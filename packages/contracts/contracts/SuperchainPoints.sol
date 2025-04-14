@@ -11,8 +11,8 @@ import {PredeployAddresses} from "./libraries/SuperchainPredeployAddresses.sol";
 /// @notice A standard ERC20 extension implementing IERC7802 for unified cross-chain fungibility across
 ///         the Superchain. Allows the SuperchainTokenBridge to mint and burn tokens as needed.
 contract SuperchainPoints is ISuperchainPoints, ERC20, Ownable {
-    mapping(address => uint256) public claimable;
-    mapping(address => uint256) public claimed;
+    mapping(address => uint256) internal claimable;
+    mapping(address => uint256) internal claimed;
 
     constructor(
         address owner,

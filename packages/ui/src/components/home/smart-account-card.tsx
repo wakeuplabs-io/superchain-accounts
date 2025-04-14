@@ -1,10 +1,11 @@
-import { CloudDownload, Download } from "lucide-react";
+import { ArrowRightLeft, CloudDownload, Download } from "lucide-react";
 import { useState } from "react";
 import { ReceiveTokensDialog } from "@/components/home/receive-tokens-dialog";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { ImportTokensDialog } from "./import-token-dialog";
 import { Button } from "../ui";
+import { SwapTokenDialog } from "../swap-tokens";
 
 export function SmartAccountCard() {
   const { chain } = useWeb3();
@@ -27,16 +28,39 @@ export function SmartAccountCard() {
           </div>
         </div>
         <div className="flex flex-wrap items-start gap-4 w-full">
-          <Button className="gap-2 px-6" size="lg" variant="outline" onClick={() => setIsReceiveDialogOpen(true)}>
+          <Button
+            className="gap-2 px-6"
+            size="lg"
+            variant="outline"
+            onClick={() => setIsReceiveDialogOpen(true)}
+          >
             <Download className="w-5 h-5" />
             <span className="text-base">Receive</span>
           </Button>
-          <Button className="gap-2 px-6" size="lg" variant="outline" onClick={() => setIsImportDialogOpen(true)}>
+          <Button
+            className="gap-2 px-6"
+            size="lg"
+            variant="outline"
+            onClick={() => setIsImportDialogOpen(true)}
+          >
             <CloudDownload className="w-5 h-5" />
-            <span className="text-base">Import Tokens</span>
+            <span className="text-base">Import</span>
           </Button>
+
+          <SwapTokenDialog>
+            <Button
+              size="lg"
+              className="gap-2 px-6"
+              variant="outline"
+            >
+              <ArrowRightLeft className="w-5 h-5" />
+              <span className="text-base">Swap</span>
+            </Button>
+          </SwapTokenDialog>
         </div>
       </div>
+
+      {/* TODO: refactor to use shadcn dialog like swap */}
       {isReceiveDialogOpen && (
         <ReceiveTokensDialog
           isOpen={isReceiveDialogOpen}
