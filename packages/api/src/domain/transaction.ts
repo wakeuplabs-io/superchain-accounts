@@ -1,28 +1,35 @@
-import { TransactionAction } from "@prisma/client";
-import { decodeEventLog, erc20Abi, TransactionReceipt } from "viem";
+import { Transaction, TransactionAction } from "@prisma/client";
+import { Address, TransactionReceipt } from "viem";
 
-export class Transaction {
-  static typeFromReceipt(receipt: TransactionReceipt): TransactionAction {
-    const transferLogs = receipt.logs.filter((log) => {
-      try {
-        const decoded = decodeEventLog({
-          abi: erc20Abi,
-          data: log.data,
-          topics: log.topics,
-          eventName: "Transfer",
-        });
-        return !!decoded;
-      } catch {
-        return false;
-      }
-    });
+export interface UserOperation {
+  sender: string;
+  nonce: string;
+  factory?: string;
+  factoryData?: string;
+  initCode: string;
+  callData: string;
+  callGasLimit: string;
+  verificationGasLimit: string;
+  preVerificationGas: string;
+  maxPriorityFeePerGas: string;
+  maxFeePerGas: string;
+  paymaster?: string;
+  paymasterVerificationGasLimit?: string;
+  paymasterData?: string | null;
+  paymasterPostOpGasLimit?: string;
+  signature: string;
+}
 
-    if (transferLogs.length === 1) {
-      return TransactionAction.TRANSFER;
-    } else if (transferLogs.length > 2) {
-      return TransactionAction.SWAP;
-    } else {
-      return TransactionAction.UNKNOWN;
-    }
-  }
+export interface ITransactionService {
+  sendUserOperation(
+    operation: UserOperation,
+    chainId: string
+  ): Promise<Transaction>;
+
+  typeFromReceipt(tx: {
+    to: Address;
+    data: `0x${string}`;
+    value: bigint;
+    logs: TransactionReceipt["logs"];
+  }): TransactionAction;
 }
