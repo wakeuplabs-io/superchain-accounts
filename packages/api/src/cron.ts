@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const handler = async function () {
-  await Promise.all([
+  const res = await Promise.all([
     axios.post(`${process.env.API_URL}/points/submit`, {
       Headers: { "x-cron-key": process.env.CRONJOB_KEY },
     }),
@@ -9,4 +9,6 @@ export const handler = async function () {
       Headers: { "x-cron-key": process.env.CRONJOB_KEY },
     }),
   ]);
+
+  console.log(res);
 }
