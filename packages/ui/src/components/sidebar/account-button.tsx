@@ -20,7 +20,7 @@ export const AccountButton = () => {
     <Button
       variant="secondary"
       onClick={onLogout}
-      className="flex justify-between items-center bg-[#F7F7F7]"
+      className="flex justify-between items-center bg-[#F7F7F7] py-3"
     >
       <div className="flex items-center gap-2">
         <span className="h-4 w-4 bg-primary rounded-full block"></span>
