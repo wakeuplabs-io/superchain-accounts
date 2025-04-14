@@ -2,11 +2,10 @@ import {
   createFileRoute,
   Outlet,
   redirect,
-  useRouter,
   useRouterState,
 } from "@tanstack/react-router";
 import { z } from "zod";
-import { LogOut, Lock, ScrollText, User } from "lucide-react";
+import { ScrollText, User } from "lucide-react";
 
 import {
   Sidebar,
