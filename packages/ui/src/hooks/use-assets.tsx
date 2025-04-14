@@ -11,16 +11,14 @@ export type Asset = Pick<GetUserTokensResponse[number], "name" | "symbol" | "dec
 }
 
 type UseAssetsResult = {
-   status: "pending",
+   isPending: true
    data: null,
+   error: null
 } | {
-    status: "success",
-    data: Asset[],
-} | {
-    status: "error",
-    error: Error | null,
-    data: null,
-}
+  isPending: false,
+  error?: Error | null,
+  data: Asset[],
+};
 
 export function useAssets(): UseAssetsResult {
   const { chain } = useWeb3();
@@ -28,11 +26,11 @@ export function useAssets(): UseAssetsResult {
   const { status: userTokensStatus, data: userTokens, error: userTokensError } = useUserTokens();
 
   if (accountBalanceStatus === "pending" || userTokensStatus === "pending") {
-    return { status: "pending", data: null };
+    return { isPending: true, data: null, error: null };
   }
 
   if (accountBalanceStatus === "error" || userTokensStatus === "error") {
-    return { status: "error", error: accountBalanceError ?? userTokensError, data: null  };
+    return { isPending: false, error: accountBalanceError ?? userTokensError, data: []  };
   }
 
   const nativeAsset: Asset = {
@@ -42,8 +40,8 @@ export function useAssets(): UseAssetsResult {
     native: true,
   };
 
-  return { 
-    status: "success", 
+  return {
+    isPending: false,
     data: [
       nativeAsset,
       ...userTokens,

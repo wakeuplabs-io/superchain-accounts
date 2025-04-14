@@ -5,7 +5,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { useAssets } from "@/hooks/use-assets";
 
 export function AssetList() {
-  const {status, data } = useAssets();
+  const {isPending, error, data } = useAssets();
   const {chain} = useWeb3();
   const {account} = useSuperChainAccount();
 
@@ -20,22 +20,25 @@ export function AssetList() {
         )}
       </div>
       <ul>
-        {status === "pending" && <li className="text-lg">Loading Tokens...</li>}
-        {status === "error" && <li className="text-lg">There was an error loading the token list...</li>}
-        {status === "success" && (data.length > 0 ? 
-          data.sort((a, b) => {
-            // Sort native token first
-            if(a.native) return -1;
-            // Sort by balance descending
-            if (a.balance > b.balance) return -1;
-            if (a.balance< b.balance) return 1;
-            return 0;
-          }).map(c => (
-            <AssetListItem asset={c} key={c.symbol} />
-          )) 
-          :  
-          <li className="text-lg">No tokens imported</li>
-        )}
+        {isPending && <li className="text-lg">Loading Tokens...</li>}
+        {!isPending && (
+          error ? 
+            <li className="text-lg">There was an error loading the token list...</li> 
+            : (data.length > 0 
+              ? 
+              data.sort((a, b) => {
+                // Sort native token first
+                if(a.native) return -1;
+                // Sort by balance descending
+                if (a.balance > b.balance) return -1;
+                if (a.balance< b.balance) return 1;
+                return 0;
+              }).map(c => (
+                <AssetListItem asset={c} key={c.symbol} />
+              )) 
+              :  
+              <li className="text-lg">No tokens imported</li>
+            ))}
       </ul>
     </div>
   );
