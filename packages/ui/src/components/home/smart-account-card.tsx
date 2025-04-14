@@ -1,4 +1,3 @@
-import { ActionButton } from "./action-button";
 import { CloudDownload, Download } from "lucide-react";
 import { useState } from "react";
 import { ReceiveTokensDialog } from "@/components/home/receive-tokens-dialog";
