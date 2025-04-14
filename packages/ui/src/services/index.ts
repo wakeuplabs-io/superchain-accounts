@@ -31,7 +31,6 @@ instance.interceptors.response.use(
   }
 );
 
-export const pointsService = new PointsService(instance);
 export const transactionService = new TransactionService(instance);
+export const pointsService = new PointsService(instance);
 export const userService = new UserService(instance);
-

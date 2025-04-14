@@ -2,26 +2,8 @@ import {
   PointEvent,
   Transaction,
   PrismaClient,
-  Prisma,
 } from "@prisma/client";
-import { ISuperchainPointsService } from "../superchain-points";
-
-export interface IPointsEventsHandler {
-  handle(tx: Transaction): Promise<PointEvent[]>;
-}
-
-export interface IPointsEventsService {
-  getUserPoints(
-    address: string,
-    opts: { chainId?: string; limit?: number }
-  ): Promise<PointEventWithTransaction[]>;
-  handleNewTransaction(tx: Transaction): Promise<PointEvent[]>;
-  submit(): Promise<{ chainId: string; txHash: string }[]>;
-}
-
-export type PointEventWithTransaction = Prisma.PointEventGetPayload<{
-  include: { transaction: true };
-}>;
+import { IPointsEventsHandler, IPointsEventsService, ISuperchainPointsService, PointEventWithTransaction } from "@/domain/points";
 
 export class PointsEventsService implements IPointsEventsService {
   constructor(

@@ -1,14 +1,7 @@
 import { OWNER_PRIVATE_KEY } from "@/config/blockchain";
 import { IClientFactory } from "./client-factory";
 import superchainBadgesAbi from "@/config/abis/superchain-badges";
-
-export interface ISuperchainBadgesService {
-  addClaimable(
-    chainId: string,
-    addresses: string[],
-    tokenIds: bigint[]
-  ): Promise<`0x${string}`>;
-}
+import { ISuperchainBadgesService } from "@/domain/badges";
 
 export class SuperchainBadgesService implements ISuperchainBadgesService {
   constructor(
@@ -21,7 +14,10 @@ export class SuperchainBadgesService implements ISuperchainBadgesService {
     addresses: string[],
     tokenIds: bigint[]
   ): Promise<`0x${string}`> {
-    const client = this.clientFactory.getWriteClient(chainId, OWNER_PRIVATE_KEY);
+    const client = this.clientFactory.getWriteClient(
+      chainId,
+      OWNER_PRIVATE_KEY
+    );
 
     const tx = await client.writeContract({
       address: this.address,
@@ -29,7 +25,7 @@ export class SuperchainBadgesService implements ISuperchainBadgesService {
       functionName: "addClaimable",
       args: [addresses, tokenIds],
       chain: client.chain,
-      account: client.account!
+      account: client.account!,
     });
 
     return tx;

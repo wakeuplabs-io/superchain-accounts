@@ -1,7 +1,6 @@
 import hre from "hardhat";
 import { expect } from "chai";
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { ZeroAddress } from "ethers";
+import { loadFixture, time } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
 const { ethers } = hre;
 
@@ -59,7 +58,7 @@ describe("SuperchainPointsRaffleFactory", function () {
   });
 
   describe("RaffleFactory", function () {
-    it("Should create a raffle and with factory owner", async function () {
+    it("Should create a raffle with factory owner as raffle owner", async function () {
       const { superchainPointsRaffleFactory, owner } = await loadFixture(
         deploySuperchainPointsRaffleFixture
       );
@@ -124,17 +123,22 @@ describe("SuperchainPointsRaffleFactory", function () {
       await superchainPointsRaffleFactory.connect(owner).createRaffle();
       const raffleAddress = await superchainPointsRaffleFactory.currentRaffle();
 
+      // approve raffle
       const raffle = await hre.ethers.getContractAt(
         "SuperchainPointsRaffle",
         raffleAddress
       );
       await superchainPoints.approve(raffleAddress, ethers.MaxUint256);
+
       const seed = ethers.encodeBytes32String("demo");
+      const revealAfter = await time.latest() + 24 * 60 * 60;
+
+      // initialize raffle
       await raffle
         .connect(owner)
         .initialize(
           sealSeed(seed, owner.address),
-          0n,
+          revealAfter,
           10n,
           [1n, 2n],
           [10n, 100n]
@@ -143,6 +147,8 @@ describe("SuperchainPointsRaffleFactory", function () {
       await superchainBadges.connect(owner).mint(addr1.address, 1n);
       await raffle.connect(addr1).claimTickets();
 
+      // reveal winner
+      await time.increaseTo(revealAfter);
       await raffle.connect(owner).revealWinner(seed);
 
       await expect(superchainPointsRaffleFactory.connect(owner).createRaffle())

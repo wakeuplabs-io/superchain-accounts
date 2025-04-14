@@ -5,7 +5,7 @@ import {
   PrismaClient,
   TransactionAction,
 } from "@prisma/client";
-import { IPointsEventsHandler } from "..";
+import { IPointsEventsHandler } from "@/domain/points";
 
 export class TokenSwapPointsEventsHandler implements IPointsEventsHandler {
   constructor(

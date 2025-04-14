@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
+
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 import {IERC1155} from "@openzeppelin/contracts/interfaces/IERC1155.sol";
@@ -141,7 +142,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
         ) {
             tickets[i] = msg.sender;
         }
-        ticketsClaimed[msg.sender] = ticketsAllocation;
+        ticketsClaimed[msg.sender] += ticketsAllocation;
         ticketCount += ticketsAllocation;
 
         emit TicketsClaimed(msg.sender, ticketsAllocation);
@@ -149,6 +150,10 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
 
     /// @inheritdoc ISuperchainPointsRaffle
     function getClaimableTickets(address user) public view returns (uint256) {
+        if (isOngoing() == false || block.timestamp > revealAfterTimestamp) {
+            return 0;
+        }
+
         uint256 ticketsAllocation = 0;
         for (uint256 i = 0; i < eligibleBadges.length; i++) {
             if (superchainBadges.balanceOf(user, eligibleBadges[i]) > 0) {

@@ -27,7 +27,7 @@ import buildPointsRoutes from "./routes/points/route";
 import buildTransactionsRoutes from "./routes/transactions/route";
 import buildBadgesRoutes from "./routes/badges/route";
 import buildHealthRoutes from "./routes/health/route";
-import buildUserRoutes from "./routes/users-route";
+import buildUserRoutes from "./routes/users/route";
 import { SuperchainBadgesService } from "./services/superchain-badges";
 import { ClientFactory } from "./services/client-factory";
 import { BundlerFactory } from "./services/bundler-factory";

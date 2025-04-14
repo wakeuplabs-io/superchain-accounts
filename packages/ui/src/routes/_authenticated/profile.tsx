@@ -1,6 +1,7 @@
-import { ChainSelector } from "@/components/_authenticated/chain-selector";
-import { SuperchainPoints } from "@/components/_authenticated/superchain-points";
-import { SuperchainRaffle } from "@/components/_authenticated/superchain-raffle";
+import { ChainSelector } from "@/components/chain-selector";
+import { SuperchainBadges } from "@/components/superchain-badges";
+import { SuperchainPoints } from "@/components/superchain-points";
+import { SuperchainRaffle } from "@/components/superchain-raffle";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/profile")({
@@ -19,6 +20,8 @@ function Profile() {
         <SuperchainRaffle />
 
         <SuperchainPoints />
+
+        <SuperchainBadges />
       </div>
     </div>
   );
