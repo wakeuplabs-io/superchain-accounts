@@ -33,7 +33,7 @@ const AssetSelector = () => {
                 onValueChange={field.onChange}
                 defaultValue={field.value}
               >
-                <SelectTrigger className="h-14 focus:ring-0 ">
+                <SelectTrigger className="h-14 focus:ring-0">
                   <SelectValue placeholder="Select a token" />
                 </SelectTrigger>
                 <SelectContent>

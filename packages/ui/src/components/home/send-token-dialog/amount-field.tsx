@@ -46,13 +46,13 @@ const AmountField = () => {
           <FormItem>
             <FormLabel>Amount</FormLabel>
             <FormControl>
-              <Input {...field} className="h-14" type="number" value={controlledValue} onChange={(e: React.ChangeEvent<HTMLInputElement>)=> {
+              <Input {...field} type="number" value={controlledValue} onChange={(e: React.ChangeEvent<HTMLInputElement>)=> {
                 const val = e.target.value;
 
                 if(!currentAsset) return;
 
                 // Validate decimal places
-                const [_, fraction] = val.split(".");
+                const [, fraction] = val.split(".");
 
                 if (fraction && fraction.length > currentAsset.decimals) return; // Too many decimals
 
