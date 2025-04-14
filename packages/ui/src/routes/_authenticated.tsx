@@ -96,8 +96,8 @@ function AuthenticatedLayout() {
                   <AuthenticatedSidebarMenuButton
                     Icon={ScrollText}
                     text="Accounts"
-                    route="/"
-                    isActive={routerState.location.pathname === "/"}
+                    route="/accounts"
+                    isActive={routerState.location.pathname === "/accounts"}
                   />
                 </SidebarMenuItem>
               </SidebarMenu>
