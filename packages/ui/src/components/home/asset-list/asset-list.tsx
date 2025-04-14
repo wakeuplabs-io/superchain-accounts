@@ -31,7 +31,7 @@ export function AssetList() {
             if (a.balance< b.balance) return 1;
             return 0;
           }).map(c => (
-            <AssetListItem token={c} key={c.symbol} />
+            <AssetListItem asset={c} key={c.symbol} />
           )) 
           :  
           <li className="text-lg">No tokens imported</li>
