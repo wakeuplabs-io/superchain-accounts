@@ -80,7 +80,7 @@ Badge minted with tx: 0x9a5ca7d2791acb9220d61ba51271c5806413ad05524c6be5deb987f3
 `add-claimable-badge`
 
 ```bash
-npx hardhat add-claimable-badge --to 0xe93Af013F59cbCE3205589D401712560D0101fE4 --id 1 --network optimism-sepolia
+npx hardhat add-claimable-badge --to 0xe93Af013F59cbCE3205589D401712560D0101fE4 --id 4 --network optimism-sepolia
 Adding badge 2 to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0
 Badge added with tx: 0x720456173a135d1b4944a76f09dfbd78c90e6a18215e101833d0f3784934243b
 ```
@@ -96,7 +96,7 @@ Badge claimed with tx: 0xdeac6f12b963374bad6cf25ceefdc4a1ee6fe113668790e3b6a8096
 `start-raffle`
 
 ```bash
-npx hardhat start-raffle --jackpot 100 --badges 1,2 --allocations 10,100 --reveal-after 1744400189 --network optimism-sepolia
+npx hardhat start-raffle --jackpot 100 --badges 1,2 --allocations 10,100 --reveal-date "2025-04-19" --network optimism-sepolia
 Minting 100 points to 0xF754D0f4de0e815b391D997Eeec5cD07E59858F0 for raffle deposit...
 Points minted with tx: 0xcca0b761cdbc1e116a78922266d7c6e22864f49b06bf2c58e1677a37febc06bf
 Creating raffle...

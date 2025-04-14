@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment, TaskArguments } from "hardhat/types";
 task("start-raffle", "Starts a raffle")
   .addParam("jackpot", "Amount of points for jackpot")
   .addParam("badges", "Badges that can participate separated by comma")
-  .addParam("revealAfter", "Timestamp to reveal winner in seconds")
+  .addParam("revealDate", "Date when the raffle will be revealed")
   .addParam("allocations", "Badge allocations separated by comma")
   .setAction(
     async (taskArguments: TaskArguments, hre: HardhatRuntimeEnvironment) => {
@@ -35,6 +35,9 @@ task("start-raffle", "Starts a raffle")
       if ((await raffleFactory.owner()) !== signer.address) {
         throw new Error("You are not the owner of the raffle");
       }
+
+      // Get reveal date
+      const revealAfter = new Date(taskArguments.revealDate).getTime() / 1000;
 
       // Mint points for raffle
       console.log(
@@ -77,7 +80,7 @@ task("start-raffle", "Starts a raffle")
             [signer.address, seed]
           )
         ),
-        BigInt(taskArguments.revealAfter),
+        revealAfter,
         BigInt(taskArguments.jackpot),
         taskArguments.badges.split(",").map(BigInt),
         taskArguments.allocations.split(",").map(BigInt)
