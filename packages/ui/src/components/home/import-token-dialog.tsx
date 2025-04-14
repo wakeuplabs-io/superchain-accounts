@@ -11,7 +11,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { userService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { useUserTokens } from "@/hooks/user-tokens/use-user-tokens";
+import { useUserTokens } from "@/hooks/use-user-tokens";
 
 interface ImportTokensDialogProps {
   isOpen: boolean;

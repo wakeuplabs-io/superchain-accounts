@@ -12,6 +12,7 @@ export interface ChainMetadata {
   name: string;
   order: number;
   logo: string;
+  nativeCurrency: Chain["nativeCurrency"],
   entryPointAddress: Address;
   client: PublicClient;
   bundler: BundlerClient;
@@ -60,6 +61,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     id: optimismSepolia.id,
     name: optimismSepolia.name,
     logo: optimismChainLogo,
+    nativeCurrency: optimismSepolia.nativeCurrency,
     client: clients[optimismSepolia.id],
     bundler: bundlers[optimismSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
@@ -69,6 +71,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     order: 2,
     id: baseSepolia.id,
     name: baseSepolia.name,
+    nativeCurrency: baseSepolia.nativeCurrency,
     logo: baseChainLogo,
     client: clients[baseSepolia.id],
     bundler: bundlers[baseSepolia.id],
@@ -79,6 +82,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     order: 3,
     id: unichainSepolia.id,
     name: unichainSepolia.name,
+    nativeCurrency: unichainSepolia.nativeCurrency,
     logo: unichainChainLogo,
     client: clients[unichainSepolia.id],
     bundler: bundlers[unichainSepolia.id],
