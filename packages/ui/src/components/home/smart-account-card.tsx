@@ -1,4 +1,4 @@
-import { ArrowRightLeft, CloudDownload, Download } from "lucide-react";
+import { ArrowRightLeft, CloudDownload, Download, Send } from "lucide-react";
 import { useState } from "react";
 import { ReceiveTokensDialog } from "@/components/home/receive-tokens-dialog";
 import { useWeb3 } from "@/hooks/use-web3";
@@ -6,12 +6,14 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { ImportTokensDialog } from "./import-token-dialog";
 import { Button } from "../ui";
 import { SwapTokenDialog } from "../swap-tokens";
+import { SendAssetDialog } from "./send-asset-dialog/send-asset-dialog";
 
 export function SmartAccountCard() {
   const { chain } = useWeb3();
   const { account } = useSuperChainAccount();
   const [isReceiveDialogOpen, setIsReceiveDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  const [isSendDialogOpen, setIsSendDialogOpen] = useState(false);
 
   if (account.status === "pending") return null;
 
@@ -28,23 +30,17 @@ export function SmartAccountCard() {
           </div>
         </div>
         <div className="flex flex-wrap items-start gap-4 w-full">
-          <Button
-            className="gap-2 px-6"
-            size="lg"
-            variant="outline"
-            onClick={() => setIsReceiveDialogOpen(true)}
-          >
-            <Download className="w-5 h-5" />
+          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsSendDialogOpen(true)}>
+            <Send className="w-5 h-5 group-hover:text-primary" />
+            <span className="text-base">Send</span>
+          </Button>
+          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsReceiveDialogOpen(true)}>
+            <Download className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Receive</span>
           </Button>
-          <Button
-            className="gap-2 px-6"
-            size="lg"
-            variant="outline"
-            onClick={() => setIsImportDialogOpen(true)}
-          >
-            <CloudDownload className="w-5 h-5" />
-            <span className="text-base">Import</span>
+          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsImportDialogOpen(true)}>
+            <CloudDownload className="w-5 h-5 group-hover:text-primary" />
+            <span className="text-base">Import Tokens</span>
           </Button>
 
           <SwapTokenDialog>
@@ -61,6 +57,13 @@ export function SmartAccountCard() {
       </div>
 
       {/* TODO: refactor to use shadcn dialog like swap */}
+      
+      {isSendDialogOpen && 
+        <SendAssetDialog 
+          isOpen={isSendDialogOpen} 
+          onClose={() => setIsSendDialogOpen(false)}
+        />
+      }
       {isReceiveDialogOpen && (
         <ReceiveTokensDialog
           isOpen={isReceiveDialogOpen}

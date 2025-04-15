@@ -1,6 +1,7 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 const PROJECT_NAME = "superchain";
+const CUSTOMER = 'optimism';
 
 export default $config({
   app(input) {
@@ -12,8 +13,9 @@ export default $config({
         aws: {
           defaultTags: {
             tags: {
-              customer: "optimism",
-              application: "superchain",
+              customer: CUSTOMER,
+              application: PROJECT_NAME,
+              project: PROJECT_NAME,
               environment: input?.stage,
             },
           },
