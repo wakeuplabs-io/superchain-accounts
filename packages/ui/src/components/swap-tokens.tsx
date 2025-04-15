@@ -22,11 +22,10 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { data: assets } = useAssets();
   const { quote, swap, isPending } = useSwap();
-  const [open, setOpen] = useState(false);
 
+  const [open, setOpen] = useState(false);
   const [from, setFrom] = React.useState<Asset | null>(null);
   const [to, setTo] = React.useState<Asset | null>(null);
-
   const [fromAmount, setFromAmount] = React.useState<string>("0");
   const [toAmount, setToAmount] = React.useState<string>("-");
 
@@ -48,39 +47,30 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
       (parseUnits(toAmount, to.decimals) * 97n) / 100n // 3% slippage
     )
       .then(() => {
-        setOpen(false);
-        setFrom(null);
-        setTo(null);
-        setFromAmount("0");
-        setToAmount("-");
+        onClose();
 
-        toast({
-          title: "Success",
-          description: "Swap successful",
-        });
+        toast({ title: "Success", description: "Swap successful" });
       })
-      .catch((e) => {
-        console.error(e);
-
-        toast({
-          title: "Error",
-          description: "Swap failed",
-        });
-      });
+      .catch(() => toast({ title: "Error", description: "Swap failed" }));
   }, [from, to, fromAmount, toAmount, isPending]);
+
+  const onClose = useCallback(() => {
+    if (isPending) return;
+    
+    setOpen(false);
+    setFrom(null);
+    setTo(null);
+    setFromAmount("0");
+    setToAmount("-");
+  }, [isPending]);
 
   useEffect(() => {
     if (!from || !to) return;
 
     quote(from.address, to.address, parseUnits(fromAmount, from.decimals))
-      .then((amount) => {
-        setToAmount(formatUnits(amount, to.decimals));
-      })
-      .catch((e) => {
-        toast({
-          title: "Error",
-          description: "No available route",
-        });
+      .then((amount) => setToAmount(formatUnits(amount, to.decimals)))
+      .catch(() => {
+        toast({ title: "Error", description: "No available route" });
         setToAmount("-");
       });
   }, [from, to, fromAmount]);
@@ -89,11 +79,8 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
     <Dialog
       open={open}
       onOpenChange={() => {
-        setOpen(!open);
-        setFrom(null);
-        setTo(null);
-        setFromAmount("0");
-        setToAmount("-");
+        if (open) onClose();
+        else setOpen(true);
       }}
     >
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -104,14 +91,16 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
             Swap tokens within imported tokens in the same chain
           </DialogDescription>
         </DialogHeader>
+
+
         <div className="flex flex-col gap-4 my-8">
           <Label>Sell</Label>
           <div className="grid grid-cols-2 gap-2">
             <AssetSelector
               assets={fromAssets}
-              onValueChange={(value) => {
-                setFrom(assets.find((asset) => asset.address === value)!);
-              }}
+              onValueChange={(value) =>
+                setFrom(assets.find((asset) => asset.address === value)!)
+              }
             />
 
             <Input
@@ -124,14 +113,16 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
           <div className="grid grid-cols-2 gap-2">
             <AssetSelector
               assets={toAssets}
-              onValueChange={(value) => {
-                setTo(assets.find((asset) => asset.address === value)!);
-              }}
+              onValueChange={(value) =>
+                setTo(assets.find((asset) => asset.address === value)!)
+              }
             />
 
             <Input value={toAmount} readOnly />
           </div>
         </div>
+
+
         <DialogFooter>
           <Button
             loading={isPending}
