@@ -32,8 +32,10 @@ export const SendAssetDialog = ({
             </Dialog.Title>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(async (data) => {
-                await onSubmit(data);
-                onClose();
+                const {validationError} = await onSubmit(data);
+                if(!validationError) {
+                  onClose();
+                }
               })} 
               className='flex flex-col justify-between w-full h-full md:gap-14'>
                 <div className="flex flex-col gap-4" >
