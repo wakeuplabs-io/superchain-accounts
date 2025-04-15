@@ -44,8 +44,20 @@ export class TransactionSentPointsEventsHandler
 
     const milestoneEvents = (
       await Promise.all(
-        this.milestonePointsConfig.map((config) => {
+        this.milestonePointsConfig.map(async (config) => {
           if (count >= config.count) {
+            const existing = await this.repo.pointEvent.findFirst({
+              where: {
+                type: PointEventType.TransactionsSentMilestone,
+                data: String(config.count),
+                transaction: { from: tx.from },
+              },
+            });
+
+            if (existing) {
+              return existing;
+            }
+
             return this.repo.pointEvent.upsert({
               where: {
                 transactionHash_type_data: {
