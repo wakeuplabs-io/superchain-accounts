@@ -17,7 +17,7 @@ import { transactionService } from "@/services";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
 
-interface SuperChainUserOperation {
+export interface SuperChainUserOperation {
   to: Address;
   value: bigint;
   data?: Hex;

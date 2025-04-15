@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { isAddress } from "viem";
+import { Address, getAddress, isAddress } from "viem";
 import { z } from "zod";
-import { useSuperChainAccount } from "./use-smart-account";
+import { SuperChainUserOperation, useSuperChainAccount } from "./use-smart-account";
 import { useAssets } from "./use-assets";
-import BigNumber from "bignumber.js";
+import { useToast } from "./use-toast";
 
 const sendAssetSchema = z.object({
-  address: z.string().min(1, "Address is required"),
   asset: z.string().min(1, "Asset is required"),
   amount: z.bigint().refine((val) => val > 0n, {
     message: "Amount must be greater than 0",
@@ -25,27 +24,31 @@ const sendAssetSchema = z.object({
     {
       message: "Invalid address",
     }
-  ),
+  ).transform(val => getAddress(val)),
 });
 
 export type SendAssetType = z.infer<typeof sendAssetSchema>;
 
+function buildNativeTokenTransfer(to: Address, amount: bigint): SuperChainUserOperation {
+  return {
+    to,
+    value: amount,
+  };
+}
+
 export function useSendAsset() {
-  const { account } = useSuperChainAccount();
+  const { account, sendTransaction } = useSuperChainAccount();
   const { isPending, error, data: assetsData } = useAssets();
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(sendAssetSchema),
-    defaultValues: {
-      address: account.address,
-    }
   });
 
   const onSubmit = async (data: SendAssetType) => {
-    console.log(data);
     if(isPending || error) return;
 
-    if(data.address === data.destinationAddress) {
+    if(account.address === data.destinationAddress) {
       form.setError("destinationAddress", {
         message: "Destination address cannot be the same as the sender address",
       });
@@ -64,9 +67,32 @@ export function useSendAsset() {
     }
 
 
-    if(!form.formState.isValid) return;
+    if(Object.keys(form.formState.errors).length > 0) return;
 
-    console.log(data);
+    try {
+      if(!asset.native) {
+        throw new Error("Asset is not native");
+      }
+
+      const userOperation = buildNativeTokenTransfer(data.destinationAddress, data.amount);
+      await sendTransaction(userOperation);
+
+      toast({
+        title: "Transaction successfully sent",
+      });
+
+    } catch (error) {
+      let description = "Something went wrong";
+      if(error instanceof Error) {
+        description = error.message;
+      }
+
+      toast({
+        title: "Error sending asset",
+        variant: "destructive",
+        description,
+      });
+    }
   };
 
   return {
