@@ -26,14 +26,10 @@ const sendAssetSchema = z.object({
       const num = Number(val);
       return !isNaN(num) && num > 0;
     },
-    {
-      message: "Amount must be a number greater than 0",
-    }
+    { message: "Amount must be a number greater than 0" }
   ),
   to: z
-    .string({
-      required_error: "Destination address is required",
-    })
+    .string({ required_error: "Destination address is required" })
     .refine(
       (val) => {
         try {
