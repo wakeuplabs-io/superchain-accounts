@@ -1,16 +1,18 @@
 import uniswapFactory from "@/config/abis/uniswap-factory";
-import { Address, encodeFunctionData, erc20Abi, getContract } from "viem";
+import { Address, encodeFunctionData, getContract } from "viem";
 import { useWeb3 } from "./use-web3";
 import { useCallback, useMemo, useState } from "react";
 import uniswapQuoter from "@/config/abis/uniswap-quoter";
 import uniswapPool from "@/config/abis/uniswap-pool";
 import { useSuperChainAccount } from "./use-smart-account";
 import uniswapRouter from "@/config/abis/uniswap-router";
+import { useUserTokens } from "./use-user-tokens";
 
 export const useSwap = () => {
   const { chain } = useWeb3();
   const [isPending, setIsPending] = useState(false);
   const { sendTransaction, account } = useSuperChainAccount();
+  const { invalidateUserTokens } = useUserTokens()
 
   const factoryContract = useMemo(() => {
     return getContract({
@@ -98,15 +100,15 @@ export const useSwap = () => {
         });
         const fee = await poolContract.read.fee();
 
-        const approveTx = await sendTransaction({
-          to: tokenIn,
-          value: 0n,
-          data: encodeFunctionData({
-            abi: erc20Abi,
-            functionName: "approve",
-            args: [chain.uniswapRouterAddress, amountIn],
-          }),
-        });
+        // const approveTx = await sendTransaction({
+        //   to: tokenIn,
+        //   value: 0n,
+        //   data: encodeFunctionData({
+        //     abi: erc20Abi,
+        //     functionName: "approve",
+        //     args: [chain.uniswapRouterAddress, maxUint256],
+        //   }),
+        // });
 
         const swapTx = await sendTransaction({
           to: chain.uniswapRouterAddress,
@@ -128,7 +130,9 @@ export const useSwap = () => {
           }),
         });
 
-        return { approveTx, swapTx };
+        await invalidateUserTokens();
+
+        return { approveTx: null, swapTx };
       } catch (e) {
         console.error(e);
         throw e;
