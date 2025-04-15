@@ -20,7 +20,6 @@ export const SendAssetDialog = ({
 }: SendAssetDialogProps) => {
   const { form, onSubmit } = useSendAsset();
 
-  
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
