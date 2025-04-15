@@ -5,7 +5,7 @@ import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { ImportTokensDialog } from "./import-token-dialog";
 import { Button } from "../ui";
-import { SendTokensDialog } from "./send-token-dialog/send-token-dialog";
+import { SendAssetDialog } from "./send-asset-dialog/send-asset-dialog";
 
 export function SmartAccountCard() {
   const { chain } = useWeb3();
@@ -44,7 +44,7 @@ export function SmartAccountCard() {
         </div>
       </div>
       {isSendDialogOpen && 
-        <SendTokensDialog 
+        <SendAssetDialog 
           isOpen={isSendDialogOpen} 
           onClose={() => setIsSendDialogOpen(false)}
         />

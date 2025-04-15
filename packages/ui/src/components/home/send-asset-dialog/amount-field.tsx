@@ -3,8 +3,8 @@ import BigNumber from "bignumber.js";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Asset, useAssets } from "@/hooks/use-assets";
 import { useFormContext } from "react-hook-form";
-import { SendTokenSchema } from "./send-token-dialog";
 import { Input } from "@/components/ui/input";
+import { SendAssetType } from "@/hooks/use-send-asset";
 
 function computeAmount(amount: string, asset: Asset): bigint {
   const bn = new BigNumber(amount || "0").multipliedBy(
@@ -15,7 +15,7 @@ function computeAmount(amount: string, asset: Asset): bigint {
 }
 
 const AmountField = () => {
-  const { control, setValue, watch} = useFormContext<SendTokenSchema>();
+  const { control, setValue, watch} = useFormContext<SendAssetType>();
   const {isPending, error, data} = useAssets();
   const [controlledValue, setControlledValue] = useState<string>("0");
   const [currentAsset, setCurrentAsset] = useState<Asset | null>(null);
@@ -32,9 +32,8 @@ const AmountField = () => {
     }
 
     setCurrentAsset(asset);
-    setControlledValue(new BigNumber(controlledValue).toFixed(asset.decimals));
-    const amount = computeAmount(controlledValue, asset);
-    setValue("amount", amount);
+    setControlledValue("0");
+    setValue("amount", 0n);
   }, [selectedAsset]);
 
   return  (
