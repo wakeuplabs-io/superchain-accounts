@@ -10,24 +10,25 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { AssetSelector } from "./asset-selector";
 import { Asset, useAssets } from "@/hooks/use-assets";
 import { useSwap } from "@/hooks/use-swap";
 import { formatUnits, parseUnits } from "viem";
 import { toast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { data: assets } = useAssets();
-  const { quote, swap, isPending } = useSwap();
+  const { quote, swap } = useSwap();
 
   const [open, setOpen] = useState(false);
   const [from, setFrom] = React.useState<Asset | null>(null);
   const [to, setTo] = React.useState<Asset | null>(null);
   const [fromAmount, setFromAmount] = React.useState<string>("0");
-  const [toAmount, setToAmount] = React.useState<string>("-");
+  const [isSwapPending, setIsSwapPending] = useState(false);
 
   const fromAssets = useMemo(() => {
     return assets.filter((asset) => asset.address !== to?.address);
@@ -37,8 +38,27 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
     return assets.filter((asset) => asset.address !== from?.address);
   }, [assets, from]);
 
+  const { data: toAmount, isPending: isQuotePending } = useQuery({
+    queryKey: ["quote", from?.address, to?.address, fromAmount],
+    queryFn: () =>
+      quote(
+        from?.address!,
+        to?.address!,
+        parseUnits(fromAmount, from?.decimals!)
+      )
+        .then((amount) => formatUnits(amount, to?.decimals!))
+        .catch(() => "-"),
+    enabled: !!from && !!to && !!fromAmount && !isSwapPending,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 * 5,
+    staleTime: 0,
+  });
+
   const onSwap = useCallback(async () => {
-    if (!from || !to || !fromAmount || !toAmount || isPending) return;
+    if (!from || !to || !fromAmount || !toAmount) return;
+
+    setIsSwapPending(true);
 
     swap(
       from.address,
@@ -48,32 +68,20 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
     )
       .then(() => {
         onClose();
-
         toast({ title: "Success", description: "Swap successful" });
       })
-      .catch(() => toast({ title: "Error", description: "Swap failed" }));
-  }, [from, to, fromAmount, toAmount, isPending]);
+      .catch(() => toast({ title: "Error", description: "Swap failed" }))
+      .finally(() => setIsSwapPending(false));
+  }, [from, to, fromAmount, toAmount]);
 
   const onClose = useCallback(() => {
-    if (isPending) return;
-    
+    if (isSwapPending) return;
+
     setOpen(false);
     setFrom(null);
     setTo(null);
     setFromAmount("0");
-    setToAmount("-");
-  }, [isPending]);
-
-  useEffect(() => {
-    if (!from || !to) return;
-
-    quote(from.address, to.address, parseUnits(fromAmount, from.decimals))
-      .then((amount) => setToAmount(formatUnits(amount, to.decimals)))
-      .catch(() => {
-        toast({ title: "Error", description: "No available route" });
-        setToAmount("-");
-      });
-  }, [from, to, fromAmount]);
+  }, [isSwapPending]);
 
   return (
     <Dialog
@@ -92,7 +100,6 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
           </DialogDescription>
         </DialogHeader>
 
-
         <div className="flex flex-col gap-4 my-8">
           <Label>Sell</Label>
           <div className="grid grid-cols-2 gap-2">
@@ -106,6 +113,7 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
             <Input
               value={fromAmount}
               onChange={(e) => setFromAmount(e.target.value)}
+              type="number"
             />
           </div>
 
@@ -122,14 +130,13 @@ export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
           </div>
         </div>
 
-
         <DialogFooter>
           <Button
-            loading={isPending}
             type="button"
+            onClick={onSwap}
             className="w-full"
             disabled={toAmount === "-"}
-            onClick={onSwap}
+            loading={isSwapPending || isQuotePending}
           >
             Swap
           </Button>
