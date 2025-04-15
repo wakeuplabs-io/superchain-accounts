@@ -14,23 +14,33 @@ type UseAssetsResult = {
    isPending: true
    data: null,
    error: null
+  invalidateAssetData: (asset: Asset) => void
 } | {
   isPending: false,
   error?: Error | null,
   data: Asset[],
+  invalidateAssetData: (asset: Asset) => void
 };
 
 export function useAssets(): UseAssetsResult {
   const { chain } = useWeb3();
-  const { status: accountBalanceStatus, data: accountBalance, error: accountBalanceError } = useAccountBalance();
-  const { status: userTokensStatus, data: userTokens, error: userTokensError } = useUserTokens();
+  const { status: accountBalanceStatus, data: accountBalance, error: accountBalanceError, invalidateAccountBalance } = useAccountBalance();
+  const { status: userTokensStatus, data: userTokens, error: userTokensError, invalidateUserTokens } = useUserTokens();
+
+  const invalidateAssetData = (asset: Asset) => {
+    if (asset.native) {
+      invalidateAccountBalance();
+    } else {
+      invalidateUserTokens();
+    }
+  };
 
   if (accountBalanceStatus === "pending" || userTokensStatus === "pending") {
-    return { isPending: true, data: null, error: null };
+    return { isPending: true, data: null, error: null, invalidateAssetData };
   }
 
   if (accountBalanceStatus === "error" || userTokensStatus === "error") {
-    return { isPending: false, error: accountBalanceError ?? userTokensError, data: []  };
+    return { isPending: false, error: accountBalanceError ?? userTokensError, data: [], invalidateAssetData };
   }
 
   const nativeAsset: Asset = {
@@ -45,6 +55,7 @@ export function useAssets(): UseAssetsResult {
     data: [
       nativeAsset,
       ...userTokens,
-    ] 
+    ],
+    invalidateAssetData
   };
 }

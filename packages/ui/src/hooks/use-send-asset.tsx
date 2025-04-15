@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Address, getAddress, isAddress } from "viem";
+import { Address, encodeFunctionData, erc20Abi, getAddress, isAddress } from "viem";
 import { z } from "zod";
 import { SuperChainUserOperation, useSuperChainAccount } from "./use-smart-account";
-import { useAssets } from "./use-assets";
+import { Asset, useAssets } from "./use-assets";
 import { useToast } from "./use-toast";
 
 const sendAssetSchema = z.object({
@@ -36,9 +36,28 @@ function buildNativeTokenTransfer(to: Address, amount: bigint): SuperChainUserOp
   };
 }
 
+function buildERC20TokenTransfer(to: Address, amount: bigint, asset: Asset): SuperChainUserOperation {
+  if(!asset.address) {
+    throw new Error("Asset has no address");
+  }
+
+  const transferData = encodeFunctionData({
+    abi: erc20Abi,
+    functionName: "transfer",
+    args: [to, amount],
+  });
+
+
+  return {
+    to: asset.address,
+    value: 0n,
+    data: transferData,
+  };
+}
+
 export function useSendAsset() {
   const { account, sendTransaction } = useSuperChainAccount();
-  const { isPending, error, data: assetsData } = useAssets();
+  const { isPending, error, data: assetsData, invalidateAssetData } = useAssets();
   const { toast } = useToast();
 
   const form = useForm({
@@ -70,17 +89,15 @@ export function useSendAsset() {
     if(Object.keys(form.formState.errors).length > 0) return;
 
     try {
-      if(!asset.native) {
-        throw new Error("Asset is not native");
-      }
-
-      const userOperation = buildNativeTokenTransfer(data.destinationAddress, data.amount);
+      const userOperation = asset.native ? buildNativeTokenTransfer(data.destinationAddress, data.amount) : buildERC20TokenTransfer(data.destinationAddress, data.amount, asset);
+      
       await sendTransaction(userOperation);
+
+      invalidateAssetData(asset);
 
       toast({
         title: "Transaction successfully sent",
       });
-
     } catch (error) {
       let description = "Something went wrong";
       if(error instanceof Error) {

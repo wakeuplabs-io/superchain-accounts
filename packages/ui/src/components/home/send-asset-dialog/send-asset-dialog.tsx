@@ -31,7 +31,11 @@ export const SendAssetDialog = ({
               <Dialog.Close className="hover:bg-gray-100 text-lg">✕</Dialog.Close>
             </Dialog.Title>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col justify-between w-full h-full md:gap-14'>
+              <form onSubmit={form.handleSubmit(async (data) => {
+                await onSubmit(data);
+                onClose();
+              })} 
+              className='flex flex-col justify-between w-full h-full md:gap-14'>
                 <div className="flex flex-col gap-4" >
                   <AssetSelector  />
                   <AmountField  />
