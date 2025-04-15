@@ -1,14 +1,14 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
-const CUSTOMER = 'optimism';
-const PROJECT_NAME = 'superchain';
+const CUSTOMER = "optimism";
+const PROJECT_NAME = "superchain";
 
 export default $config({
   app(input) {
     return {
       name: PROJECT_NAME,
-      removal: input?.stage === 'production' ? 'retain' : 'remove',
-      home: 'aws',
+      removal: input?.stage === "production" ? "retain" : "remove",
+      home: "aws",
       providers: {
         aws: {
           defaultTags: {
@@ -25,17 +25,17 @@ export default $config({
   },
   async run() {
     // load environment variables
-    const dotenv = await import('dotenv');
+    const dotenv = await import("dotenv");
     dotenv.config();
 
     // deploy api
     const api = new sst.aws.Function(`${PROJECT_NAME}-api`, {
-      handler: 'packages/api/src/app.handler',
+      handler: "packages/api/src/app.handler",
       url: {
         cors: false,
       },
       environment: {
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
         DATABASE_URL: process.env.DATABASE_URL!,
         BUNDLER_UNICHAIN_SEPOLIA: process.env.BUNDLER_UNICHAIN_SEPOLIA!,
         BUNDLER_OPTIMISM_SEPOLIA: process.env.BUNDLER_OPTIMISM_SEPOLIA!,
@@ -51,16 +51,16 @@ export default $config({
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         CRONJOB_KEY: process.env.CRONJOB_KEY!,
         MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
-        PRISMA_QUERY_ENGINE_LIBRARY: '/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node',
+        PRISMA_QUERY_ENGINE_LIBRARY: "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
       },
       copyFiles: [
         {
-          from: 'node_modules/.prisma/client/',
-          to: '.prisma/client/',
+          from: "node_modules/.prisma/client/",
+          to: ".prisma/client/",
         },
         {
-          from: 'node_modules/@prisma/client/',
-          to: '@prisma/client/',
+          from: "node_modules/@prisma/client/",
+          to: "@prisma/client/",
         },
       ],
     });
@@ -68,20 +68,20 @@ export default $config({
     // deploy cron job
     const cron = new sst.aws.Cron(`${PROJECT_NAME}-cron`, {
       function: {
-        handler: 'packages/api/src/cron.handler',
+        handler: "packages/api/src/cron.handler",
         environment: {
           API_URL: api.url,
           CRONJOB_KEY: process.env.CRONJOB_KEY!,
         },
       },
-      schedule: 'cron(0 12 * * ? *)',
+      schedule: "cron(0 12 * * ? *)",
     });
 
     // deploy ui
     const ui = new sst.aws.StaticSite(`${PROJECT_NAME}-ui`, {
       build: {
-        command: 'npm run build --workspace=ui',
-        output: 'packages/ui/dist',
+        command: "npm run build --workspace=ui",
+        output: "packages/ui/dist",
       },
       domain: `${PROJECT_NAME}.wakeuplabs.link`,
       environment: {
