@@ -1,5 +1,5 @@
 import envParsed from "@/envParsed";
-import { Address, Chain, createPublicClient, http, PublicClient } from "viem";
+import { Address, Chain, createPublicClient, http, PublicClient, zeroAddress } from "viem";
 import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
 import { BundlerClient, createBundlerClient } from "viem/account-abstraction";
 
@@ -13,10 +13,13 @@ export interface ChainMetadata {
   order: number;
   logo: string;
   nativeCurrency: Chain["nativeCurrency"],
-  entryPointAddress: Address;
   client: PublicClient;
   bundler: BundlerClient;
   explorer: string;
+  entryPointAddress: Address;
+  uniswapQuoterAddress: Address;
+  uniswapRouterAddress: Address;
+  uniswapFactoryAddress: Address;
 }
 
 export const clients: { [chainId: number]: PublicClient } = {
@@ -66,6 +69,9 @@ export const supportedChains: Record<number, ChainMetadata> = {
     bundler: bundlers[optimismSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
     explorer: envParsed().EXPLORER_OPTIMISM_SEPOLIA,
+    uniswapQuoterAddress: "0xC5290058841028F1614F3A6F0F5816cAd0df5E27",
+    uniswapRouterAddress: "0x94cC0AaC535CCDB3C01d6787D6413C739ae12bc4",
+    uniswapFactoryAddress: "0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24"
   },
   [baseSepolia.id]: {
     order: 2,
@@ -77,6 +83,9 @@ export const supportedChains: Record<number, ChainMetadata> = {
     bundler: bundlers[baseSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_BASE_SEPOLIA,
     explorer: envParsed().EXPLORER_BASE_SEPOLIA,
+    uniswapQuoterAddress: zeroAddress,
+    uniswapRouterAddress:zeroAddress,
+    uniswapFactoryAddress: zeroAddress
   },
   [unichainSepolia.id]: {
     order: 3,
@@ -88,6 +97,9 @@ export const supportedChains: Record<number, ChainMetadata> = {
     bundler: bundlers[unichainSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,
     explorer: envParsed().EXPLORER_UNICHAIN_SEPOLIA,
+    uniswapQuoterAddress: zeroAddress,
+    uniswapRouterAddress:zeroAddress,
+    uniswapFactoryAddress: zeroAddress
   },
 };
 

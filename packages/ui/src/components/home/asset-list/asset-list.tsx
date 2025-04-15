@@ -19,7 +19,7 @@ export function AssetList() {
           </a>
         )}
       </div>
-      <ul>
+      <ul className="divide-y border-t">
         {isPending && <li className="text-lg">Loading Tokens...</li>}
         {!isPending && (
           error ? 

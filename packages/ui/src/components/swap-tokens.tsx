@@ -1,8 +1,6 @@
-import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -12,43 +10,106 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { AssetSelector } from "./asset-selector";
+import { Asset, useAssets } from "@/hooks/use-assets";
+import { useSwap } from "@/hooks/use-swap";
+import { formatUnits, parseUnits } from "viem";
+import { toast } from "@/hooks/use-toast";
 
 export const SwapTokenDialog: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { data: assets } = useAssets();
+  const { quote, isPending } = useSwap();
+  const [open, setOpen] = useState(false);
+
+  const [from, setFrom] = React.useState<Asset | null>(null);
+  const [to, setTo] = React.useState<Asset | null>(null);
+
+  const [fromAmount, setFromAmount] = React.useState<string>("0");
+  const [toAmount, setToAmount] = React.useState<string>("-");
+
+  useEffect(() => {
+    if (!from || !to) return;
+
+    quote(from.address, to.address, parseUnits(fromAmount, from.decimals))
+      .then((amount) => {
+        setToAmount(formatUnits(amount, to.decimals));
+      })
+      .catch((e) => {
+        toast({
+          title: "Error",
+          description: "No available route",
+        });
+        setToAmount("-");
+      });
+  }, [from, to, fromAmount]);
+
+  const fromAssets = useMemo(() => {
+    return assets.filter((asset) => asset.address !== to?.address);
+  }, [assets, to]);
+
+  const toAssets = useMemo(() => {
+    return assets.filter((asset) => asset.address !== from?.address);
+  }, [assets, from]);
+
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        setOpen(!open);
+        setFrom(null);
+        setTo(null);
+        setFromAmount("0");
+        setToAmount("-");
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Swap</DialogTitle>
           <DialogDescription>
-            Swap tokens within the same chain
+            Swap tokens within imported tokens in the same chain
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center space-x-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Link
-            </Label>
+        <div className="flex flex-col gap-4 my-8">
+          <Label>Sell</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <AssetSelector
+              assets={fromAssets}
+              onValueChange={(value) => {
+                setFrom(assets.find((asset) => asset.address === value)!);
+              }}
+            />
+
             <Input
-              id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
-              readOnly
+              value={fromAmount}
+              onChange={(e) => setFromAmount(e.target.value)}
             />
           </div>
-          <Button type="submit" size="sm" className="px-3">
-            <span className="sr-only">Copy</span>
-            <Copy />
-          </Button>
+
+          <Label>Buy</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <AssetSelector
+              assets={toAssets}
+              onValueChange={(value) => {
+                setTo(assets.find((asset) => asset.address === value)!);
+              }}
+            />
+
+            <Input value={toAmount} readOnly />
+          </div>
         </div>
-        <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
+        <DialogFooter>
+          <Button
+            loading={isPending}
+            type="button"
+            className="w-full"
+            disabled={toAmount === "-"}
+          >
+            Swap
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
