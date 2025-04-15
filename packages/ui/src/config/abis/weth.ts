@@ -150,4 +150,4 @@ export default [
     name: "Withdrawal",
     type: "event",
   },
-];
+] as const;
