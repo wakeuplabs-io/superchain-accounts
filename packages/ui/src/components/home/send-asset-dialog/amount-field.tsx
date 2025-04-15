@@ -27,9 +27,7 @@ const AmountField = () => {
 
     const asset = data.find((asset) => asset.symbol === selectedAsset);
     
-    if(!asset) {
-      throw new Error("Asset not found"); 
-    }
+    if(!asset) return;
 
     setCurrentAsset(asset);
     setControlledValue("0");
