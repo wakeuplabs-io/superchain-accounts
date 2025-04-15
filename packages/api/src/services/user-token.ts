@@ -6,12 +6,16 @@ import { IClientFactory } from "./client-factory.js";
 import envParsed from "@/envParsed.js";
 import { IUserTokenService } from "@/domain/users.js";
 
-type TokenMetadataType = typeof tokenMetadata[keyof typeof tokenMetadata][number];
+type TokenMetadataType =
+  (typeof tokenMetadata)[keyof typeof tokenMetadata][number];
 
 export class UserTokenService implements IUserTokenService {
-  constructor(private readonly db: PrismaClient, private readonly clientFactory: IClientFactory) {}
-  
-  async getUserTokens({ userWallet, chainId}: GetUserTokensRequest) {
+  constructor(
+    private readonly db: PrismaClient,
+    private readonly clientFactory: IClientFactory
+  ) {}
+
+  async getUserTokens({ userWallet, chainId }: GetUserTokensRequest) {
     const userTokens = await this.db.userToken.findMany({
       where: {
         userWallet,
@@ -22,24 +26,28 @@ export class UserTokenService implements IUserTokenService {
     return await this.populateTokensBalance(userTokens, chainId);
   }
 
-  private async populateTokensBalance(userTokens: UserToken[], chainId: number ) {
+  private async populateTokensBalance(
+    userTokens: UserToken[],
+    chainId: number
+  ) {
     const client = this.clientFactory.getReadClient(chainId.toString());
 
-    const balances = await client.multicall(
-      {
-        contracts: userTokens.map((token) => ({
-          address: getAddress(token.address),
-          abi: erc20Abi,
-          functionName: "balanceOf",
-          args: [getAddress(token.userWallet)],
-        })),
-        multicallAddress: envParsed().MULTICALL_CONTRACT_ADDRESS as Address,
-      }
-    );
+    const balances = await client.multicall({
+      contracts: userTokens.map((token) => ({
+        address: getAddress(token.address),
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [getAddress(token.userWallet)],
+      })),
+      multicallAddress: envParsed().MULTICALL_CONTRACT_ADDRESS as Address,
+    });
 
     return userTokens.map((token, index) => ({
       ...token,
-      balance: balances[index].status === "success" ? balances[index].result.toString() : "0",
+      balance:
+        balances[index].status === "success"
+          ? balances[index].result.toString()
+          : "0",
     }));
   }
 
@@ -51,7 +59,7 @@ export class UserTokenService implements IUserTokenService {
         },
         address: data.address,
         chainId: data.chainId,
-      }
+      },
     });
 
     if (existingToken) {
@@ -71,8 +79,8 @@ export class UserTokenService implements IUserTokenService {
             },
             create: {
               wallet: data.userWallet,
-            }
-          }
+            },
+          },
         },
         address: data.address,
         chainId: data.chainId,
@@ -113,12 +121,16 @@ export class UserTokenService implements IUserTokenService {
     }
   }
 
-  private getTokenMetadata(chainId: number, symbol: string): TokenMetadataType | null | undefined {
-    const chainTokens = tokenMetadata[chainId.toString() as keyof typeof tokenMetadata];
+  private getTokenMetadata(
+    chainId: number,
+    symbol: string
+  ): TokenMetadataType | null | undefined {
+    const chainTokens =
+      tokenMetadata[chainId.toString() as keyof typeof tokenMetadata];
     if (!chainTokens) {
       return null;
     }
 
-    return chainTokens.find(token => token.symbol === symbol);
+    return chainTokens.find((token) => token.symbol === symbol);
   }
 }

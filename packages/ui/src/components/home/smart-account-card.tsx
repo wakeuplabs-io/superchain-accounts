@@ -6,7 +6,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { ImportTokensDialog } from "./import-token-dialog";
 import { Button } from "../ui";
 import { SwapTokenDialog } from "../swap-tokens";
-import { SendAssetDialog } from "./send-asset-dialog/send-asset-dialog";
+import { SendAssetDialog } from "../send-asset-dialog";
 
 export function SmartAccountCard() {
   const { chain } = useWeb3();

@@ -9,11 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { AssetSelector } from "@/components/asset-selector";
-import AmountField from "./amount-field";
-import DestinationAddressField from "./destination-address-field";
 import { useSendAsset } from "@/hooks/use-send-asset";
-import { useMemo } from "react";
 import { useAssets } from "@/hooks/use-assets";
+import { Input } from "@/components/ui/input";
 
 interface SendAssetDialogProps {
   isOpen: boolean;
@@ -22,11 +20,7 @@ interface SendAssetDialogProps {
 
 export const SendAssetDialog = ({ isOpen, onClose }: SendAssetDialogProps) => {
   const { form, onSubmit } = useSendAsset();
-  const { isPending, error, data: assets } = useAssets();
-
-  const defaultAsset = useMemo(() => {
-    return assets?.[0];
-  }, [assets]);
+  const { data: assets } = useAssets();
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
@@ -40,11 +34,12 @@ export const SendAssetDialog = ({ isOpen, onClose }: SendAssetDialogProps) => {
                 ✕
               </Dialog.Close>
             </Dialog.Title>
+
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(async (data) => {
-                  const {validationError} = await onSubmit(data);
-                  if(!validationError) {
+                  const { validationError } = await onSubmit(data);
+                  if (!validationError) {
                     onClose();
                   }
                 })}
@@ -54,21 +49,61 @@ export const SendAssetDialog = ({ isOpen, onClose }: SendAssetDialogProps) => {
                   <FormField
                     control={form.control}
                     name="asset"
-                    defaultValue={defaultAsset?.symbol}
                     render={({ field }) => {
                       return (
                         <FormItem>
                           <FormLabel>Asset</FormLabel>
                           <FormControl>
-                            <AssetSelector {...field} assets={assets ?? []} />
+                            <AssetSelector
+                              onValueChange={field.onChange}
+                              assets={assets ?? []}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       );
                     }}
                   />
-                  <AmountField />
-                  <DestinationAddressField />
+
+                  <FormField
+                    control={form.control}
+                    name="amount"
+                    render={({ field }) => {
+                      return (
+                        <FormItem>
+                          <FormLabel>Amount</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="0.0000"
+                              type="number"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="to"
+                    render={({ field }) => {
+                      return (
+                        <FormItem>
+                          <FormLabel>To</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="0x3bG05...2742222567"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
                 </div>
                 <Button
                   type="submit"

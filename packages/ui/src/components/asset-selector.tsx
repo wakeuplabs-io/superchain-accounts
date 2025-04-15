@@ -22,7 +22,7 @@ export const AssetSelector = ({
       <SelectContent>
         {assets?.map((asset) => {
           return (
-            <SelectItem key={asset.symbol} value={asset.address!}>
+            <SelectItem key={asset.address} value={asset.address}>
               <div className="flex items-center gap-x-2 w-full">
                 <div className="rounded-full bg-gray-100 flex items-center justify-center">
                   <img
