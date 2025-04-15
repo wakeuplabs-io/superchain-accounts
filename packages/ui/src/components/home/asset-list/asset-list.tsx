@@ -16,20 +16,20 @@ export function AssetList() {
         {account.status !== "pending" && (
           <a
             href={`${chain.explorer}/address/${account.address}`}
-            className="flex items-center gap-1 text-base font-medium text-primary"
+            className="flex items-center gap-1 text-sm font-medium text-primary"
             target="_blank"
             rel="noreferrer"
           >
             <span>View my Activity</span>
-            <ArrowUpRight className="h-5 w-5" />
+            <ArrowUpRight className="h-4 w-4" />
           </a>
         )}
       </div>
       <ul className="divide-y border-t">
-        {isPending && <li className="text-lg pt-6">Loading...</li>}
+        {isPending && <li className="text-lg py-6">Loading...</li>}
         {!isPending &&
           (error ? (
-            <li className="text-lg">
+            <li className="text-lg py-6">
               There was an error loading the token list...
             </li>
           ) : data.length > 0 ? (
@@ -44,7 +44,7 @@ export function AssetList() {
               })
               .map((c) => <AssetListItem asset={c} key={c.address ?? c.symbol} />)
           ) : (
-            <li className="text-lg pt-6">No tokens imported</li>
+            <li className="text-lg py-6">No tokens imported</li>
           ))}
       </ul>
     </div>
