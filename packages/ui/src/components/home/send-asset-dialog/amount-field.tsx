@@ -4,7 +4,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Asset, useAssets } from "@/hooks/use-assets";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { SendAssetType } from "@/hooks/use-send-asset";
+import { getAssetByAddress, SendAssetType } from "@/hooks/use-send-asset";
 
 function computeAmount(amount: string, asset: Asset): bigint {
   const bn = new BigNumber(amount || "0").multipliedBy(
@@ -25,7 +25,7 @@ const AmountField = () => {
   useEffect(() => {
     if(isPending || error) return;
 
-    const asset = data.find((asset) => asset.symbol === selectedAsset);
+    const asset = getAssetByAddress(selectedAsset, data);
     
     if(!asset) return;
 

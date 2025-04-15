@@ -42,7 +42,7 @@ export function AssetList() {
                 if (a.balance < b.balance) return 1;
                 return 0;
               })
-              .map((c) => <AssetListItem asset={c} key={c.symbol} />)
+              .map((c) => <AssetListItem asset={c} key={c.address ?? c.symbol} />)
           ) : (
             <li className="text-lg pt-6">No tokens imported</li>
           ))}

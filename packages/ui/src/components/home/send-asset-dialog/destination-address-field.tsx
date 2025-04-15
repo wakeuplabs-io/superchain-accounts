@@ -99,7 +99,7 @@ const DestinationAddressField = () => {
   return  (
     <FormField
       control={control}
-      name="destinationAddress"
+      name="to"
       render={({field}) => {
         return (
           <FormItem>

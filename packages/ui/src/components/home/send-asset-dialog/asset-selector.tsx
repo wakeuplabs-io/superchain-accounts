@@ -4,26 +4,28 @@ import { useAssets } from "@/hooks/use-assets";
 import { useFormContext } from "react-hook-form";
 
 import defaultTokenLogo from "@/assets/logos/default-token-logo.png";
-import { formatUnits } from "viem";
+import { formatUnits, zeroAddress } from "viem";
 import { useMemo } from "react";
 
 const AssetSelector = () => {
   const {control} = useFormContext();
   const {isPending, error, data} = useAssets();
 
-  if (isPending) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const defaultAsset = useMemo(() => {
+    if(!data) return null;
+
     return data?.find((asset) => !!asset.native) ?? data[0];
   }, [data]);
   
+
+  if (isPending) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <FormField
       control={control}
       name="asset"
-      defaultValue={defaultAsset?.symbol}
+      defaultValue={defaultAsset?.native ? zeroAddress : defaultAsset?.address}
       render={({field}) => {
         return (
           <FormItem>
@@ -38,8 +40,10 @@ const AssetSelector = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {data?.map((asset) => {
+                    const value = asset.native? zeroAddress : asset.address!;
+
                     return (
-                      <SelectItem key={asset.symbol} value={asset.symbol}>
+                      <SelectItem key={value} value={value}>
                         <div className="flex items-center gap-x-2">
                           <div className="rounded-full bg-gray-100 flex items-center justify-center">
                             <img src={asset.logoURI ?? defaultTokenLogo} alt={asset.name} className="w-8 h-8" />
