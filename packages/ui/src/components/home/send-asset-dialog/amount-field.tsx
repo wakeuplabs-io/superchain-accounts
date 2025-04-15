@@ -4,8 +4,8 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Asset, useAssets } from "@/hooks/use-assets";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { getAssetByAddress, SendAssetType } from "@/hooks/use-send-asset";
 import { formatUnits } from "viem";
+import { SendAssetType } from "./send-asset-dialog";
 
 function computeAmount(amount: string, asset: Asset): bigint {
   const bn = new BigNumber(amount || "0").multipliedBy(
@@ -17,7 +17,7 @@ function computeAmount(amount: string, asset: Asset): bigint {
 
 const AmountField = () => {
   const { control, setValue, watch } = useFormContext<SendAssetType>();
-  const {isPending, error, data} = useAssets();
+  const {isPending, error, data: assets} = useAssets();
   const [controlledValue, setControlledValue] = useState<string>("0");
   const [currentAsset, setCurrentAsset] = useState<Asset | null>(null);
   
@@ -26,7 +26,7 @@ const AmountField = () => {
   useEffect(() => {
     if(isPending || error) return;
 
-    const asset = getAssetByAddress(selectedAsset, data);
+    const asset = assets.find((asset) => asset.address === selectedAsset);
     
     if(!asset) return;
 
