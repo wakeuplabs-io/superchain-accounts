@@ -1,17 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Address, encodeFunctionData, erc20Abi, getAddress, isAddress } from "viem";
+import { Address, encodeFunctionData, erc20Abi, getAddress, isAddress, zeroAddress } from "viem";
 import { z } from "zod";
 import { SuperChainUserOperation, useSuperChainAccount } from "./use-smart-account";
 import { Asset, useAssets } from "./use-assets";
 import { useToast } from "./use-toast";
 
 const sendAssetSchema = z.object({
-  asset: z.string().min(1, "Asset is required"),
+  asset: z.string({required_error: "Asset is required"}).transform(val => getAddress(val)),
   amount: z.bigint().refine((val) => val > 0n, {
     message: "Amount must be greater than 0",
   }),
-  destinationAddress: z.string({
+  to: z.string({
     required_error: "Destination address is required",
   }).refine(
     (val) => {
@@ -28,6 +28,10 @@ const sendAssetSchema = z.object({
 });
 
 export type SendAssetType = z.infer<typeof sendAssetSchema>;
+
+export function getAssetByAddress(address: Address, assets: Asset[]): Asset | undefined {
+  return address === zeroAddress ? assets.find((asset) => asset.native) : assets.find((asset) => asset.address === address);
+}
 
 function buildNativeTokenTransfer(to: Address, amount: bigint): SuperChainUserOperation {
   return {
@@ -64,32 +68,41 @@ export function useSendAsset() {
     resolver: zodResolver(sendAssetSchema),
   });
 
-  const onSubmit = async (data: SendAssetType) => {
-    if(isPending || error) return;
+  const onSubmit = async (data: SendAssetType): Promise<{validationError: boolean}> => {
+    if(isPending || error) return {validationError: false};
 
-    if(account.address === data.destinationAddress) {
-      form.setError("destinationAddress", {
+    const validationErrors: {key: keyof typeof form.formState.errors; message: string}[] = [];
+    
+    if(account.address === data.to) {
+      form.setError("to", {
         message: "Destination address cannot be the same as the sender address",
       });
     }
 
-    const asset = assetsData?.find((asset) => asset.symbol === data.asset);
+    const asset = getAssetByAddress(data.asset, assetsData);
 
-    if(!asset) {
-      return;
-    }
-
-    if(asset.balance < data.amount) {
-      form.setError("amount", {
+    if(asset && asset.balance < data.amount) {
+      validationErrors.push({
+        key: "amount",
         message: "Insufficient balance",
       });
     }
 
-
-    if(Object.keys(form.formState.errors).length > 0) return;
+    if(validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        form.setError(error.key, {
+          message: error.message,
+        });
+      });
+      return {validationError: true};
+    }
 
     try {
-      const userOperation = asset.native ? buildNativeTokenTransfer(data.destinationAddress, data.amount) : buildERC20TokenTransfer(data.destinationAddress, data.amount, asset);
+      if(!asset) {
+        throw new Error("Asset not found");
+      }
+
+      const userOperation = asset.native ? buildNativeTokenTransfer(data.to, data.amount) : buildERC20TokenTransfer(data.to, data.amount, asset);
       
       await sendTransaction(userOperation);
 
@@ -110,6 +123,8 @@ export function useSendAsset() {
         description,
       });
     }
+
+    return {validationError: false};
   };
 
   return {
