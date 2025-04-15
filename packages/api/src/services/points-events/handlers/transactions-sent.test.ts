@@ -50,6 +50,29 @@ describe("TransactionSentPointsEventsHandler", () => {
     expect(await db.pointEvent.count()).toBe(1);
   });
 
+
+  it.only("Should not assign Milestone if threshold exceeded", async () => {
+    const tx = await db.transaction.create({
+      data: { ...mockTransfer },
+    });
+    await handler.handle(tx);
+    
+    // milestone achieved here
+    const tx2 = await db.transaction.create({
+      data: { ...mockTransfer, hash: mockTransfer.hash + "2" },
+    });
+    await handler.handle(tx2);
+
+    expect(await db.pointEvent.count()).toBe(3);
+
+    const tx3 = await db.transaction.create({
+      data: { ...mockTransfer, hash: mockTransfer.hash + "3" },
+    });
+    await handler.handle(tx3);
+
+    expect(await db.pointEvent.count()).toBe(4);
+  });
+
   it("Should assign milestone points for the transaction", async () => {
     const res = await handler.handle(
       await db.transaction.create({
