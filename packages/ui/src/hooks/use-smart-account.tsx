@@ -18,7 +18,7 @@ import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
 
-interface SuperChainUserOperation {
+export interface SuperChainUserOperation {
   to: Address;
   value: bigint;
   data?: Hex;
