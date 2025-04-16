@@ -52,8 +52,8 @@ const AmountField = () => {
           <FormItem>
             <FormLabel>Amount</FormLabel>
             <FormControl>
-              <div className="flex items-center border gap-1 border-input pr-2 rounded-md group focus-within:ring-offset-2 focus-within:ring-2 focus-within:ring-black">
-                <Input className="border-0 w-[90%] ring-0 focus-visible:ring-offset-0 focus-visible:ring-0" {...field} type="number" value={controlledValue} onChange={(e: React.ChangeEvent<HTMLInputElement>)=> {
+              <div className="flex items-center border gap-1 border-input pr-3 rounded-md group focus-within:ring-offset-2 focus-within:ring-2 focus-within:ring-black">
+                <Input className="border-0 ring-0 focus-visible:ring-offset-0 focus-visible:ring-0" {...field} type="number" value={controlledValue} onChange={(e: React.ChangeEvent<HTMLInputElement>)=> {
                   const val = e.target.value;
 
                   if(!currentAsset) return;
