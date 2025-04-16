@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - OSA-115_wallet-connect
 
 jobs:
   deploy:
@@ -47,7 +46,7 @@ jobs:
         run: npm run build
 
       - name: Deploy
-        run: npx sst unlock --stage=staging && npx sst deploy --stage=staging
+        run: npx sst deploy --stage=staging
         env:
           PORT: 3000
           NODE_ENV: production
