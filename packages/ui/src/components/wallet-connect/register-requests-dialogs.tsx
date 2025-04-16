@@ -24,7 +24,6 @@ export function RegisterRequestsDialogs() {
   const onSessionRequest = useCallback(
     async (request: SignClientTypes.EventArguments["session_request"]) => {
       try {
-        console.log("ON SESSION REQUEST", request);
         const { method } = request.params.request;
         if (method === "eth_sendTransaction") {
           setDialogState((prev) => ({ ...prev, requestOpen: true }));

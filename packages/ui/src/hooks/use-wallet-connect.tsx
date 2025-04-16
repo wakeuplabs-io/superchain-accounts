@@ -109,8 +109,6 @@ export const WalletConnectProvider = ({
         throw new Error("WalletKit not initialized");
       }
 
-      console.log("request", data.requestEvent);
-
       if (data.requestEvent?.params?.request?.method === "personal_sign") {
         // Get the message to sign
         const requestParamsMessage =
@@ -132,11 +130,6 @@ export const WalletConnectProvider = ({
           },
         });
 
-        console.log("response", {
-          id: data.requestEvent?.id as number,
-          result: signature,
-          jsonrpc: "2.0",
-        });
         toast({
           title: "Message signed",
           description: "Message signed successfully",
@@ -181,7 +174,6 @@ export const WalletConnectProvider = ({
 
   // Called when the user rejects the connection proposal
   const handleRejectProposal = useCallback(async () => {
-    console.log("rejecting proposal", data.proposal);
     try {
       if (walletKit === null) {
         throw new Error("WalletKit not initialized");
@@ -206,7 +198,6 @@ export const WalletConnectProvider = ({
   }, [data.proposal, walletKit]);
 
   const handleRejectRequest = useCallback(async () => {
-    console.log("rejecting request", data.requestEvent);
     try {
       if (walletKit === null) {
         throw new Error("WalletKit not initialized");
