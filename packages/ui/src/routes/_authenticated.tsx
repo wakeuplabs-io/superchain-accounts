@@ -5,7 +5,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { z } from "zod";
-import { ScrollText, User } from "lucide-react";
+import { LoaderCircle, ScrollText, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
   pendingComponent: () => (
     <div className="flex justify-center items-center h-screen w-screen">
-      Loading...
+      <LoaderCircle className="animate-spin h-14 w-14 text-slate-400" />
     </div>
   ),
 });

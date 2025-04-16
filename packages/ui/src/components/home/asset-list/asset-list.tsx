@@ -29,8 +29,8 @@ export function AssetList() {
       <ul className="divide-y border-t">
         {isPending &&
           Array.from({ length: 3 }).map((_, i) => (
-            <li key={i} className="flex flex-row items-center gap-2 py-6">
-              <Skeleton className="w-10 h-10 rounded-full" />
+            <li key={i} className="flex flex-row items-center gap-4 py-6">
+              <Skeleton className="w-10 h-10 rounded-full shrink-0" />
               <Skeleton className="h-10 w-full" />
             </li>
           ))
