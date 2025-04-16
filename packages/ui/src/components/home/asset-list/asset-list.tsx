@@ -3,6 +3,7 @@ import { AssetListItem } from "./asset-list-item";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { useAssets } from "@/hooks/use-assets";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function AssetList() {
   const { isPending, error, data } = useAssets();
@@ -26,7 +27,14 @@ export function AssetList() {
         )}
       </div>
       <ul className="divide-y border-t">
-        {isPending && <li className="text-lg py-6">Loading...</li>}
+        {isPending &&
+          Array.from({ length: 3 }).map((_, i) => (
+            <li key={i} className="flex flex-row items-center gap-2 py-6">
+              <Skeleton className="w-10 h-10 rounded-full" />
+              <Skeleton className="h-10 w-full" />
+            </li>
+          ))
+        }
         {!isPending &&
           (error ? (
             <li className="text-lg py-6">
