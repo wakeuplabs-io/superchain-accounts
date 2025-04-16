@@ -37,9 +37,7 @@ export type encodedTransaction = {
 
 // Returns the walletkit instance
 export async function getWalletKit(): Promise<IWalletKit> {
-  const core = new Core({
-    projectId: envParsed().WALLET_CONNECT_PROJECT_ID
-  });
+  const core = new Core({ projectId: envParsed().WALLET_CONNECT_PROJECT_ID });
 
   // Initialize the walletkit
   const walletKit = await WalletKit.init({

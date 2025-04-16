@@ -15,6 +15,7 @@ export class AaveInteractionPointsEventsHandler
   ) {}
 
   async handle(tx: Transaction): Promise<PointEvent[]> {
+    // TODO: update this, ideally attempt decoding data
     if (tx.to != "0x589750BA8aF186cE5B55391B0b7148cAD43a1619") {
       return [];
     }
