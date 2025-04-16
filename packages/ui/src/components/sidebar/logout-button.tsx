@@ -33,9 +33,9 @@ export function LogoutButton() {
           <DialogTitle>Log out</DialogTitle>
         </DialogHeader>
         <span className="text-base">Are you sure you want to log out?</span>
-        <DialogFooter className="w-full flex justify-between">
-          <Button className="w-1/2" onClick={onLogout} loading={isLoggingOut}>Confirm</Button>
-          <DialogClose className="w-1/2">
+        <DialogFooter className="w-full flex justify-between gap-3">
+          <Button className="sm:w-1/2" onClick={onLogout} loading={isLoggingOut}>Confirm</Button>
+          <DialogClose className="sm:w-1/2">
             <Button className="w-full" variant="secondary" >Cancel</Button>
           </DialogClose>
         </DialogFooter>
