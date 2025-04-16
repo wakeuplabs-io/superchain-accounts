@@ -25,12 +25,10 @@ export function RegisterRequestsDialogs() {
     async (request: SignClientTypes.EventArguments["session_request"]) => {
       try {
         console.log("ON SESSION REQUEST", request);
-        const { method, params } = request.params.request;
+        const { method } = request.params.request;
         if (method === "eth_sendTransaction") {
           setDialogState((prev) => ({ ...prev, requestOpen: true }));
-          setData({
-            requestEvent: request,
-          });
+          setData({ requestEvent: request });
         } else if (method === "personal_sign") {
           setDialogState((prev) => ({ ...prev, requestOpen: true }));
           setData({ requestEvent: request });

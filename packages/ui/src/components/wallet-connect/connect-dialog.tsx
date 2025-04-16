@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import { useWalletConnect } from "@/hooks/use-wallet-connect";
 import { useState } from "react";
 
@@ -35,18 +36,27 @@ export const ConnectDialog: React.FC<{ children: React.ReactNode }> = ({
           <Label htmlFor="link" className="sr-only">
             Link
           </Label>
-          <Input onChange={(e) => setInput(e.target.value)} className="h-12" placeholder="wc:..." />
+          <Input
+            onChange={(e) => setInput(e.target.value)}
+            className="h-12"
+            placeholder="wc:..."
+          />
         </div>
-        <DialogFooter className="flex flex-col sm:flex-row gap-2 w-full">
+        <DialogFooter className="flex flex-col sm:flex-row-reverse sm:justify-start gap-2 w-full">
           <Button
             type="button"
+            className="flex-1"
             disabled={!input}
-            onClick={() => handleConnect(input).then(() => setOpen(false))}
+            onClick={() =>
+              handleConnect(input)
+                .then(() => setOpen(false))
+                .catch(() => toast({ title: "Error connecting" }))
+            }
           >
             Connect
           </Button>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" className="flex-1">
               Cancel
             </Button>
           </DialogClose>
