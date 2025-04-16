@@ -4,7 +4,8 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Asset, useAssets } from "@/hooks/use-assets";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { getAssetByAddress, SendAssetType } from "@/hooks/use-send-asset";
+import { formatUnits } from "viem";
+import { SendAssetType } from "./send-asset-dialog";
 
 function computeAmount(amount: string, asset: Asset): bigint {
   const bn = new BigNumber(amount || "0").multipliedBy(
@@ -15,8 +16,8 @@ function computeAmount(amount: string, asset: Asset): bigint {
 }
 
 const AmountField = () => {
-  const { control, setValue, watch} = useFormContext<SendAssetType>();
-  const {isPending, error, data} = useAssets();
+  const { control, setValue, watch } = useFormContext<SendAssetType>();
+  const {isPending, error, data: assets} = useAssets();
   const [controlledValue, setControlledValue] = useState<string>("0");
   const [currentAsset, setCurrentAsset] = useState<Asset | null>(null);
   
@@ -25,7 +26,7 @@ const AmountField = () => {
   useEffect(() => {
     if(isPending || error) return;
 
-    const asset = getAssetByAddress(selectedAsset, data);
+    const asset = assets.find((asset) => asset.address === selectedAsset);
     
     if(!asset) return;
 
@@ -33,6 +34,14 @@ const AmountField = () => {
     setControlledValue("0");
     setValue("amount", 0n);
   }, [selectedAsset]);
+
+  const setMaxValue = () => {
+    if(!currentAsset) return;
+
+    const formattedBalance = formatUnits(currentAsset.balance, currentAsset.decimals);
+    setControlledValue(formattedBalance);
+    setValue("amount", currentAsset.balance, {shouldValidate: true});
+  };
 
   return  (
     <FormField
@@ -43,21 +52,24 @@ const AmountField = () => {
           <FormItem>
             <FormLabel>Amount</FormLabel>
             <FormControl>
-              <Input {...field} type="number" value={controlledValue} onChange={(e: React.ChangeEvent<HTMLInputElement>)=> {
-                const val = e.target.value;
+              <div className="flex items-center border gap-1 border-input pr-2 rounded-md group focus-within:ring-offset-2 focus-within:ring-2 focus-within:ring-black">
+                <Input className="border-0 w-[90%] ring-0 focus-visible:ring-offset-0 focus-visible:ring-0" {...field} type="number" value={controlledValue} onChange={(e: React.ChangeEvent<HTMLInputElement>)=> {
+                  const val = e.target.value;
 
-                if(!currentAsset) return;
+                  if(!currentAsset) return;
 
-                // Validate decimal places
-                const [, fraction] = val.split(".");
+                  // Validate decimal places
+                  const [, fraction] = val.split(".");
 
-                if (fraction && fraction.length > currentAsset.decimals) return; // Too many decimals
+                  if (fraction && fraction.length > currentAsset.decimals) return; // Too many decimals
 
-                setControlledValue(val);
+                  setControlledValue(val);
 
-                const newAmount = computeAmount(val, currentAsset);
-                field.onChange(newAmount);
-              }} />
+                  const newAmount = computeAmount(val, currentAsset);
+                  field.onChange(newAmount);
+                }} />
+                <a onClick={setMaxValue} className="text-xs text-primary font-medium cursor-pointer">MAX</a>
+              </div>
             </FormControl>
             <FormMessage />
           </FormItem>

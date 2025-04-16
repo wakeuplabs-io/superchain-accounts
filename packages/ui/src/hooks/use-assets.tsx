@@ -1,4 +1,4 @@
-import { Address } from "viem";
+import { Address, zeroAddress } from "viem";
 import { GetUserTokensResponse } from "schemas";
 import { useAccountBalance } from "@/hooks/use-account-balance";
 import { useUserTokens } from "@/hooks/use-user-tokens";
@@ -7,7 +7,7 @@ import ethLogo from "@/assets/logos/eth-logo.svg";
 
 export type Asset = Pick<GetUserTokensResponse[number], "name" | "symbol" | "decimals" | "balance" | "logoURI"> & {
   native?: boolean,
-  address?: Address,
+  address: Address,
 }
 
 type UseAssetsResult = {
@@ -48,6 +48,7 @@ export function useAssets(): UseAssetsResult {
     balance: accountBalance,
     logoURI: ethLogo,
     native: true,
+    address: zeroAddress
   };
 
   return {

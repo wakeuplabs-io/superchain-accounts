@@ -1,7 +1,7 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { SendAssetType } from "@/hooks/use-send-asset";
+import { SendAssetType } from "./send-asset-dialog";
 
 const DestinationAddressField = () => {
   // const [showScanner, setShowScanner] = useState(false);
