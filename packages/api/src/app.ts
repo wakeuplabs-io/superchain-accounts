@@ -32,6 +32,7 @@ import { SuperchainBadgesService } from "./services/superchain-badges";
 import { ClientFactory } from "./services/client-factory";
 import { BundlerFactory } from "./services/bundler-factory";
 import { UserTokenService } from "./services/user-token";
+import { AaveInteractionPointsEventsHandler } from "./services/points-events/handlers/aave-interaction";
 
 // instantiate services
 
@@ -67,6 +68,7 @@ const pointsEventsService = new PointsEventsService(
     ]),
     new UniqueChainTransactionPointsEventsHandler(db, 5),
     new TokenSwapPointsEventsHandler(db, 5),
+    new AaveInteractionPointsEventsHandler(db, 5)
   ]
 );
 
