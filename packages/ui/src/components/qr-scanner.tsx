@@ -56,15 +56,18 @@ const QRScanner = ({ onScanSuccess, onScanError, onClose, className }: QRScanner
   };
 
   return (
-    <div className="relative">
-      <div id="qr-reader" ref={scannerRef} className={cn("w-full", className)} />
-      <X className="w-8 h-8 text-white absolute top-0 right-0" onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        stopScanner();
-        onClose();
-      }}/>
+    <div className={cn("w-full", className)}>
+      <div className="relative">
+        <div id="qr-reader" ref={scannerRef} className="w-full h-full"/>
+        <X className="w-8 h-8 text-white absolute top-0 right-0 cursor-pointer" onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          stopScanner();
+          onClose();
+        }}/>
+      </div>
     </div>
+    
   );
 };
 
