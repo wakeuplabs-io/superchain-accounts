@@ -2,6 +2,7 @@ import { SessionTypes, SignClientTypes } from "@walletconnect/types";
 import { WalletKit, IWalletKit } from "@reown/walletkit";
 import { Core } from "@walletconnect/core";
 import { WALLET_METADATA } from "@/config/wallet-connect";
+import envParsed from "@/envParsed";
 
 export interface ModalData {
   proposal?: SignClientTypes.EventArguments["session_proposal"];
@@ -37,7 +38,7 @@ export type encodedTransaction = {
 // Returns the walletkit instance
 export async function getWalletKit(): Promise<IWalletKit> {
   const core = new Core({
-    projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID, // TODO: use envParsed()
+    projectId: envParsed().WALLET_CONNECT_PROJECT_ID
   });
 
   // Initialize the walletkit
