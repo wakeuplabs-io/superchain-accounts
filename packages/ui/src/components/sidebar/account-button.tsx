@@ -1,22 +1,12 @@
-import { useAuth } from "@/hooks/use-auth";
 import { useSuperChainAccount } from "@/hooks/use-smart-account";
-import { useRouter } from "@tanstack/react-router";
-import { Button } from "../ui";
+import { Button } from "@/components/ui";
 import { shortenAddress } from "@/lib/address";
-import { Copy, LogOut } from "lucide-react";
+import { Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const AccountButton = () => {
-  // const router = useRouter();
-
-  // const { logout } = useAuth();
   const { account } = useSuperChainAccount();
   const { toast } = useToast();
-
-  // const onLogout = async () => {
-  //   await logout();
-  //   router.history.push("/login");
-  // };
 
   return (
     <Button

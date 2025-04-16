@@ -24,6 +24,7 @@ import { AuthenticatedSidebarMenuButton } from "@/components/sidebar/authenticat
 import { ClaimRaffleTicketsButton } from "@/components/sidebar/claim-raffle-tickets-button";
 import { SuperChainAccountProvider } from "@/hooks/use-smart-account";
 import { AccountButton } from "@/components/sidebar/account-button";
+import { LogoutButton } from "@/components/sidebar/logout-button";
 
 const authenticatedSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -106,6 +107,7 @@ function AuthenticatedLayout() {
             </SidebarContent>
             <SidebarFooter className="flex flex-col px-8 py-14 gap-4">
               <AccountButton />
+              <LogoutButton />
 
               <hr className="border-sidebar-accent" />
 
