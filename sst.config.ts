@@ -1,5 +1,6 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
+const CUSTOMER = "optimism";
 const PROJECT_NAME = "superchain";
 const CUSTOMER = 'optimism';
 
@@ -51,8 +52,7 @@ export default $config({
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         CRONJOB_KEY: process.env.CRONJOB_KEY!,
         MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
-        PRISMA_QUERY_ENGINE_LIBRARY:
-          "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
+        PRISMA_QUERY_ENGINE_LIBRARY: "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
       },
       copyFiles: [
         {
@@ -93,18 +93,15 @@ export default $config({
         VITE_RPC_BASE_SEPOLIA: process.env.RPC_BASE_SEPOLIA!,
         VITE_RPC_OPTIMISM_SEPOLIA: process.env.RPC_OPTIMISM_SEPOLIA!,
         VITE_RPC_UNICHAIN_SEPOLIA: process.env.RPC_UNICHAIN_SEPOLIA!,
-        VITE_ENTRYPOINT_UNICHAIN_SEPOLIA:
-          process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
-        VITE_ENTRYPOINT_OPTIMISM_SEPOLIA:
-          process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
+        VITE_ENTRYPOINT_UNICHAIN_SEPOLIA: process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
+        VITE_ENTRYPOINT_OPTIMISM_SEPOLIA: process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
         VITE_ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
         VITE_EXPLORER_BASE_SEPOLIA: process.env.EXPLORER_BASE_SEPOLIA!,
         VITE_EXPLORER_OPTIMISM_SEPOLIA: process.env.EXPLORER_OPTIMISM_SEPOLIA!,
         VITE_EXPLORER_UNICHAIN_SEPOLIA: process.env.EXPLORER_UNICHAIN_SEPOLIA!,
         VITE_SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
-        VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
-          process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
+        VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
       },
     });
 
