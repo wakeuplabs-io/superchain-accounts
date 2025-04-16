@@ -1,4 +1,4 @@
-import { CloudDownload, Download, Send } from "lucide-react";
+import { CloudDownload, Download, LinkIcon, Send } from "lucide-react";
 import { useState } from "react";
 import { ReceiveTokensDialog } from "@/components/home/receive-tokens-dialog";
 import { useWeb3 } from "@/hooks/use-web3";
@@ -6,6 +6,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { ImportTokensDialog } from "./import-token-dialog";
 import { Button } from "../ui";
 import { SendAssetDialog } from "./send-asset-dialog/send-asset-dialog";
+import { ConnectDialog } from "../wallet-connect/connect-dialog";
 
 export function SmartAccountCard() {
   const { chain } = useWeb3();
@@ -29,26 +30,48 @@ export function SmartAccountCard() {
           </div>
         </div>
         <div className="flex flex-wrap items-start gap-4 w-full">
-          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsSendDialogOpen(true)} disabled={isAccountPending}>
+          <Button
+            className="gap-2 px-6 group"
+            size="lg"
+            variant="outline"
+            onClick={() => setIsSendDialogOpen(true)}
+            disabled={isAccountPending}>
             <Send className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Send</span>
           </Button>
-          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsReceiveDialogOpen(true)} disabled={isAccountPending}>
+          <Button
+            className="gap-2 px-6 group"
+            size="lg"
+            variant="outline"
+            onClick={() => setIsReceiveDialogOpen(true)}
+            disabled={isAccountPending}>
             <Download className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Receive</span>
           </Button>
-          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsImportDialogOpen(true)} disabled={isAccountPending}>
+          <Button
+            className="gap-2 px-6 group"
+            size="lg"
+            variant="outline"
+            onClick={() => setIsImportDialogOpen(true)}
+            disabled={isAccountPending}>
             <CloudDownload className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Import Tokens</span>
           </Button>
+
+          <ConnectDialog>
+            <Button className="gap-2 px-6 group" size="lg" variant="outline">
+              <LinkIcon className="w-5 h-5 group-hover:text-primary" />
+              <span className="text-base">Connect</span>
+            </Button>
+          </ConnectDialog>
         </div>
       </div>
-      {isSendDialogOpen && 
-        <SendAssetDialog 
-          isOpen={isSendDialogOpen} 
+      {isSendDialogOpen && (
+        <SendAssetDialog
+          isOpen={isSendDialogOpen}
           onClose={() => setIsSendDialogOpen(false)}
         />
-      }
+      )}
       {isReceiveDialogOpen && (
         <ReceiveTokensDialog
           isOpen={isReceiveDialogOpen}

@@ -6,33 +6,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useConnectionDialog } from "@/hooks/use-connection-dialog";
-import { DialogType } from "@/lib/wallet-connect";
-import { formatUnits } from "viem";
-import { useState } from "react";
 import { useWalletConnect } from "@/hooks/use-wallet-connect";
+import { DialogType } from "@/lib/wallet-connect";
+import { useState } from "react";
 
-interface ConnectionDialogProps {
+interface RequestDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   type: DialogType;
 }
 
-export function ConnectionDialog({
+export function RequestDialog({
   open,
   onOpenChange,
   type,
-}: ConnectionDialogProps) {
+}: RequestDialogProps) {
   const [isAccepting, setIsAccepting] = useState(false);
 
   const {
+    data,
     handleApproveProposal,
     handleRejectProposal,
     handleRejectRequest,
     handleApproveSignRequest,
-  } = useConnectionDialog(onOpenChange);
-
-  const { data } = useWalletConnect();
+  } = useWalletConnect();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,46 +43,34 @@ export function ConnectionDialog({
                 : "Sign Message"}
           </DialogTitle>
         </DialogHeader>
-        <div className="max-h-[200px] overflow-y-auto">
-          <p className="break-words whitespace-pre-wrap overflow-hidden text-wrap text-muted-foreground">
-            {type === "proposal"
-              ? "Do you want to approve this connection request?"
-              : type === "eth_sendTransaction"
-                ? "Do you want to approve this transaction?"
-                : `Do you want to sign the message?`}
-          </p>
+        <div className=" overflow-y-auto">
+          {type === "personal_sign" && (
+            <div className="border rounded-lg p-3 overflow-x-auto">
+              <pre className="">
+                {JSON.stringify(data.requestEvent?.params, null, 2)}
+              </pre>
+            </div>
+          )}
+
           {type === "eth_sendTransaction" && (
-            <div className="mt-4 space-y-2 border rounded-lg p-3">
-              <h3 className="font-semibold">Send transaction</h3>
-              <div className="space-y-1">
-                {JSON.stringify(data.requestEvent?.params)}
-              </div>
+            <div className="border rounded-lg p-3 ">
+              <pre className="whitespace-pre-wrap break-words">
+                {JSON.stringify(data.requestEvent?.params, null, 2)}
+              </pre>
             </div>
           )}
         </div>
         <DialogFooter className="flex flex-col sm:flex-row gap-2 w-full">
           <Button
-            variant="destructive"
-            onClick={() => {
-              if (type === "proposal") {
-                handleRejectProposal();
-              } else {
-                handleRejectRequest();
-              }
-            }}
-            className="flex-1"
-            disabled={isAccepting}
-          >
-            Reject
-          </Button>
-          <Button
             onClick={async () => {
               setIsAccepting(true);
               try {
                 if (type === "proposal") {
-                  await handleApproveProposal();
+                  await handleApproveProposal().then(() => onOpenChange(false));
                 } else {
-                  await handleApproveSignRequest();
+                  await handleApproveSignRequest().then(() =>
+                    onOpenChange(false)
+                  );
                 }
               } finally {
                 setIsAccepting(false);
@@ -95,6 +80,20 @@ export function ConnectionDialog({
             disabled={isAccepting}
           >
             {isAccepting ? "Accepting..." : "Accept"}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              if (type === "proposal") {
+                handleRejectProposal().then(() => onOpenChange(false));
+              } else {
+                handleRejectRequest().then(() => onOpenChange(false));
+              }
+            }}
+            className="flex-1"
+            disabled={isAccepting}
+          >
+            Reject
           </Button>
         </DialogFooter>
       </DialogContent>

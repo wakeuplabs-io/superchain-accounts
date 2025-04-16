@@ -30,33 +30,21 @@ export type encodedTransaction = {
   to: string;
   from: string;
   data: string;
+  value: string;
 };
 
-let walletKit: IWalletKit | null = null;
-
-// Called when the app is initialized
-export async function initializeWallet() {
-  try {
-    const core = new Core({
-      projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID, // TODO: use envParsed()
-    });
-
-    // Initialize the walletkit
-    walletKit = await WalletKit.init({
-      core,
-      metadata: WALLET_METADATA,
-    });
-
-    return walletKit;
-  } catch (error) {
-    console.error("Failed to initialize wallet:", error);
-  }
-}
 
 // Returns the walletkit instance
-export function getWalletKit(): IWalletKit {
-  if (!walletKit) {
-    throw new Error("WalletKit not initialized");
-  }
+export async function getWalletKit(): Promise<IWalletKit> {
+  const core = new Core({
+    projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID, // TODO: use envParsed()
+  });
+
+  // Initialize the walletkit
+  const walletKit = await WalletKit.init({
+    core,
+    metadata: WALLET_METADATA,
+  });
+
   return walletKit;
 }

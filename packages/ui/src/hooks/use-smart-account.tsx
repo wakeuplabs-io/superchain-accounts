@@ -8,15 +8,15 @@ import {
 } from "react";
 import { Address, Hex, numberToHex, zeroAddress } from "viem";
 import {
-  SimpleSmartAccountImplementation,
-  toSimpleSmartAccount,
-  ToSimpleSmartAccountParameters,
+  SafeSmartAccountImplementation,
+  toSafeSmartAccount,
 } from "permissionless/accounts";
 import { SmartAccount } from "viem/account-abstraction";
 import { transactionService } from "@/services";
 import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
+import { EthereumProvider } from "node_modules/permissionless/_types/utils/toOwner";
 
 export interface SuperChainUserOperation {
   to: Address;
@@ -27,16 +27,15 @@ export interface SuperChainUserOperation {
 type SuperChainAccountStatus = "pending" | "initialized" | "deployed";
 
 type SuperChainAccount = {
-  instance: SmartAccount<SimpleSmartAccountImplementation<"0.7">> | null;
+  instance: SmartAccount<SafeSmartAccountImplementation<"0.7">> | null;
   status: SuperChainAccountStatus;
   address: Address;
 };
 
 type SuperChainAccountContextType = {
   account: SuperChainAccount;
-  sendTransaction: (
-    userOperation: SuperChainUserOperation
-  ) => Promise<`0x${string}`>;
+  sendTransaction: (userOperation: SuperChainUserOperation) => Promise<Hex>;
+  signMessage: (message: string) => Promise<Hex>;
 };
 
 export const SuperChainAccountContext = createContext<
@@ -67,6 +66,17 @@ export function SuperChainAccountProvider({
     status: "pending",
     address: zeroAddress,
   });
+
+  const signMessage = useCallback(
+    async (message: string) => {
+      if (!account.instance) {
+        throw new Error("Account not initialized");
+      }
+
+      return await account.instance.signMessage({ message });
+    },
+    [account.instance]
+  );
 
   const sendTransaction = useCallback(
     async (userOperation: SuperChainUserOperation): Promise<`0x${string}`> => {
@@ -132,8 +142,9 @@ export function SuperChainAccountProvider({
 
   useEffect(() => {
     async function initialize() {
-      const newSmartAccount = await toSimpleSmartAccount({
-        owner: getProvider() as ToSimpleSmartAccountParameters<"0.7">["owner"],
+      const newSmartAccount = await toSafeSmartAccount({
+        owners: [getProvider() as EthereumProvider],
+        version: "1.4.1",
         client: chain.client,
         entryPoint: {
           address: chain.entryPointAddress,
@@ -160,6 +171,7 @@ export function SuperChainAccountProvider({
       value={{
         account,
         sendTransaction,
+        signMessage,
       }}
     >
       {children}
