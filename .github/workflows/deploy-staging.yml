@@ -70,6 +70,7 @@ jobs:
           SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: ${{ secrets.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS }}
           CRONJOB_KEY: ${{ secrets.CRONJOB_KEY }}
           MULTICALL_CONTRACT_ADDRESS: ${{ secrets.MULTICALL_CONTRACT_ADDRESS }}
+          WALLET_CONNECT_PROJECT_ID: ${{ secrets.WALLET_CONNECT_PROJECT_ID }}
 
       - name: Save Outputs
         id: save-outputs

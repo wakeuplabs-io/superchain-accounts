@@ -1,7 +1,7 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 const PROJECT_NAME = "superchain";
-const CUSTOMER = 'optimism';
+const CUSTOMER = "optimism";
 
 export default $config({
   app(input) {
@@ -105,6 +105,7 @@ export default $config({
         VITE_SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
           process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
+        VITE_WALLET_CONNECT_PROJECT_ID: process.env.WALLET_CONNECT_PROJECT_ID!,
       },
     });
 
