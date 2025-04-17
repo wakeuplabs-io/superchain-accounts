@@ -2,113 +2,90 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { SendAssetType } from "./send-asset-dialog";
+import { useState } from "react";
+import QRScanner from "@/components/qr-scanner";
+import { useToast } from "@/hooks/use-toast";
+import { getAddress } from "viem";
+import { ScanQrCode } from "lucide-react";
 
 const DestinationAddressField = () => {
-  // const [showScanner, setShowScanner] = useState(false);
-  // const qrContainerRef = useRef<HTMLDivElement>(null);
-  // useEffect(() => {
-  //   if (showScanner && qrContainerRef.current) {
-  //     const startScanner = async () => {
-  //       try {
-  //         // Obtener lista de cámaras disponibles
-  //         const devices = await navigator.mediaDevices.enumerateDevices();
-  //         const cameras = devices.filter(
-  //           (device) => device.kind === "videoinput"
-  //         );
+  const {control, setValue} = useFormContext<SendAssetType>();
+  const [controlledValue, setControlledValue] = useState("");
+  const [isQRScannerEnabled, setIsQRScannerEnabled] = useState(false);
+  const { toast } = useToast();
 
-  //         // Intentar encontrar la cámara trasera principal
-  //         const rearCamera = cameras.find(
-  //           (camera) =>
-  //             camera.label.toLowerCase().includes("back") ||
-  //             camera.label.toLowerCase().includes("rear") ||
-  //             camera.label.toLowerCase().includes("environment")
-  //         );
+  const handleQRCodeScan = (scannedText: string) => {
+    try {
+      let scannedAddress = scannedText;
 
-  //         const scanner = new Html5QrcodeScanner(
-  //           "qr-scanner",
-  //           {
-  //             qrbox: {
-  //               width: 250,
-  //               height: 250,
-  //             },
-  //             fps: 5,
-  //             videoConstraints: {
-  //               deviceId: rearCamera?.deviceId,
-  //               facingMode: rearCamera ? undefined : "environment",
-  //               aspectRatio: 1,
-  //             },
-  //             showTorchButtonIfSupported: false, // Ocultar botón de flash
-  //             showZoomSliderIfSupported: false, // Ocultar slider de zoom
-  //             defaultZoomValueIfSupported: 1, // Zoom 1x por defecto
-  //           },
-  //           false // verbose
-  //         );
+      if(scannedText.startsWith("ethereum:")){
+        scannedAddress = /(0x[\w]+)/.exec(scannedText)?.[1] || "";
+      }
 
-  //         scanner.render(
-  //           (decodedText) => {
-  //             setToAddress(decodedText);
-  //             scanner.clear();
-  //             setShowScanner(false);
-  //           },
-  //           (error) => {
-  //             console.warn(error);
-  //           }
-  //         );
+      setControlledValue(scannedAddress);
+      setValue("to", getAddress(scannedAddress),{ shouldValidate:true });
+    } catch (error) {
+      toast({
+        title: "Invalid Address",
+        description: "The address you scanned is invalid",
+        variant: "destructive",
+      });
+    } finally {
+      setIsQRScannerEnabled(false);
+    }
+  };
 
-  //         return () => {
-  //           scanner.clear();
-  //         };
-  //       } catch (error) {
-  //         console.error("Error accessing camera:", error);
-  //       }
-  //     };
-
-  //     startScanner();
-  //   }
-  // }, [showScanner]);
-
-
-  // const handleQrScan = () => {
-  //   setShowScanner(true);
-  //   const scanner = new Html5QrcodeScanner(
-  //     "qr-reader",
-  //     {
-  //       qrbox: {
-  //         width: 250,
-  //         height: 250,
-  //       },
-  //       fps: 5,
-  //     },
-  //     false
-  //   );
-
-  //   scanner.render(
-  //     (decodedText) => {
-  //       setToAddress(decodedText);
-  //       scanner.clear();
-  //       setShowScanner(false);
-  //     },
-  //     (error) => {
-  //       console.warn(error);
-  //     }
-  //   );
-  // };
-
-  const { control } = useFormContext<SendAssetType>();
- 
   return  (
     <FormField
       control={control}
       name="to"
-      render={({field}) => {
+      render={({ field }) => {
         return (
-          <FormItem>
-            <FormLabel>To</FormLabel>
-            <FormControl>
-              <Input placeholder="0x3bG05...2742222567" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <div className="flex flex-col items-center gap-4">
+            <FormItem className="w-full">
+              <FormLabel>To</FormLabel>
+              <FormControl>
+                <div className="flex items-center border gap-1 border-input pr-3 rounded-md group focus-within:ring-offset-2 focus-within:ring-2 focus-within:ring-black">
+                  <Input placeholder="0x3bG05...2742222567" {...field} 
+                    value={controlledValue}
+                    onChange={
+                      (e) => {
+                        field.onChange(e.target.value);
+                        setControlledValue(e.target.value);
+                      }}
+                    className="border-0 ring-0 focus-visible:ring-offset-0 focus-visible:ring-0"
+                  />
+                  <ScanQrCode 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsQRScannerEnabled(true);
+                    }}
+                    className="w-6 h-6 text-primary cursor-pointer"
+                  />
+                </div>
+                
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            {isQRScannerEnabled && 
+              <QRScanner
+                onScanSuccess={handleQRCodeScan}
+                onScanError={() => {
+                  toast({
+                    title: "QR Code Scan Error",
+                    description: "An error occurred while accessing your camera. Please try again or enter the address manually.",
+                    variant: "destructive",
+                  });
+                  setIsQRScannerEnabled(false);
+                }}
+                onClose={() => {
+                  setIsQRScannerEnabled(false);
+                }}
+                className="max-w-md"
+              />
+            }
+          </div>
         );}}
     />
   );
