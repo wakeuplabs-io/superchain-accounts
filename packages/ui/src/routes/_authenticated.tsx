@@ -106,13 +106,13 @@ function AuthenticatedLayout() {
               <ClaimRaffleTicketsButton />
             </SidebarContent>
             <SidebarFooter className="flex flex-col px-8 py-14 gap-4">
-              <AccountButton />
               <LogoutButton />
+              <AccountButton />
 
               <hr className="border-sidebar-accent" />
 
               <div className="h-[58px] bg-sidebar-accent rounded-lg flex items-center justify-center">
-                <img className="h-[30px]" src={wakeUpPowered} />
+                <img className="h-full" src={wakeUpPowered} />
               </div>
             </SidebarFooter>
           </Sidebar>
