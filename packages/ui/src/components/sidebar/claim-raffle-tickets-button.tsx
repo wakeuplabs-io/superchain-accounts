@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Ticket } from "lucide-react";
 import React from "react";
 
-export const ClaimRaffleTicketsButton: React.FC<{}> = () => {
+export const ClaimRaffleTicketsButton: React.FC = () => {
   const { currentRaffle, isPending } = useSuperchainRaffle();
 
   if (
