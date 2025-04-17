@@ -14,7 +14,7 @@ export function SmartAccountCard() {
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false);
 
-  if (account.status === "pending") return null;
+  const isAccountPending = account.status === "pending";
 
   return (
     <>
@@ -29,15 +29,15 @@ export function SmartAccountCard() {
           </div>
         </div>
         <div className="flex flex-wrap items-start gap-4 w-full">
-          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsSendDialogOpen(true)}>
+          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsSendDialogOpen(true)} disabled={isAccountPending}>
             <Send className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Send</span>
           </Button>
-          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsReceiveDialogOpen(true)}>
+          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsReceiveDialogOpen(true)} disabled={isAccountPending}>
             <Download className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Receive</span>
           </Button>
-          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsImportDialogOpen(true)}>
+          <Button className="gap-2 px-6 group" size="lg" variant="outline" onClick={() => setIsImportDialogOpen(true)} disabled={isAccountPending}>
             <CloudDownload className="w-5 h-5 group-hover:text-primary" />
             <span className="text-base">Import Tokens</span>
           </Button>

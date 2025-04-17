@@ -5,7 +5,7 @@ import { AuthContextType } from "@/hooks/use-auth";
 
 const TanStackRouterDevtools = envParsed().PROD
   ? () => null // Render nothing in production
-  : () => null
+  : () => null;
   // : React.lazy(() =>
   //     import("@tanstack/router-devtools").then((res) => ({
   //       default: res.TanStackRouterDevtools,
