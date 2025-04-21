@@ -41,7 +41,9 @@ interface WalletContextProps {
   handleRejectProposal: () => Promise<void>;
   handleRejectRequest: () => Promise<void>;
   handleConnect: (uri: string) => Promise<void>;
+  handleDisconnect: () => Promise<void>;
   walletKit: IWalletKit | null;
+  isInitializing: boolean;
 }
 
 const WalletContext = createContext<WalletContextProps | undefined>(undefined);
@@ -52,6 +54,7 @@ export const WalletConnectProvider = ({
   children: ReactNode;
 }) => {
   const [walletKit, setWalletKit] = useState<IWalletKit | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
   const [data, setData] = useState<ModalData>({});
   const [activeSessions, setActiveSessions] = useState<
     Record<string, SessionTypes.Struct>
@@ -60,7 +63,10 @@ export const WalletConnectProvider = ({
 
   useEffect(() => {
     if (!walletKit) {
-      getWalletKit().then(setWalletKit);
+      getWalletKit().then((walletKit) => {
+        setWalletKit(walletKit);
+        setIsInitializing(false);
+      });
     }
   }, [walletKit]);
 
@@ -187,12 +193,14 @@ export const WalletConnectProvider = ({
       toast({
         title: "Connection Rejected",
         description: "Connection rejected",
+        variant: "destructive",
       });
     } catch (error) {
       console.error("Error rejecting session:", error);
       toast({
         title: "Error",
         description: "Error rejecting session",
+        variant: "destructive", // Add variant prop for erro
       });
     }
   }, [data.proposal, walletKit]);
@@ -219,36 +227,45 @@ export const WalletConnectProvider = ({
       toast({
         title: "Request Rejected",
         description: "Request rejected",
+        variant: "destructive",
       });
     } catch (error) {
       console.error("Error rejecting a request:", error);
       toast({
         title: "Error",
         description: "Error rejecting a request",
+        variant: "destructive", 
       });
     }
   }, [data.requestEvent, walletKit]);
 
+  const handleDisconnect = useCallback(async () => {
+    if (!walletKit) {
+      return;
+    }
+    const sessions = await walletKit.getActiveSessions();
+    for (const session of Object.values(sessions)) {
+      await walletKit.disconnectSession({
+        topic: session.topic,
+        reason: { code: 1000, message: "User disconnected" },
+      });
+    }
+
+    setActiveSessions({});
+  }, [walletKit]);
+  
   const handleConnect = useCallback(
     async (uri: string) => {
       if (!walletKit) {
         return;
       }
 
-      const sessions = await walletKit.getActiveSessions();
-
-      for (const session of Object.values(sessions)) {
-        await walletKit.disconnectSession({
-          topic: session.topic,
-          reason: { code: 1000, message: "User disconnected" },
-        });
-      }
+      await handleDisconnect();
 
       await walletKit.pair({ uri });
     },
-    [walletKit]
+    [walletKit, handleDisconnect]
   );
-  
 
   return (
     <WalletContext.Provider
@@ -262,7 +279,9 @@ export const WalletConnectProvider = ({
         handleRejectProposal,
         handleRejectRequest,
         handleConnect,
+        handleDisconnect,
         walletKit,
+        isInitializing
       }}
     >
       {children}

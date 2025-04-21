@@ -112,11 +112,11 @@ function AuthenticatedLayout() {
 
                 <hr className="border-sidebar-accent" />
 
-              <div className="h-[58px] bg-sidebar-accent rounded-lg flex items-center justify-center">
-                <img className="h-full" src={wakeUpPowered} />
-              </div>
-            </SidebarFooter>
-          </Sidebar>
+                <div className="h-[58px] bg-sidebar-accent rounded-lg flex items-center justify-center">
+                  <img className="h-full" src={wakeUpPowered} />
+                </div>
+              </SidebarFooter>
+            </Sidebar>
 
             <main className="bg-[linear-gradient(-21deg,_#FFFFFF,_#F3F3F3)] lg:bg-[linear-gradient(-57deg,_#FFFFFF,_#F3F3F3)] w-full">
               <div className="md:hidden w-full flex items-end justify-start h-[114px] px-6 py-4 bg-[linear-gradient(-72deg,_#FFFFFF,_#F3F3F3)]">

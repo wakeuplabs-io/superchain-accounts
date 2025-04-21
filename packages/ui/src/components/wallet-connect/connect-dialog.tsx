@@ -50,7 +50,9 @@ export const ConnectDialog: React.FC<{ children: React.ReactNode }> = ({
             onClick={() =>
               handleConnect(input)
                 .then(() => setOpen(false))
-                .catch(() => toast({ title: "Error connecting" }))
+                .catch((error) => {
+                  toast({ title: "Error connecting", description: error.message, variant: "destructive" });
+                })
             }
           >
             Connect

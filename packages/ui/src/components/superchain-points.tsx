@@ -16,7 +16,7 @@ export const SuperchainPoints: React.FC<{}> = () => {
       .then(() => {
         toast({
           title: "Points claimed",
-          description: `You have successfully claimed your points`,
+          description: "You have successfully claimed your points",
         });
       })
       .catch((error) => {
