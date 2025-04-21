@@ -186,6 +186,7 @@ export const WalletConnectProvider = ({
       console.error("Error responding to session request:", error);
       toast({
         title: "Error",
+        variant: "destructive",       
         description: "Error responding to session request",
       });
     }
