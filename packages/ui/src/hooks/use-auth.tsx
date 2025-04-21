@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
 import { createContext, ReactNode, useCallback, useRef } from "react";
+import { useWeb3 } from "./use-web3";
+import { Hex, hexToNumber } from "viem";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -8,6 +10,7 @@ export interface AuthContextType {
   login: () => Promise<void>;
   logout: () => Promise<void>;
   getProvider: () => TorusInpageProvider;
+  updateProviderChain: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -28,6 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       buttonPosition: "bottom-right",
     })
   );
+
+  const { chain } = useWeb3();
 
   const initialize = useCallback(async () => {
     if (!torus.current.isInitialized) {
@@ -64,6 +69,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return torus.current.provider;
   };
 
+  const updateProviderChain = async () => {
+    if(hexToNumber((torus.current.provider.chainId ?? "0x") as Hex) === chain.id) {
+      return;
+    }
+
+    return torus.current.setProvider({
+      host: chain.rpcUrl,
+      chainId: chain.id,
+      networkName: chain.name,
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -72,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         getProvider,
+        updateProviderChain
       }}
     >
       {children}

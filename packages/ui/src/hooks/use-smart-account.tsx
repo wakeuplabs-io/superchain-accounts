@@ -58,7 +58,7 @@ export function SuperChainAccountProvider({
   children: ReactNode;
 }) {
   const { chain, currentChainId } = useWeb3();
-  const { getProvider } = useAuth();
+  const { getProvider, updateProviderChain } = useAuth();
   const queryClient = useQueryClient();
 
   const [account, setAccount] = useState<SuperChainAccount>({
@@ -85,6 +85,8 @@ export function SuperChainAccountProvider({
       }
 
       try {
+        await updateProviderChain();
+
         const { account: _, ...preparedUserOperation } =
           await chain.bundler.prepareUserOperation({
             account: account.instance,

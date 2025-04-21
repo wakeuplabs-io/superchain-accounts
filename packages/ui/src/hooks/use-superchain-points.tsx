@@ -43,8 +43,8 @@ export const useSuperchainPoints = () => {
       );
 
       return {
-        balance: (balance.result as bigint) ?? 0,
-        claimable: (claimable.result as bigint) ?? 0,
+        balance: (balance.result as bigint) ?? 0n,
+        claimable: (claimable.result as bigint) ?? 0n,
         events,
       };
     },
