@@ -14,12 +14,12 @@ type UseAssetsResult = {
    isPending: true
    data: null,
    error: null
-  invalidateAssetData: (asset: Asset) => void
+  invalidateAssetData: (asset?: Asset) => void
 } | {
   isPending: false,
   error?: Error | null,
   data: Asset[],
-  invalidateAssetData: (asset: Asset) => void
+  invalidateAssetData: (asset?: Asset) => void
 };
 
 export function useAssets(): UseAssetsResult {
@@ -27,7 +27,13 @@ export function useAssets(): UseAssetsResult {
   const { status: accountBalanceStatus, data: accountBalance, error: accountBalanceError, invalidateAccountBalance } = useAccountBalance();
   const { status: userTokensStatus, data: userTokens, error: userTokensError, invalidateUserTokens } = useUserTokens();
 
-  const invalidateAssetData = (asset: Asset) => {
+  const invalidateAssetData = (asset?: Asset) => {
+    if (!asset) {
+      invalidateAccountBalance();
+      invalidateUserTokens();
+      return;
+    }
+
     if (asset.native) {
       invalidateAccountBalance();
     } else {

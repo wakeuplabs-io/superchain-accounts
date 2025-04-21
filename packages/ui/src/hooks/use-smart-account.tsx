@@ -17,6 +17,7 @@ import { useWeb3 } from "@/hooks/use-web3";
 import { useAuth } from "@/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { EthereumProvider } from "node_modules/permissionless/_types/utils/toOwner";
+import { ChainMetadata } from "@/config/chains";
 
 export interface SuperChainUserOperation {
   to: Address;
@@ -34,7 +35,7 @@ type SuperChainAccount = {
 
 type SuperChainAccountContextType = {
   account: SuperChainAccount;
-  sendTransaction: (userOperation: SuperChainUserOperation) => Promise<Hex>;
+  sendTransaction: (userOperation: SuperChainUserOperation, chainId?: number) => Promise<Hex>;
   signMessage: (message: string) => Promise<Hex>;
 };
 
@@ -57,7 +58,7 @@ export function SuperChainAccountProvider({
 }: {
   children: ReactNode;
 }) {
-  const { chain, currentChainId } = useWeb3();
+  const { chain, currentChainId, setCurrentChainId, getChain} = useWeb3();
   const { getProvider, updateProviderChain } = useAuth();
   const queryClient = useQueryClient();
 
@@ -78,92 +79,111 @@ export function SuperChainAccountProvider({
     [account.instance]
   );
 
-  const sendTransaction = useCallback(
-    async (userOperation: SuperChainUserOperation): Promise<`0x${string}`> => {
-      if (account.status === "pending" || !account.instance) {
-        return "0x0";
+  const sendTransaction = async (userOperation: SuperChainUserOperation, chainId?: number): Promise<`0x${string}`> => {
+    if (account.status === "pending" || !account.instance) {
+      return "0x0";
+    }
+
+    try {
+      let opChain: ChainMetadata | undefined = chain;
+      let superChainAccount: SuperChainAccount = account;
+
+      if(chainId && chainId !== chain.id) {
+        opChain = getChain(chainId);
+
+        if(!opChain) {
+          throw new Error("Chain not supported");
+        }
+
+        superChainAccount = await initializeAccount(opChain);
+        setCurrentChainId(opChain.id);
+      } 
+
+      if(!superChainAccount.instance) {
+        throw new Error("Account not initialized");
       }
 
-      try {
-        await updateProviderChain();
+      await updateProviderChain(opChain);
 
-        const { account: _, ...preparedUserOperation } =
-          await chain.bundler.prepareUserOperation({
-            account: account.instance,
+      const { account: _, ...preparedUserOperation } =
+          await opChain.bundler.prepareUserOperation({
+            account: superChainAccount.instance,
             calls: [{ ...userOperation }],
           });
 
-        const signature = await account.instance.signUserOperation(
-          preparedUserOperation
-        );
+      const signature = await superChainAccount.instance.signUserOperation(
+        preparedUserOperation
+      );
 
-        const txHash = await transactionService.sendUserOperation({
-          chainId: String(chain.id),
-          operation: {
-            ...preparedUserOperation,
-            initCode: "",
-            nonce: numberToHex(preparedUserOperation.nonce),
-            callGasLimit: numberToHex(preparedUserOperation.callGasLimit),
-            verificationGasLimit: numberToHex(
-              preparedUserOperation.verificationGasLimit
-            ),
-            preVerificationGas: numberToHex(
-              preparedUserOperation.preVerificationGas
-            ),
-            maxFeePerGas: numberToHex(preparedUserOperation.maxFeePerGas),
-            maxPriorityFeePerGas: numberToHex(
-              preparedUserOperation.maxPriorityFeePerGas
-            ),
-            paymasterVerificationGasLimit:
+      const txHash = await transactionService.sendUserOperation({
+        chainId: String(opChain.id),
+        operation: {
+          ...preparedUserOperation,
+          initCode: "",
+          nonce: numberToHex(preparedUserOperation.nonce),
+          callGasLimit: numberToHex(preparedUserOperation.callGasLimit),
+          verificationGasLimit: numberToHex(
+            preparedUserOperation.verificationGasLimit
+          ),
+          preVerificationGas: numberToHex(
+            preparedUserOperation.preVerificationGas
+          ),
+          maxFeePerGas: numberToHex(preparedUserOperation.maxFeePerGas),
+          maxPriorityFeePerGas: numberToHex(
+            preparedUserOperation.maxPriorityFeePerGas
+          ),
+          paymasterVerificationGasLimit:
               preparedUserOperation.paymasterVerificationGasLimit &&
               numberToHex(preparedUserOperation.paymasterVerificationGasLimit),
-            paymasterPostOpGasLimit:
+          paymasterPostOpGasLimit:
               preparedUserOperation.paymasterPostOpGasLimit &&
               numberToHex(preparedUserOperation.paymasterPostOpGasLimit),
-            signature,
-          },
-        });
-
-        await Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: ["superchainPoints", account.address, chain.id],
-          }),
-          queryClient.invalidateQueries({
-            queryKey: ["superchainBadges", account.address, chain.id],
-          }),
-        ]);
-
-        return txHash;
-      } catch (error) {
-        console.error("Error sending transaction:", error);
-        throw error;
-      }
-    },
-    [account, chain]
-  );
-
-  useEffect(() => {
-    async function initialize() {
-      const newSmartAccount = await toSafeSmartAccount({
-        owners: [getProvider() as EthereumProvider],
-        version: "1.4.1",
-        client: chain.client,
-        entryPoint: {
-          address: chain.entryPointAddress,
-          version: "0.7",
+          signature,
         },
       });
 
-      const isDeployed = await newSmartAccount.isDeployed();
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["superchainPoints", superChainAccount.address, opChain.id],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["superchainBadges", superChainAccount.address, opChain.id],
+        }),
+      ]);
 
-      setAccount({
-        instance: newSmartAccount,
-        status: isDeployed ? "deployed" : "initialized",
-        address: newSmartAccount.address,
-      });
+      return txHash;
+    } catch (error) {
+      console.error("Error sending transaction:", error);
+      throw error;
     }
+  };
 
-    initialize().catch((error) => {
+  const initializeAccount = async (chain: ChainMetadata): Promise<SuperChainAccount> => {
+    const newSmartAccount = await toSafeSmartAccount({
+      owners: [getProvider() as EthereumProvider],
+      version: "1.4.1",
+      client: chain.client,
+      entryPoint: {
+        address: chain.entryPointAddress,
+        version: "0.7",
+      },
+    });
+
+    const isDeployed = await newSmartAccount.isDeployed();
+
+    const newAccount: SuperChainAccount = {
+      instance: newSmartAccount,
+      status: isDeployed ? "deployed" : "initialized",
+      address: newSmartAccount.address,
+    };
+
+    setAccount(newAccount);
+
+    return newAccount;
+  };
+
+  useEffect(() => {
+    initializeAccount(chain).catch((error) => {
       console.error("Error initializing smart account:", error);
     });
   }, [currentChainId, chain, getProvider]);

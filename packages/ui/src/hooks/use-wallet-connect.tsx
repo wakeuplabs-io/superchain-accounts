@@ -17,10 +17,10 @@ import {
   SUPPORTED_EVENTS,
   SUPPORTED_METHODS,
 } from "@/config/wallet-connect";
-import { QueryClient } from "@tanstack/react-query";
 import { toast } from "./use-toast";
 import { IWalletKit } from "@reown/walletkit";
 import { useSuperChainAccount } from "./use-smart-account";
+import { useAssets } from "./use-assets";
 
 interface ModalData {
   proposal?: SignClientTypes.EventArguments["session_proposal"];
@@ -60,6 +60,7 @@ export const WalletConnectProvider = ({
     Record<string, SessionTypes.Struct>
   >({});
   const { account, signMessage, sendTransaction } = useSuperChainAccount();
+  const { invalidateAssetData } = useAssets();
 
   useEffect(() => {
     if (!walletKit) {
@@ -69,6 +70,16 @@ export const WalletConnectProvider = ({
       });
     }
   }, [walletKit]);
+
+  const getChainIdFromRequest = (requestChain: string) => {
+    if(!SUPPORTED_CHAINS.includes(requestChain)) {
+      throw new Error("Unsupported chain");
+    }
+
+    const chainId = parseInt(requestChain.split(":")[1]);
+
+    return chainId;
+  };
 
   // Called when the user approves the connection proposal
   const handleApproveProposal = useCallback(async () => {
@@ -146,11 +157,14 @@ export const WalletConnectProvider = ({
         const transaction = data.requestEvent?.params?.request
           ?.params[0] as encodedTransaction;
 
+        const transactionChainId = getChainIdFromRequest(data.requestEvent?.params?.chainId);
+
         const txn = await sendTransaction({
           to: transaction.to as Address,
           value: BigInt(transaction.value ?? "0"),
           data: transaction.data as Hex,
-        });
+        }, 
+        transactionChainId);
 
         await walletKit.respondSessionRequest({
           topic: data.requestEvent?.topic as string,
@@ -166,8 +180,7 @@ export const WalletConnectProvider = ({
           description: "Transaction sent successfully",
         });
 
-        const queryClient = new QueryClient();
-        queryClient.invalidateQueries({ queryKey: ["balances"] });
+        invalidateAssetData();
       }
     } catch (error) {
       console.error("Error responding to session request:", error);
@@ -243,6 +256,7 @@ export const WalletConnectProvider = ({
     if (!walletKit) {
       return;
     }
+
     const sessions = await walletKit.getActiveSessions();
     for (const session of Object.values(sessions)) {
       await walletKit.disconnectSession({

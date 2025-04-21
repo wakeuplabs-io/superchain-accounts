@@ -34,7 +34,7 @@ export function RequestDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {type === "proposal"
@@ -51,7 +51,7 @@ export function RequestDialog({
               <a
                 target="_blank"
                 href={data.proposal?.params.proposer.metadata.url}
-                className="font-semibold text-primary underline"
+                className="font-semibold text-primary underline" rel="noreferrer"
               >
                 {data.proposal?.params.proposer.metadata.name}
               </a>{" "}
