@@ -1,7 +1,7 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 const PROJECT_NAME = "superchain";
-const CUSTOMER = 'optimism';
+const CUSTOMER = "optimism";
 
 export default $config({
   app(input) {
@@ -53,6 +53,9 @@ export default $config({
         MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
         PRISMA_QUERY_ENGINE_LIBRARY:
           "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
+        AAVE_CONTRACT_ADDRESS_UNICHAIN: process.env.AAVE_CONTRACT_ADDRESS_UNICHAIN!,
+        AAVE_CONTRACT_ADDRESS_OPTIMISM: process.env.AAVE_CONTRACT_ADDRESS_OPTIMISM!,
+        AAVE_CONTRACT_ADDRESS_BASE: process.env.AAVE_CONTRACT_ADDRESS_BASE!,
       },
       copyFiles: [
         {
@@ -105,6 +108,7 @@ export default $config({
         VITE_SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
           process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
+        VITE_WALLET_CONNECT_PROJECT_ID: process.env.WALLET_CONNECT_PROJECT_ID!,
       },
     });
 

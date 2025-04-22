@@ -52,7 +52,7 @@ export class TransactionService implements ITransactionService {
 
       const decoded = decodeFunctionData({
         abi: parseAbi([
-          "function execute(address target, uint256 value, bytes data)",
+          "function executeUserOpWithErrorString(address to, uint256 value, bytes data, uint8 operation)",
         ]),
         data: opData.callData as `0x${string}`,
       });

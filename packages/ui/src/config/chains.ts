@@ -13,6 +13,7 @@ export interface ChainMetadata {
   order: number;
   logo: string;
   nativeCurrency: Chain["nativeCurrency"],
+  rpcUrl: string;
   entryPointAddress: Address;
   client: PublicClient;
   bundler: BundlerClient;
@@ -61,6 +62,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     id: optimismSepolia.id,
     name: optimismSepolia.name,
     logo: optimismChainLogo,
+    rpcUrl: envParsed().RPC_OPTIMISM_SEPOLIA,
     nativeCurrency: optimismSepolia.nativeCurrency,
     client: clients[optimismSepolia.id],
     bundler: bundlers[optimismSepolia.id],
@@ -71,8 +73,9 @@ export const supportedChains: Record<number, ChainMetadata> = {
     order: 2,
     id: baseSepolia.id,
     name: baseSepolia.name,
-    nativeCurrency: baseSepolia.nativeCurrency,
     logo: baseChainLogo,
+    rpcUrl: envParsed().RPC_BASE_SEPOLIA,
+    nativeCurrency: baseSepolia.nativeCurrency,
     client: clients[baseSepolia.id],
     bundler: bundlers[baseSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_BASE_SEPOLIA,
@@ -82,8 +85,9 @@ export const supportedChains: Record<number, ChainMetadata> = {
     order: 3,
     id: unichainSepolia.id,
     name: unichainSepolia.name,
-    nativeCurrency: unichainSepolia.nativeCurrency,
     logo: unichainChainLogo,
+    rpcUrl: envParsed().RPC_UNICHAIN_SEPOLIA,
+    nativeCurrency: unichainSepolia.nativeCurrency,
     client: clients[unichainSepolia.id],
     bundler: bundlers[unichainSepolia.id],
     entryPointAddress: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,

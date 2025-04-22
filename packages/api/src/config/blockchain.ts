@@ -32,4 +32,12 @@ export const SMART_ACCOUNTS: {
   },
 };
 
+export const AAVE_CONTRACT_ADDRESS: {
+  [chainId: string]: `0x${string}`;
+} = {
+  [UNICHAIN_CHAIN_ID]: envParsed().AAVE_CONTRACT_ADDRESS_UNICHAIN as `0x${string}`,
+  [BASE_CHAIN_ID]: envParsed().AAVE_CONTRACT_ADDRESS_BASE as `0x${string}`,
+  [OPTIMISM_CHAIN_ID]: envParsed().AAVE_CONTRACT_ADDRESS_OPTIMISM as `0x${string}`,
+};
+
 export const OWNER_PRIVATE_KEY = envParsed().OWNER_PRIVATE_KEY as `0x${string}`;

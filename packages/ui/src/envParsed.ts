@@ -25,6 +25,8 @@ const env = {
   SUPERCHAIN_POINTS_ADDRESS: import.meta.env.VITE_SUPERCHAIN_POINTS_ADDRESS,
   SUPERCHAIN_BADGES_ADDRESS: import.meta.env.VITE_SUPERCHAIN_BADGES_ADDRESS,
   SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: import.meta.env.VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS,
+  WALLET_CONNECT_PROJECT_ID: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+
 };
 
 const envSchema = z
@@ -45,9 +47,10 @@ const envSchema = z
     EXPLORER_BASE_SEPOLIA: z.string().url(),
     EXPLORER_OPTIMISM_SEPOLIA: z.string().url(),
     EXPLORER_UNICHAIN_SEPOLIA: z.string().url(),
-    SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: z.string().startsWith("0x"),
     SUPERCHAIN_POINTS_ADDRESS: z.string().startsWith("0x"),
     SUPERCHAIN_BADGES_ADDRESS: z.string().startsWith("0x"),
+    SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: z.string().startsWith("0x"),
+    WALLET_CONNECT_PROJECT_ID: z.string(),
   });
 
 const envParsed = () => envSchema.parse(env);

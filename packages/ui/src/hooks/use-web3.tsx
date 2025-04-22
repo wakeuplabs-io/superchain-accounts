@@ -10,6 +10,7 @@ interface Web3ContextType {
   chain: ChainMetadata;
   currentChainId: number;
   setCurrentChainId: (chainId: number) => void;
+  getChain: (chainId: number) => ChainMetadata | undefined;
 }
 
 export const Web3Context = createContext<Web3ContextType | undefined>(
@@ -31,12 +32,17 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     return supportedChains[currentChainId];
   }, [currentChainId]);
 
+  const getChain = (chainId: number) => {
+    return supportedChains[chainId];
+  };
+
   return (
     <Web3Context.Provider
       value={{
         chain,
         currentChainId,
         setCurrentChainId,
+        getChain
       }}
     >
       {children}
