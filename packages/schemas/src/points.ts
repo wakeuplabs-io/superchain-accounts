@@ -14,3 +14,9 @@ export const GetPointsQuery = z.object({
     })
     .optional(),
 });
+
+export const claimPointsBodySchema = z.array(
+  z.coerce.number()
+).min(1, "Addresses are required");
+
+export type ClaimPointsBody = z.infer<typeof claimPointsBodySchema>;
