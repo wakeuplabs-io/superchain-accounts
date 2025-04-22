@@ -1,5 +1,6 @@
 import { Axios } from "axios";
-import { GetUserTokensRequest, GetUserTokensResponse, getUserTokensResponseScheme, ImportUserTokenRequest, UserToken } from "schemas";
+import { GetUserTokensRequest, GetUserTokensResponse, getUserTokensResponseScheme, ImportUserTokenRequest, Profile, UserToken } from "schemas";
+import { Address } from "viem";
 
 export class UserService  {
   constructor(private readonly axios: Axios) {}
@@ -14,5 +15,15 @@ export class UserService  {
     const { data } = await this.axios.post<UserToken>(`/users/${request.userWallet}/tokens`, request);
     
     return data;
+  }
+
+  async getProfile(wallet: Address): Promise<Profile> {
+    const {data: response} = await this.axios.get(`/users/${wallet}/profile`);
+
+    if(!response) {
+      throw new Error("User not found");
+    }
+
+    return response.data.profile as Profile;
   }
 }

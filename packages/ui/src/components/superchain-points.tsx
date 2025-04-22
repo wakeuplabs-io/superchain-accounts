@@ -122,7 +122,7 @@ export const SuperchainPoints: React.FC = () => {
           className="w-full"
           loading={isClaiming}
           onClick={onClaim}
-          // disabled={claimable <= 0}
+          disabled={claimable <= 0}
         >
           Claim {claimable > 0n && claimable.toString()} Points
         </Button>
