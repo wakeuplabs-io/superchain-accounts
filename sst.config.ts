@@ -53,6 +53,9 @@ export default $config({
         MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
         PRISMA_QUERY_ENGINE_LIBRARY:
           "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
+        AAVE_CONTRACT_ADDRESS_UNICHAIN: process.env.AAVE_CONTRACT_ADDRESS_UNICHAIN!,
+        AAVE_CONTRACT_ADDRESS_OPTIMISM: process.env.AAVE_CONTRACT_ADDRESS_OPTIMISM!,
+        AAVE_CONTRACT_ADDRESS_BASE: process.env.AAVE_CONTRACT_ADDRESS_BASE!,
       },
       copyFiles: [
         {

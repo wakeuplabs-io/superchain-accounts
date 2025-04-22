@@ -5,9 +5,10 @@ import {
   PrismaClient,
 } from "@prisma/client";
 import { IPointsEventsHandler } from "@/domain/points";
+import { AAVE_CONTRACT_ADDRESS } from "@/config/blockchain";
 
 export class AaveInteractionPointsEventsHandler
-  implements IPointsEventsHandler
+implements IPointsEventsHandler
 {
   constructor(
     private repo: PrismaClient,
@@ -15,8 +16,10 @@ export class AaveInteractionPointsEventsHandler
   ) {}
 
   async handle(tx: Transaction): Promise<PointEvent[]> {
+    const aaveContract = AAVE_CONTRACT_ADDRESS[tx.chainId];
+
     // TODO: update this, ideally attempt decoding data
-    if (tx.to != "0x589750BA8aF186cE5B55391B0b7148cAD43a1619") {
+    if (!aaveContract  || tx.to !== aaveContract) {
       return [];
     }
 
