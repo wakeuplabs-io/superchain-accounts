@@ -11,7 +11,6 @@ export const AccountSummary: React.FC = () => {
 
   return (
     <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
-      {/* <div className="space-y-1"> */}
       <div className="flex flex-col w-full md:max-w-[390px] gap-3">
         {isProfilePending ? (
           <>
@@ -32,8 +31,6 @@ export const AccountSummary: React.FC = () => {
             </div>
           </>
         )}
-          
-        {/* </div> */}
       </div>
 
       <div className="grid grid-cols-2 divide-x lg:border-l">
