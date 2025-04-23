@@ -7,6 +7,7 @@ const defaultProfile: Profile = {
   position: {
     current: 0,
     total: 100,
+    percentile: 100,
   }
 };
 
