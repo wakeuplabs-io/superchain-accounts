@@ -11,7 +11,6 @@ export interface IUserService {
   getProfile(address: Address): Promise<Profile>;
 }
 
-
 export interface UserPosition {
   user: Address;
   totalPoints: number;
