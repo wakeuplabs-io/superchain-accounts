@@ -28,7 +28,7 @@ export const AccountSummary: React.FC = () => {
                 <span className="text-base font-medium">Position:</span>
                 <span className="text-base font-semibold">{profile.position.current}/{profile.position.total}</span>
               </div>
-              <Progress value={profile.position.current} max={profile.position.total} />
+              <Progress value={Math.round((profile.position.current / profile.position.total) * 100)}  />
             </div>
           </>
         )}
