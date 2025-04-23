@@ -1,18 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { IUserService } from "@/domain/users";
+import { IUserService, UserPosition, UserRank } from "@/domain/users";
 import { Profile } from "schemas";
 import { Address } from "viem";
 
-type UserPosition = {
-  user: Address;
-  totalPoints: number;
-  current: number;
-  total: number;
-  percentile: number;
-}
-
 export class UsersService implements IUserService {
-  constructor(private repo: PrismaClient) {}
+  private userRanks: UserRank[];
+  
+  constructor(private repo: PrismaClient, userRanks: UserRank[]) {
+    this.userRanks = userRanks.sort((a, b) => b.minPoints - a.minPoints);
+  }
 
   async getProfile(wallet: Address): Promise<Profile> {
     await this.registerUser(wallet);
@@ -23,9 +19,10 @@ export class UsersService implements IUserService {
       throw new Error("User not found");
     }
 
-    const { current, total, percentile } = result;
+    const { current, total, totalPoints, percentile } = result;
 
     return {
+      rank: this.getUserRank(totalPoints)?.rank ?? "",
       position: {
         current,
         total,
@@ -44,6 +41,10 @@ export class UsersService implements IUserService {
       },
       update: {},
     });
+  }
+
+  private getUserRank(points: number): UserRank | undefined {
+    return this.userRanks.find((rank) => points >= rank.minPoints);
   }
 
   private async getUserPosition(wallet: Address): Promise<UserPosition>  {

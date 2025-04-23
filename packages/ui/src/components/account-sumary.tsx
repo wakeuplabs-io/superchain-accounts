@@ -19,7 +19,7 @@ export const AccountSummary: React.FC = () => {
         ) : (
           <>
             <h1 className="font-semibold text-2xl text-center lg:text-left">
-                Superchain Sparrow
+              {profile.rank}
             </h1>
             <div className="flex flex-row justify-between">
               <div>

@@ -34,6 +34,7 @@ import { BundlerFactory } from "./services/bundler-factory";
 import { UserTokenService } from "./services/user-token";
 import { AaveInteractionPointsEventsHandler } from "./services/points-events/handlers/aave-interaction";
 import { UsersService } from "./services/users";
+import { userRanks } from "./domain/users";
 
 // instantiate services
 
@@ -89,7 +90,7 @@ const badgesEventsService = new BadgeEventsService(
 );
 
 const userTokenService = new UserTokenService(db, clientFactory);
-const userService = new UsersService(db);
+const userService = new UsersService(db, userRanks);
 
 // instantiate express
 
