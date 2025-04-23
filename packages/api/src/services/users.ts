@@ -32,7 +32,7 @@ export class UsersService implements IUserService {
   }
 
   private async getUserPosition(wallet: Address): Promise<UserPosition>  {
-    const result = await this.repo.$queryRawUnsafe(`
+    const result = await this.repo.$queryRawUnsafe<{ user: string, total_points: bigint, rank: bigint, total: bigint, percentile: number }>(`
         WITH user_points AS (
         SELECT 
             "user",
@@ -73,7 +73,7 @@ export class UsersService implements IUserService {
         WHERE NOT EXISTS (SELECT 1 FROM target_user)`
     , wallet);
 
-    const userPosition = (result as UserPosition)[0];
+    const userPosition = result[0];
 
     return {
       ...userPosition,
