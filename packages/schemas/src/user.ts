@@ -9,6 +9,7 @@ export const profileSchema = z.object({
   position: z.object({
     current: z.number(),
     total: z.number(),
+    percentile: z.number(),
   })
 });
 
