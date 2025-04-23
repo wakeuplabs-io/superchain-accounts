@@ -25,6 +25,7 @@ const mockPointEvent: PointEvent = {
   data: "0x0",
   value: 1,
   minted: false,
+  claimed: false,
 };
 
 describe("PointsEventsService", () => {
