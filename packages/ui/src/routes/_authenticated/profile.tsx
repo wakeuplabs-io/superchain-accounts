@@ -19,7 +19,7 @@ function Profile() {
 
       <AccountSummary />
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-[2fr_0.5fr_4fr] gap-6">
         <SuperchainRaffle />
 
         <SuperchainPoints />

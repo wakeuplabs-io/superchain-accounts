@@ -5,6 +5,9 @@ import envParsed from "@/envParsed";
 import { encodeFunctionData, zeroAddress } from "viem";
 import superchainBadges from "@/config/abis/superchain-badges";
 import { AVAILABLE_BADGES } from "@/config/badges";
+import { Badge } from "@/config/badges";
+
+export type SuperchainBadge = Badge & {status: "pending" | "claimed" | "unclaimed"};
 
 export const useSuperchainBadges = () => {
   const { chain } = useWeb3();
@@ -14,7 +17,7 @@ export const useSuperchainBadges = () => {
   } = useSuperChainAccount();
   const queryClient = useQueryClient();
 
-  const { data: superchainBadgesState, isPending: isStatePending } = useQuery({
+  const { data: superChainBadges, isPending: isStatePending } = useQuery({
     refetchOnMount: true,
     enabled: address != zeroAddress,
     queryKey: ["superchainBadges", address ?? "0x0", chain.id],
@@ -39,14 +42,17 @@ export const useSuperchainBadges = () => {
         ],
       });
 
-      return {
-        badges: AVAILABLE_BADGES[chain.id].filter(
-          (_, i) => (balances.result as bigint[])![i] > 0n
-        ),
-        claimable: AVAILABLE_BADGES[chain.id].filter((b) =>
-          (claimable.result as bigint[]).includes(b.id)
-        ),
-      };
+      return AVAILABLE_BADGES[chain.id].map((badge, index) => {
+        return {
+          ...badge,
+          status:
+             (balances.result as bigint[])![index] > 0n
+               ? "claimed"
+               : (claimable.result as bigint[]).includes(badge.id)
+                 ? "unclaimed"
+                 : "pending",
+        };
+      });
     },
   });
 
@@ -70,9 +76,8 @@ export const useSuperchainBadges = () => {
   });
 
   return {
-    isPending: isStatePending || superchainBadgesState === undefined,
-    claimable: superchainBadgesState?.claimable ?? [],
-    badges: superchainBadgesState?.badges ?? [],
+    isPending: isStatePending || superChainBadges === undefined,
+    badges: superChainBadges,
     isClaiming,
     claim,
   };

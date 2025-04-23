@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -6,9 +6,10 @@ import { useSuperchainBadges } from "@/hooks/use-superchain-badges";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import emptySvg from "@/assets/empty.svg";
+import { cn } from "@/lib/utils";
 
-export const SuperchainBadges: React.FC<{}> = () => {
-  const { isPending, claim, claimable, isClaiming, badges } =
+export const SuperchainBadges: React.FC = () => {
+  const { isPending, claim, isClaiming, badges } =
     useSuperchainBadges();
 
   const onClaim = useCallback(
@@ -17,7 +18,7 @@ export const SuperchainBadges: React.FC<{}> = () => {
         .then(() => {
           toast({
             title: "Badge claimed",
-            description: `You have successfully claimed your badge`,
+            description: "You have successfully claimed your badge",
           });
         })
         .catch((error) => {
@@ -30,9 +31,33 @@ export const SuperchainBadges: React.FC<{}> = () => {
     [claim]
   );
 
+  const sortedBadges = useMemo(() => badges ? badges.sort((a, b) => {
+    if (a.status === b.status) {
+      return a.id > b.id ? 1 : -1;
+    }
+
+    if (a.status === "unclaimed") {
+      return -1;
+    }
+
+    if(a.status === "claimed" && b.status === "pending") {
+      return -1;
+    }
+
+    if(b.status === "unclaimed") {
+      return 1;
+    }
+
+    if(b.status === "claimed" && a.status === "pending") {
+      return 1;
+    }
+  
+    return 0;
+  }) : [], [badges]);
+
   if (isPending) {
     return (
-      <div>
+      <div className="w-full">
         <div className="mb-4 font-medium">Accomplishments</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
@@ -43,7 +68,7 @@ export const SuperchainBadges: React.FC<{}> = () => {
     );
   }
 
-  if (claimable.length === 0 && badges.length === 0) {
+  if (!badges || badges.length === 0) {
     return (
       <div>
         <div className="mb-4 font-medium">Accomplishments</div>
@@ -60,45 +85,42 @@ export const SuperchainBadges: React.FC<{}> = () => {
     );
   }
 
+
   return (
     <div>
       <div className="mb-4 font-medium">Accomplishments</div>
       <ScrollArea className="h-full">
-        <ul className="grid grid-cols gap-2">
-          {claimable.map((badge) => (
-            <li
+        <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
+          {sortedBadges.map((badge) => (
+            <div
               key={badge.id}
-              className="flex gap-3 items-center p-6 border rounded-lg bg-white border-primary h-[85px]"
+              className={cn(
+                "flex gap-3 items-center p-6 rounded-lg bg-white h-[85px] shadow-sm",
+                {
+                  "border border-primary": badge.status === "unclaimed",
+                }
+              )}
             >
               <img src={badge.image} alt="" className="h-[38px] w-[38px]" />
               <div className="space-y-0.5">
                 <div className="font-semibold text-sm">{badge.name}</div>
-                <Button
-                  onClick={() => onClaim(badge.id)}
-                  loading={isClaiming}
-                  className="flex items-center px-0 py-0 h-5 text-xs"
-                  variant="link"
-                >
-                  <span>Claim Badge</span>
-                  <ArrowRight className="h-3 w-3" />
-                </Button>
+                {badge.status === "unclaimed" ? (
+                  <Button
+                    onClick={() => onClaim(badge.id)}
+                    loading={isClaiming}
+                    className="flex items-center px-0 py-0 h-5 text-xs"
+                    variant="link"
+                  >
+                    <span>Claim Badge</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                ) : (
+                  <div className="text-xs">{badge.description}</div>
+                )}
               </div>
-            </li>
+            </div>
           ))}
-
-          {badges.map((badge) => (
-            <li
-              key={badge.id}
-              className="flex gap-3 items-center p-6 border rounded-lg bg-white h-[85px]"
-            >
-              <img src={badge.image} alt="" className="h-10 w-10" />
-              <div className="space-y-0.5">
-                <div className="font-semibold text-sm">{badge.name}</div>
-                <div className="text-xs">{badge.description}</div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        </div>
       </ScrollArea>
     </div>
   );

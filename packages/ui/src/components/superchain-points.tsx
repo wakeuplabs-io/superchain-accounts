@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { shortenAddress } from "@/lib/address";
 
-export const SuperchainPoints: React.FC<{}> = () => {
+export const SuperchainPoints: React.FC = () => {
   const { isPending, claim, claimable, isClaiming, events } =
     useSuperchainPoints();
 
@@ -46,7 +46,7 @@ export const SuperchainPoints: React.FC<{}> = () => {
 
   if (isPending) {
     return (
-      <div>
+      <div className="w-full">
         <div className="mb-4 font-medium">Claimable Rewards</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
