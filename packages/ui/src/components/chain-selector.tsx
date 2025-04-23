@@ -28,7 +28,6 @@ export function ChainSelector() {
                 })}
               >
                 <span className="text-base font-semibold">{c.name}</span>
-                {selected && <span className="text-sm">Connected</span>}
               </div>
             </button>
           );
