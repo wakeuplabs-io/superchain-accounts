@@ -2,7 +2,6 @@ import { useSuperchainRaffle } from "@/hooks/use-superchain-raffle";
 import { Skeleton } from "./ui/skeleton";
 import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { useSuperchainProfile } from "@/hooks/use-superchain-profile";
-import { Progress } from "./ui/progress";
 
 export const AccountSummary: React.FC = () => {
   const { isPending: isPointsPending, balance } = useSuperchainPoints();
@@ -22,12 +21,12 @@ export const AccountSummary: React.FC = () => {
             <h1 className="font-semibold text-2xl text-center lg:text-left">
                 Superchain Sparrow
             </h1>
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-1">
+            <div className="flex flex-row justify-between">
+              <div>
                 <span className="text-base font-medium">Position:</span>
-                <span className="text-base font-semibold">{profile.position.current}/{profile.position.total}</span>
+                <span className="text-base font-semibold ml-2">{profile.position.current}/{profile.position.total}</span>
               </div>
-              <Progress value={Math.round((profile.position.current / profile.position.total) * 100)}  />
+              <span className="text-base text-slate-400 font-semibold">{profile.position.percentile}%</span>
             </div>
           </>
         )}
