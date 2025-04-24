@@ -17,7 +17,7 @@ function Profile() {
         <p className="text-bas font-medium">Networks</p>
         <ChainSelector />
       </div>
-      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+      <div className="flex flex-col xl:flex-row gap-6">
         <SuperchainRaffle />
         <SuperchainPoints />
         <SuperchainBadges />
