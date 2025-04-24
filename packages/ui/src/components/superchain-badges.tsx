@@ -95,16 +95,18 @@ export const SuperchainBadges: React.FC = () => {
             <div
               key={badge.id}
               className={cn(
-                "flex gap-3 items-center p-6 rounded-lg bg-white h-[85px] shadow-sm",
+                "flex gap-3 items-center p-6 rounded-lg bg-white h-[100px] shadow-sm",
                 {
                   "border border-primary": badge.status === "unclaimed",
                 }
               )}
             >
               <img src={badge.image} alt="" className="h-[38px] w-[38px]" />
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <div className="font-semibold text-sm">{badge.name}</div>
-                {badge.status === "unclaimed" ? (
+                <div className="text-xs">{badge.description}</div>
+                {badge.status === "claimed" && <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>}
+                {badge.status === "unclaimed" && (
                   <Button
                     onClick={() => onClaim(badge.id)}
                     loading={isClaiming}
@@ -114,8 +116,6 @@ export const SuperchainBadges: React.FC = () => {
                     <span>Claim Badge</span>
                     <ArrowRight className="h-3 w-3" />
                   </Button>
-                ) : (
-                  <div className="text-xs">{badge.description}</div>
                 )}
               </div>
             </div>
