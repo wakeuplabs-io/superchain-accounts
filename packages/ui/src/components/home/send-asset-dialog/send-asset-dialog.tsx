@@ -12,6 +12,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { useToast } from "@/hooks/use-toast";
 import { useSendAsset } from "@/hooks/use-send-asset";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const sendAssetSchema = z.object({
   asset: z.string({required_error: "Asset is required"}).transform(val => getAddress(val)),
@@ -113,27 +114,29 @@ export const SendAssetDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Send tokens</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} 
-            className='flex flex-col justify-between w-full h-full gap-14'>
-            <div className="flex flex-col gap-4" >
-              <AssetSelector  />
-              <AmountField  />
-              <DestinationAddressField  />
-            </div>
-            <Button
-              type="submit"
-              className="w-full"
-              loading={form.formState.isSubmitting}
-            >
+      <DialogContent className="sm:max-w-md">
+        <ScrollArea className="max-h-screen">
+          <DialogHeader>
+            <DialogTitle>Send tokens</DialogTitle>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} 
+              className='flex flex-col justify-between w-full h-full gap-14'>
+              <div className="flex flex-col gap-4" >
+                <AssetSelector  />
+                <AmountField  />
+                <DestinationAddressField  />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                loading={form.formState.isSubmitting}
+              >
                 Continue
-            </Button>
-          </form>
-        </Form>
+              </Button>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
