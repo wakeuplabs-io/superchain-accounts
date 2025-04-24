@@ -1,9 +1,7 @@
 import { Skeleton } from "./ui/skeleton";
-import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { useSuperchainProfile } from "@/hooks/use-superchain-profile";
 
 export const AccountSummary: React.FC = () => {
-  const { isPending: isPointsPending, balance } = useSuperchainPoints();
   const { isPending: isProfilePending, profile } = useSuperchainProfile();
 
   return (
@@ -19,12 +17,9 @@ export const AccountSummary: React.FC = () => {
             <h1 className="font-semibold text-2xl text-center lg:text-left">
               {profile.rank}
             </h1>
-            <div className="flex flex-row justify-between">
-              <div>
-                <span className="text-base font-medium">Position:</span>
-                <span className="text-base font-semibold ml-2">{profile.position.current}/{profile.position.total}</span>
-              </div>
-              <span className="text-base text-slate-400 font-semibold">{profile.position.percentile}%</span>
+            <div>
+              <span className="text-base font-medium">Position:</span>
+              <span className="text-base font-semibold ml-2">{profile.position.current}/{profile.position.total}</span>
             </div>
           </>
         )}
@@ -32,12 +27,12 @@ export const AccountSummary: React.FC = () => {
 
       <div className="lg:border-l">
         <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
-          {isPointsPending ? (
+          {isProfilePending ? (
             <Skeleton className="h-10 w-16 mx-auto" />
           ) : (
             <>
               <div className="text-center font-medium lg:text-2xl lg:font-semibold">
-                {balance.toString() ?? 0}
+                {profile.points ?? 0}
               </div>
               <div className="text-center text-xs lg:font-medium">
                 SC Points
