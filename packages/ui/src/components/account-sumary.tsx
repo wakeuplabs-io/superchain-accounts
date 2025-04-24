@@ -10,7 +10,7 @@ export const AccountSummary: React.FC = () => {
 
   return (
     <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
-      <div className="flex flex-col w-full md:max-w-[390px] gap-3">
+      <div className="flex flex-col w-full lg:max-w-[390px] gap-3">
         {isProfilePending ? (
           <>
             <Skeleton className="h-10 w-1/2 self-center md:self-start" />
