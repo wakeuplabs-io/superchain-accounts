@@ -64,11 +64,10 @@ export const SuperchainPoints: React.FC = () => {
         <div className="bg-white border rounded-lg p-8 flex flex-col justify-center items-center h-[430px]">
           <img src={emptySvg} alt="" className="mb-11 h-20 w-20" />
           <div className="text-center mb-6 font-medium">
-            Oops! No rewards available at the moment
+            No rewards to claim...yet!
           </div>
           <div className="text-center text-muted-foreground">
-            Take a look at your accomplishments to keep earning and unlocking
-            rewards!
+            Engage with the chain to earn points and unlock fresh rewards.
           </div>
         </div>
       </div>
@@ -78,7 +77,7 @@ export const SuperchainPoints: React.FC = () => {
   return (
     <div className="xl:w-[30%] 2xl:w-[25%]">
       <div className="mb-4 font-medium">Claimable Rewards</div>
-      <div className="bg-white border rounded-lg p-8 h-[430px] flex flex-col">
+      <div className="bg-white border rounded-lg p-8 h-[430px] flex flex-col gap-4">
         <ScrollArea className="h-full">
           <ul className="divide-y">
             {unknownAmount > 0n && (
@@ -95,8 +94,8 @@ export const SuperchainPoints: React.FC = () => {
                 key={event.id}
                 className="flex justify-between first:pt-0 pt-4 pb-4"
               >
-                <div>
-                  <div>{event.type}</div>
+                <div className="xl:w-3/5">
+                  <div className="truncate">{event.type}</div>
                   <div className="text-xs">{shortenAddress(event.transactionHash)}</div>
                 </div>
                 <span className="font-semibold">{event.value} pts</span>
@@ -108,8 +107,8 @@ export const SuperchainPoints: React.FC = () => {
                 key={event.id}
                 className="flex justify-between first:pt-0 pt-4 pb-4 opacity-50"
               >
-                <div>
-                  <div>{event.type}</div>
+                <div className="xl:w-3/5">
+                  <div className="truncate">{event.type}</div>
                   <div className="text-xs">Not yet claimable</div>
                 </div>
                 <span className="font-semibold">{event.value} pts</span>

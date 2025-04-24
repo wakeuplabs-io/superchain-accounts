@@ -57,7 +57,7 @@ export const SuperchainRaffle: React.FC = () => {
         <div className="bg-white border rounded-lg p-8 flex flex-col justify-center items-center h-[430px]">
           <img src={emptySvg} alt="" className="mb-11 h-20 w-20" />
           <div className="text-center mb-6 font-medium">
-            Oops! No raffles currently ongoing
+            No raffles are ongoing... yet!
           </div>
           <div className="text-center text-muted-foreground">
             Be alert! New raffles may start anytime
