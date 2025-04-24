@@ -46,7 +46,7 @@ export const SuperchainPoints: React.FC = () => {
 
   if (isPending) {
     return (
-      <div>
+      <div className="w-full">
         <div className="mb-4 font-medium">Claimable Rewards</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />

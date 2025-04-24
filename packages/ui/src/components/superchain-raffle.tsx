@@ -13,7 +13,7 @@ import { useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import emptySvg from "@/assets/empty.svg";
 
-export const SuperchainRaffle: React.FC<{}> = () => {
+export const SuperchainRaffle: React.FC = () => {
   const { isPending, claimTickets, isClaiming, currentRaffle } =
     useSuperchainRaffle();
 
@@ -26,7 +26,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
       .then(() => {
         toast({
           title: "Tickets claimed",
-          description: `You have successfully claimed your tickets`,
+          description: "You have successfully claimed your tickets",
         });
       })
       .catch((error) => {
@@ -39,7 +39,7 @@ export const SuperchainRaffle: React.FC<{}> = () => {
 
   if (isPending) {
     return (
-      <div>
+      <div className="w-full">
         <div className="mb-4 font-medium">Superchain Raffle</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
