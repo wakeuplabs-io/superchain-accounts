@@ -52,20 +52,20 @@ const AssetSelector = () => {
                       <div className="flex items-center gap-x-2">
                         <div className="rounded-full bg-gray-100 flex items-center justify-center">
                           <img
-                              src={asset.logoURI ?? defaultTokenLogo}
-                              alt={asset.name}
-                              className="w-8 h-8"
-                            />
+                            src={asset.logoURI ?? defaultTokenLogo}
+                            alt={asset.name}
+                            className="w-8 h-8"
+                          />
                         </div>
                         <div className="flex flex-col gap-0 items-start">
-                           <span className="text-base font-normal text-black">
-                              {asset.symbol}
-                            </span>
+                          <span className="text-base font-normal text-black">
+                            {asset.symbol}
+                          </span>
                           <span className="text-xs font-normal text-gray-500">
-                              {Number(
-                                formatUnits(asset.balance, asset.decimals)
-                              ).toFixed(2)}
-                            </span>
+                            {Number(
+                              formatUnits(asset.balance, asset.decimals)
+                            ).toFixed(4)}
+                          </span>
                         </div>
                       </div>
                     </SelectItem>

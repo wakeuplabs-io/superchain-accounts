@@ -18,7 +18,7 @@ export function AssetListItem({ asset }: AssetListItemProps) {
         <span className="text-base font-semibold">{asset.symbol}</span>
       </div>
       <span className="text-sm font-semibold">
-        {Number(formatUnits(asset.balance, asset.decimals)).toFixed(2)}
+        {Number(formatUnits(asset.balance, asset.decimals)).toFixed(4)}
       </span>
     </li>
   );
