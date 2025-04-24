@@ -5,6 +5,8 @@ import { pointsService } from "@/services";
 import envParsed from "@/envParsed";
 import superchainPoints from "@/config/abis/superchain-points";
 import { encodeFunctionData, zeroAddress } from "viem";
+import { ClaimPointsBody } from "schemas";
+import { SuperchainPointEvent } from "@/services/points";
 
 export const useSuperchainPoints = () => {
   const { chain } = useWeb3();
@@ -50,7 +52,7 @@ export const useSuperchainPoints = () => {
     },
   });
 
-  const { mutateAsync: claim, isPending: isClaiming } = useMutation({
+  const { mutateAsync: claimPoints, isPending: isClaimingPoints } = useMutation({
     mutationFn: async () => {
       return sendTransaction({
         to: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
@@ -69,12 +71,23 @@ export const useSuperchainPoints = () => {
     },
   });
 
+  const {mutateAsync: setPointClaimed, isPending: isSettingPointsClaimed } = useMutation({
+    mutationFn: async (request: ClaimPointsBody) => {
+      return pointsService.claim(request);
+    }
+  });
+
+  const claim = async (points: SuperchainPointEvent[]) => {
+    return claimPoints()
+      .then(() => setPointClaimed(points.map((point) => point.id)));
+  };
+
   return {
     isPending: isStatePending || data === undefined,
     claimable: data?.claimable ?? 0n,
     balance: data?.balance ?? 0n,
     events: data?.events ?? [],
-    isClaiming,
+    isClaiming: isClaimingPoints || isSettingPointsClaimed,
     claim,
   };
 };

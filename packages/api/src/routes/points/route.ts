@@ -1,7 +1,7 @@
 import { IPointsEventsService } from "@/domain/points";
 import { cronAuth } from "@/middlewares/cron-auth";
 import { Router } from "express";
-import { GetPointsParams, GetPointsQuery } from "schemas";
+import { claimPointsBodySchema, GetPointsParams, GetPointsQuery } from "schemas";
 
 export default function createRoutes(
   pointsEventsService: IPointsEventsService
@@ -24,6 +24,17 @@ export default function createRoutes(
     });
 
     res.send({ data: { points: pointsEvents } });
+  });
+
+  router.post("/claim", async (req, res) => {
+    const parsedBody = claimPointsBodySchema.safeParse(req.body);
+
+    if(!parsedBody.success) {
+      return res.status(400).send(parsedBody.error.issues);
+    }
+
+    const updatedPoints = await pointsEventsService.claimPoints(parsedBody.data);
+    res.send({ data: { points: updatedPoints } }); 
   });
 
   return router;

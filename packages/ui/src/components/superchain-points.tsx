@@ -7,25 +7,9 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { shortenAddress } from "@/lib/address";
 
-export const SuperchainPoints: React.FC<{}> = () => {
+export const SuperchainPoints: React.FC = () => {
   const { isPending, claim, claimable, isClaiming, events } =
     useSuperchainPoints();
-
-  const onClaim = useCallback(async () => {
-    claim()
-      .then(() => {
-        toast({
-          title: "Points claimed",
-          description: "You have successfully claimed your points",
-        });
-      })
-      .catch((error) => {
-        toast({
-          title: "Error",
-          description: `There was an error claiming your points ${error}`,
-        });
-      });
-  }, [claim]);
 
   const claimableEvents = useMemo(() => {
     return events.filter((event) => event.minted == true);
@@ -43,6 +27,22 @@ export const SuperchainPoints: React.FC<{}> = () => {
       }, 0n)
     );
   }, [claimable, events]);
+
+  const onClaim = useCallback(async () => {
+    claim(claimableEvents)
+      .then(() => {
+        toast({
+          title: "Points claimed",
+          description: "You have successfully claimed your points",
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: `There was an error claiming your points ${error}`,
+        });
+      });
+  }, [claim, claimableEvents]);
 
   if (isPending) {
     return (

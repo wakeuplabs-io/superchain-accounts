@@ -1,4 +1,5 @@
 import { Axios } from "axios";
+import { ClaimPointsBody } from "schemas";
 
 export type SuperchainPointEvent = {
   id: number;
@@ -22,6 +23,14 @@ export class PointsService {
       data: { points: SuperchainPointEvent[] };
     }>(`/points/${wallet}?chainId=${chainId}`);
 
+    return data.data.points;
+  }
+
+  async claim(points: ClaimPointsBody): Promise<SuperchainPointEvent[]>  {
+    const { data } = await this.axios.post<{
+      data: { points: SuperchainPointEvent[] };
+    }>("/points/claim", points);
+    
     return data.data.points;
   }
 }

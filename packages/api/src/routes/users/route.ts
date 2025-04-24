@@ -1,9 +1,25 @@
-import { IUserTokenService } from "@/domain/users";
+import { IUserService, IUserTokenService } from "@/domain/users";
 import { Router, Request, Response } from "express";
-import { getUserTokensRequestSchema, importUserTokenRequestSchema } from "schemas";
+import { getUserTokensRequestSchema, importUserTokenRequestSchema, userWalletSchema } from "schemas";
 
-export default function buildUserRoutes(userTokenService: IUserTokenService): Router {
+export default function buildUserRoutes(userService: IUserService, userTokenService: IUserTokenService): Router {
   const router = Router();
+
+  router.get("/:wallet/profile", async (req: Request, res: Response) => {
+    const parsedWallet = userWalletSchema.safeParse(req.params.wallet);
+
+    if(!parsedWallet.success) {
+      return res.status(400).send(parsedWallet.error.issues);
+    }
+
+    try {
+      const profile = await userService.getProfile(parsedWallet.data);
+      res.send({ data: { profile } });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({message: error.message});
+    }
+  });
 
   router.get("/:wallet/tokens", async (req: Request, res: Response) => {
     const requestData = getUserTokensRequestSchema.safeParse({

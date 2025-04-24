@@ -10,6 +10,7 @@ import {
   ISuperchainPointsService,
   PointEventWithTransaction,
 } from "@/domain/points";
+import { ClaimPointsBody } from "schemas";
 
 export class PointsEventsService implements IPointsEventsService {
   constructor(
@@ -99,5 +100,14 @@ export class PointsEventsService implements IPointsEventsService {
     }
 
     return res;
+  }
+
+  async claimPoints(points: ClaimPointsBody): Promise<PointEvent[]>  {
+    return this.repo.pointEvent.updateManyAndReturn({
+      where: {
+        id: { in: points }
+      },
+      data: { claimed: true },
+    });
   }
 }

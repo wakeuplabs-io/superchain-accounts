@@ -13,7 +13,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userTokens  UserToken[]
+  userTokens UserToken[]
 }
 
 model UserToken {
@@ -62,6 +62,7 @@ model PointEvent {
   type    PointEventType
   data    String // Any extra data, like specs on the milestone or so on
   minted  Boolean        @default(false)
+  claimed Boolean        @default(false)
   value   Int
 
   // transaction where the point or milestone has been achieved
