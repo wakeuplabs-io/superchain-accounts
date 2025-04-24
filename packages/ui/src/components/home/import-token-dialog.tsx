@@ -9,7 +9,7 @@ import { useSuperChainAccount } from "@/hooks/use-smart-account";
 import { userService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useUserTokens } from "@/hooks/use-user-tokens";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 
 interface ImportTokensDialogProps {
   isOpen: boolean;
@@ -60,7 +60,9 @@ export const ImportTokensDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogTitle>Import Tokens</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>Import Tokens</DialogTitle>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col justify-between w-full h-full min-h-56'>
             <FormField
