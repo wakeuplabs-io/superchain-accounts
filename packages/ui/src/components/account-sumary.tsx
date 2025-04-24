@@ -1,11 +1,9 @@
-import { useSuperchainRaffle } from "@/hooks/use-superchain-raffle";
 import { Skeleton } from "./ui/skeleton";
 import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { useSuperchainProfile } from "@/hooks/use-superchain-profile";
 
 export const AccountSummary: React.FC = () => {
   const { isPending: isPointsPending, balance } = useSuperchainPoints();
-  const { isPending: isTicketsPending, currentRaffle } = useSuperchainRaffle();
   const { isPending: isProfilePending, profile } = useSuperchainProfile();
 
   return (
@@ -32,7 +30,7 @@ export const AccountSummary: React.FC = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-2 divide-x lg:border-l">
+      <div className="lg:border-l">
         <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
           {isPointsPending ? (
             <Skeleton className="h-10 w-16 mx-auto" />
@@ -44,19 +42,6 @@ export const AccountSummary: React.FC = () => {
               <div className="text-center text-xs lg:font-medium">
                 SC Points
               </div>
-            </>
-          )}
-        </div>
-
-        <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
-          {isTicketsPending ? (
-            <Skeleton className="h-10 w-16 mx-auto" />
-          ) : (
-            <>
-              <div className="text-center font-medium lg:text-2xl lg:font-semibold">
-                {currentRaffle?.claimedTickets.toString() ?? 0}
-              </div>
-              <div className="text-center text-xs lg:font-medium">Tickets</div>
             </>
           )}
         </div>
