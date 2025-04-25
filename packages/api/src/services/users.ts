@@ -22,6 +22,7 @@ export class UsersService implements IUserService {
     const { current, total, totalPoints, percentile } = result;
 
     return {
+      points: totalPoints,
       rank: this.getUserRank(totalPoints)?.rank ?? "",
       position: {
         current,

@@ -6,6 +6,7 @@ export const userWalletSchema = z.string().min(1, "Wallet address is required").
 });
 
 export const profileSchema = z.object({
+  points: z.number(),
   rank: z.string(),
   position: z.object({
     current: z.number(),

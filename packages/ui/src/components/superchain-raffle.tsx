@@ -39,7 +39,7 @@ export const SuperchainRaffle: React.FC = () => {
 
   if (isPending) {
     return (
-      <div className="w-full">
+      <div className="w-full xl:w-[35%] 2xl:w-[30%]">
         <div className="mb-4 font-medium">Superchain Raffle</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
@@ -52,12 +52,12 @@ export const SuperchainRaffle: React.FC = () => {
 
   if (!currentRaffle) {
     return (
-      <div>
+      <div className="xl:w-[35%] 2xl:w-[30%]">
         <div className="mb-4 font-medium">Superchain Raffle</div>
         <div className="bg-white border rounded-lg p-8 flex flex-col justify-center items-center h-[430px]">
           <img src={emptySvg} alt="" className="mb-11 h-20 w-20" />
           <div className="text-center mb-6 font-medium">
-            Oops! No raffles currently ongoing
+            No raffles are ongoing... yet!
           </div>
           <div className="text-center text-muted-foreground">
             Be alert! New raffles may start anytime
@@ -68,7 +68,7 @@ export const SuperchainRaffle: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="xl:w-[35%] 2xl:w-[30%]">
       <div className="mb-4 font-medium">Superchain Raffle</div>
       <div className="bg-white border rounded-lg p-8 h-[430px] flex flex-col justify-between">
         <div>

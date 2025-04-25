@@ -57,7 +57,7 @@ export const SuperchainBadges: React.FC = () => {
 
   if (isPending) {
     return (
-      <div className="w-full">
+      <div className="w-full xl:w-[35%] 2xl:w-[45%]">
         <div className="mb-4 font-medium">Accomplishments</div>
         <div className="bg-white border rounded-lg p-8 space-y-4 h-[430px]">
           <Skeleton className="h-4 w-1/2 rounded-md" />
@@ -70,7 +70,7 @@ export const SuperchainBadges: React.FC = () => {
 
   if (!badges || badges.length === 0) {
     return (
-      <div>
+      <div className="xl:w-[35%] 2xl:w-[45%]">
         <div className="mb-4 font-medium">Accomplishments</div>
         <div className="bg-white border rounded-lg p-8 flex flex-col justify-center items-center h-[430px]">
           <img src={emptySvg} alt="" className="mb-11 h-20 w-20" />
@@ -87,41 +87,43 @@ export const SuperchainBadges: React.FC = () => {
 
 
   return (
-    <div>
+    <div className="xl:w-[35%] 2xl:w-[45%]">
       <div className="mb-4 font-medium">Accomplishments</div>
-      <ScrollArea className="h-full">
-        <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
-          {sortedBadges.map((badge) => (
-            <div
-              key={badge.id}
-              className={cn(
-                "flex gap-3 items-center p-6 rounded-lg bg-white h-[100px] shadow-sm",
-                {
-                  "border border-primary": badge.status === "unclaimed",
-                }
-              )}
-            >
-              <img src={badge.image} alt="" className="h-[38px] w-[38px]" />
-              <div className="space-y-1">
-                <div className="font-semibold text-sm">{badge.name}</div>
-                <div className="text-xs">{badge.description}</div>
-                {badge.status === "claimed" && <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>}
-                {badge.status === "unclaimed" && (
-                  <Button
-                    onClick={() => onClaim(badge.id)}
-                    loading={isClaiming}
-                    className="flex items-center px-0 py-0 h-5 text-xs"
-                    variant="link"
-                  >
-                    <span>Claim Badge</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </Button>
+      <div className="h-[430px]">
+        <ScrollArea className="h-full">
+          <div className="grid grid-cols-1 gap-2 2xl:grid-cols-2">
+            {sortedBadges.map((badge) => (
+              <div
+                key={badge.id}
+                className={cn(
+                  "flex gap-3 items-center p-6 rounded-lg bg-white h-[100px] shadow-sm",
+                  {
+                    "border border-primary": badge.status === "unclaimed",
+                  }
                 )}
+              >
+                <img src={badge.image} alt="" className="h-[38px] w-[38px]" />
+                <div className="space-y-1">
+                  <div className="font-semibold text-sm">{badge.name}</div>
+                  <div className="text-xs">{badge.description}</div>
+                  {badge.status === "claimed" && <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>}
+                  {badge.status === "unclaimed" && (
+                    <Button
+                      onClick={() => onClaim(badge.id)}
+                      loading={isClaiming}
+                      className="flex items-center px-0 py-0 h-5 text-xs"
+                      variant="link"
+                    >
+                      <span>Claim Badge</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   );
 };

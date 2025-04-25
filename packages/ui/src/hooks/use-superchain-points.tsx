@@ -22,21 +22,11 @@ export const useSuperchainPoints = () => {
     enabled: address != zeroAddress,
     queryKey: ["superchainPoints", address ?? "0x0", chain.id],
     queryFn: async () => {
-      const [balance, claimable] = await chain.client.multicall({
-        contracts: [
-          {
-            address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
-            abi: superchainPoints,
-            functionName: "balanceOf",
-            args: [address],
-          },
-          {
-            address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
-            abi: superchainPoints,
-            functionName: "getClaimable",
-            args: [address],
-          },
-        ],
+      const claimable = await chain.client.readContract({
+        address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
+        abi: superchainPoints,
+        functionName: "getClaimable",
+        args: [address],
       });
 
       const events = await pointsService.getUserPoints(
@@ -45,8 +35,7 @@ export const useSuperchainPoints = () => {
       );
 
       return {
-        balance: (balance.result as bigint) ?? 0n,
-        claimable: (claimable.result as bigint) ?? 0n,
+        claimable: (claimable as bigint) ?? 0n,
         events,
       };
     },
@@ -85,7 +74,6 @@ export const useSuperchainPoints = () => {
   return {
     isPending: isStatePending || data === undefined,
     claimable: data?.claimable ?? 0n,
-    balance: data?.balance ?? 0n,
     events: data?.events ?? [],
     isClaiming: isClaimingPoints || isSettingPointsClaimed,
     claim,

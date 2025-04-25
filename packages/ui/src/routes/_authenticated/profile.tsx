@@ -12,18 +12,14 @@ export const Route = createFileRoute("/_authenticated/profile")({
 function Profile() {
   return (
     <div className="flex flex-col gap-8 w-full">
+      <AccountSummary />
       <div className="flex flex-col gap-4">
         <p className="text-bas font-medium">Networks</p>
         <ChainSelector />
       </div>
-
-      <AccountSummary />
-
-      <div className="flex flex-col lg:grid lg:grid-cols-[2fr_0.5fr_4fr] gap-6">
+      <div className="flex flex-col xl:flex-row gap-6">
         <SuperchainRaffle />
-
         <SuperchainPoints />
-
         <SuperchainBadges />
       </div>
     </div>
