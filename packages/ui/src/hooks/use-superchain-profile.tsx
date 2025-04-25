@@ -4,6 +4,7 @@ import { useSuperChainAccount } from "./use-smart-account";
 import { Profile } from "schemas";
 
 const defaultProfile: Profile = {
+  points: 0,
   rank: "",
   position: {
     current: 0,
