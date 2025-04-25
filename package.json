@@ -14,7 +14,8 @@
     "build": "npm run build -w schemas && npm run build -w api && npm run build -w ui && npm run build -w contracts",
     "package:api": "npm run build --workspace=packages/api && serverless package --config serverless-api.yml",
     "deploy:api:staging": "npm run build --workspace=packages/api && serverless deploy --config serverless-api.yml --verbose ",
-    "deploy:app:staging": "sst deploy --stage=staging --print-logs"
+    "deploy:app:staging": "sst deploy --stage=staging --print-logs",
+    "deploy:app:production": "sst deploy --stage=production --print-logs"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "7.6.0",
