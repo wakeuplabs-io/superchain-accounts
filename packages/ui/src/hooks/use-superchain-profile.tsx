@@ -17,7 +17,7 @@ export function useSuperchainProfile() {
   const { account } = useSuperChainAccount();
 
   const { data: profile, isPending, error } = useQuery({
-    queryKey: ["superchain-profile"],
+    queryKey: ["superchainProfile"],
     queryFn: async () => userService.getProfile(account.address),
     staleTime: 0,
     refetchOnMount: true,
