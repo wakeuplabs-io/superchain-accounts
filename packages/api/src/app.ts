@@ -47,7 +47,7 @@ const superchainPointsService = new SuperchainPointsService(
   clientFactory
 );
 
-const superchainBadgesService = new SuperchainBadgesService(
+const badgesService = new SuperchainBadgesService(
   envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
   clientFactory
 );
@@ -68,13 +68,13 @@ const pointsEventsService = new PointsEventsService(
     ]),
     new UniqueChainTransactionPointsEventsHandler(db, 5),
     new TokenSwapPointsEventsHandler(db, 5),
-    new AaveInteractionPointsEventsHandler(db, 5)
+    new AaveInteractionPointsEventsHandler(db, 5),
   ]
 );
 
 const badgesEventsService = new BadgeEventsService(
   db,
-  superchainBadgesService,
+  badgesService,
   [
     new TransactionSentBadgeEventsHandler(db, [25, 50, 100]),
     new DaysActiveBadgeEventsHandler(db, [25, 50, 100]),
@@ -103,7 +103,7 @@ app.use(express.json());
 // routes
 
 app.use("/health", buildHealthRoutes());
-app.use("/badges", buildBadgesRoutes(badgesEventsService));
+app.use("/badges", buildBadgesRoutes(badgesEventsService, badgesService));
 app.use("/points", buildPointsRoutes(pointsEventsService));
 app.use(
   "/transactions",

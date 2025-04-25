@@ -30,4 +30,26 @@ export class SuperchainBadgesService implements ISuperchainBadgesService {
 
     return tx;
   }
+
+  async setURI(
+    chainId: string,
+    tokenId: bigint,
+    uri: string
+  ): Promise<`0x${string}`> {
+    const client = this.clientFactory.getWriteClient(
+      chainId,
+      OWNER_PRIVATE_KEY
+    );
+
+    const tx = await client.writeContract({
+      address: this.address,
+      abi: superchainBadgesAbi,
+      functionName: "setURI",
+      args: [tokenId, uri],
+      chain: client.chain,
+      account: client.account!,
+    });
+
+    return tx;
+  }
 }
