@@ -1,11 +1,12 @@
 import { ISuperchainRaffleService } from "@/domain/raffle";
+import { cronAuth } from "@/middlewares/cron-auth";
 import { Router } from "express";
 import { createRaffleBodySchema } from "schemas";
 
 export function buildRaffleRoutes(superchainRaffleService: ISuperchainRaffleService): Router {
   const router = Router();
 
-  router.post("/", async (req, res) => {
+  router.post("/", cronAuth, async (req, res) => {
     const raffleParsedData = createRaffleBodySchema.safeParse(req.body);
     if (!raffleParsedData.success) {
       res.status(400).send({ error: raffleParsedData.error.issues });
