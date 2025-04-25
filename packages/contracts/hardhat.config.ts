@@ -94,6 +94,25 @@ const config: HardhatUserConfig = {
   sourcify: {
     enabled: false,
   },
+  gasReporter: {
+    enabled: true,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+    // coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    token: "ETH",
+    gasPriceApi:
+      "https://api.etherscan.io/api?module=proxy&action=eth_gasPrice",
+    gasPrice: 20, // in gwei
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    showTimeSpent: true,
+    // L2 network configuration
+    // For Optimism
+    ovm: true, // Enable OVM compatibility
+    // For Base (similar to Optimism)
+    // For Unichain
+    // You can also specify token and tokenPrice for each L2
+  },
 };
 
 export default config;
