@@ -68,6 +68,9 @@ export default $config({
         AAVE_CONTRACT_ADDRESS_OPTIMISM:
           process.env.AAVE_CONTRACT_ADDRESS_OPTIMISM!,
         AAVE_CONTRACT_ADDRESS_BASE: process.env.AAVE_CONTRACT_ADDRESS_BASE!,
+        UNICHAIN_CHAIN_ID: process.env.UNICHAIN_CHAIN_ID!,
+        BASE_CHAIN_ID: process.env.BASE_CHAIN_ID!,
+        OPTIMISM_CHAIN_ID: process.env.OPTIMISM_CHAIN_ID!,
       },
       copyFiles: [
         {

@@ -29,6 +29,9 @@ const env = {
   AAVE_CONTRACT_ADDRESS_UNICHAIN: process.env.AAVE_CONTRACT_ADDRESS_UNICHAIN,
   AAVE_CONTRACT_ADDRESS_OPTIMISM: process.env.AAVE_CONTRACT_ADDRESS_OPTIMISM,
   AAVE_CONTRACT_ADDRESS_BASE: process.env.AAVE_CONTRACT_ADDRESS_BASE,
+  UNICHAIN_CHAIN_ID: process.env.UNICHAIN_CHAIN_ID,
+  BASE_CHAIN_ID: process.env.BASE_CHAIN_ID,
+  OPTIMISM_CHAIN_ID: process.env.OPTIMISM_CHAIN_ID,
 } as const;
 
 const envSchema = z
@@ -53,6 +56,9 @@ const envSchema = z
     AAVE_CONTRACT_ADDRESS_UNICHAIN: z.string().startsWith("0x"),
     AAVE_CONTRACT_ADDRESS_OPTIMISM: z.string().startsWith("0x"),
     AAVE_CONTRACT_ADDRESS_BASE: z.string().startsWith("0x"),
+    UNICHAIN_CHAIN_ID: z.string(),
+    BASE_CHAIN_ID: z.string(),
+    OPTIMISM_CHAIN_ID: z.string(),
   })
   .required();
 

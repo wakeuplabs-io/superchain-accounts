@@ -73,6 +73,9 @@ jobs:
           AAVE_CONTRACT_ADDRESS_UNICHAIN: ${{ secrets.AAVE_CONTRACT_ADDRESS_UNICHAIN }}
           AAVE_CONTRACT_ADDRESS_OPTIMISM: ${{ secrets.AAVE_CONTRACT_ADDRESS_OPTIMISM }}
           AAVE_CONTRACT_ADDRESS_BASE: ${{ secrets.AAVE_CONTRACT_ADDRESS_BASE }}
+          UNICHAIN_CHAIN_ID: ${{ secrets.UNICHAIN_CHAIN_ID }}
+          BASE_CHAIN_ID: ${{ secrets.BASE_CHAIN_ID }}
+          OPTIMISM_CHAIN_ID: ${{ secrets.OPTIMISM_CHAIN_ID }}
 
       - name: Save Outputs
         id: save-outputs
