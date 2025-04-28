@@ -70,7 +70,7 @@ const pointsEventsService = new PointsEventsService(
     ]),
     new UniqueChainTransactionPointsEventsHandler(db, 5),
     new TokenSwapPointsEventsHandler(db, 5),
-    new AaveInteractionPointsEventsHandler(db, 5)
+    new AaveInteractionPointsEventsHandler(db, 5),
   ]
 );
 
@@ -78,7 +78,7 @@ const badgesEventsService = new BadgeEventsService(
   db,
   superchainBadgesService,
   [
-    new TransactionSentBadgeEventsHandler(db, [25, 50, 100]),
+    new TransactionSentBadgeEventsHandler(db, [1, 5, 10, 25, 50, 100]),
     new DaysActiveBadgeEventsHandler(db, [25, 50, 100]),
     new DefiInteractionsBadgeEventsHandler(db, [25, 50, 100]),
   ],

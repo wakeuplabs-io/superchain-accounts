@@ -1,24 +1,19 @@
 name: Deploy Production
 
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      confirmation:
+#        description: 'Type "deploy to production" to confirm'
+#        required: true
+
 on:
-  workflow_dispatch:
-    inputs:
-      confirmation:
-        description: 'Type "deploy to production" to confirm'
-        required: true
+  push:
+    branches:
+      - chore/go-to-prod
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate confirmation
-        if: ${{ github.event.inputs.confirmation != 'deploy to production' }}
-        run: |
-          echo "You must type 'deploy to production' exactly to confirm deployment"
-          exit 1
-
   deploy:
-    needs: validate
     runs-on: ubuntu-latest
     environment: production
 
@@ -97,13 +92,3 @@ jobs:
 
           echo "api_url=$API_URL" >> "$GITHUB_OUTPUT"
           echo "ui_url=$UI_URL" >> "$GITHUB_OUTPUT"
-
-  notify:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deployment Summary
-        run: |
-          echo "## Production Deployment Complete! 🚀" >> $GITHUB_STEP_SUMMARY
-          echo "- API URL: ${{ needs.deploy.outputs.api_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "- UI URL: ${{ needs.deploy.outputs.ui_url }}" >> $GITHUB_STEP_SUMMARY
