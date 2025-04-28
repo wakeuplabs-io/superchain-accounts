@@ -1,9 +1,5 @@
 import envParsed from "@/envParsed";
 
-/* export const UNICHAIN_CHAIN_ID = "1301";
-export const BASE_CHAIN_ID = "84532";
-export const OPTIMISM_CHAIN_ID = "11155420"; */
-
 const {
   UNICHAIN_CHAIN_ID,
   BASE_CHAIN_ID,

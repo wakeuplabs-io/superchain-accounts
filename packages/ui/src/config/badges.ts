@@ -1,9 +1,7 @@
-import { baseSepolia, optimismSepolia, unichainSepolia } from "viem/chains";
-
-// TODO: update with real badges once available
 import optimismBadge from "@/assets/logos/optimism-chain-logo.svg";
 import baseBadge from "@/assets/logos/base-chain-logo.svg";
 import unichainBadge from "@/assets/logos/unichain-chain-logo.svg";
+import { CHAINS } from "./chains";
 
 export type Badge = {
   id: bigint;
@@ -13,7 +11,7 @@ export type Badge = {
 };
 
 export const AVAILABLE_BADGES: { [chainId: number]: Badge[] } = {
-  [optimismSepolia.id]: [
+  [CHAINS.optimism.id]: [
     {
       id: 1n,
       name: "Optimism Days active",
@@ -69,7 +67,7 @@ export const AVAILABLE_BADGES: { [chainId: number]: Badge[] } = {
       image: optimismBadge,
     },
   ],
-  [baseSepolia.id]: [
+  [CHAINS.base.id]: [
     {
       id: 1n,
       name: "Base Days active",
@@ -125,7 +123,7 @@ export const AVAILABLE_BADGES: { [chainId: number]: Badge[] } = {
       image: baseBadge,
     },
   ],
-  [unichainSepolia.id]: [
+  [CHAINS.unichain.id]: [
     {
       id: 1n,
       name: "Unichain Days active",
