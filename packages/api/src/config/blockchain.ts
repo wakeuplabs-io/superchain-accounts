@@ -7,9 +7,9 @@ export const OPTIMISM_CHAIN_ID = "11155420";
 export const TRANSPORTS_URLS: {
   [chainId: string]: string;
 } = {
-  [UNICHAIN_CHAIN_ID]: envParsed().RPC_UNICHAIN_SEPOLIA,
-  [BASE_CHAIN_ID]: envParsed().RPC_BASE_SEPOLIA,
-  [OPTIMISM_CHAIN_ID]: envParsed().RPC_OPTIMISM_SEPOLIA,
+  [UNICHAIN_CHAIN_ID]: envParsed().RPC_UNICHAIN,
+  [BASE_CHAIN_ID]: envParsed().RPC_BASE,
+  [OPTIMISM_CHAIN_ID]: envParsed().RPC_OPTIMISM,
 };
 
 export const SMART_ACCOUNTS: {
@@ -19,25 +19,27 @@ export const SMART_ACCOUNTS: {
   };
 } = {
   [UNICHAIN_CHAIN_ID]: {
-    bundlerUrl: envParsed().BUNDLER_UNICHAIN_SEPOLIA,
-    entryPoint: envParsed().ENTRYPOINT_UNICHAIN_SEPOLIA,
+    bundlerUrl: envParsed().BUNDLER_UNICHAIN,
+    entryPoint: envParsed().ENTRYPOINT_UNICHAIN,
   },
   [BASE_CHAIN_ID]: {
-    bundlerUrl: envParsed().BUNDLER_BASE_SEPOLIA,
-    entryPoint: envParsed().ENTRYPOINT_BASE_SEPOLIA,
+    bundlerUrl: envParsed().BUNDLER_BASE,
+    entryPoint: envParsed().ENTRYPOINT_BASE,
   },
   [OPTIMISM_CHAIN_ID]: {
-    bundlerUrl: envParsed().BUNDLER_OPTIMISM_SEPOLIA,
-    entryPoint: envParsed().ENTRYPOINT_OPTIMISM_SEPOLIA,
+    bundlerUrl: envParsed().BUNDLER_OPTIMISM,
+    entryPoint: envParsed().ENTRYPOINT_OPTIMISM,
   },
 };
 
 export const AAVE_CONTRACT_ADDRESS: {
   [chainId: string]: `0x${string}`;
 } = {
-  [UNICHAIN_CHAIN_ID]: envParsed().AAVE_CONTRACT_ADDRESS_UNICHAIN as `0x${string}`,
+  [UNICHAIN_CHAIN_ID]: envParsed()
+    .AAVE_CONTRACT_ADDRESS_UNICHAIN as `0x${string}`,
   [BASE_CHAIN_ID]: envParsed().AAVE_CONTRACT_ADDRESS_BASE as `0x${string}`,
-  [OPTIMISM_CHAIN_ID]: envParsed().AAVE_CONTRACT_ADDRESS_OPTIMISM as `0x${string}`,
+  [OPTIMISM_CHAIN_ID]: envParsed()
+    .AAVE_CONTRACT_ADDRESS_OPTIMISM as `0x${string}`,
 };
 
 export const OWNER_PRIVATE_KEY = envParsed().OWNER_PRIVATE_KEY as `0x${string}`;

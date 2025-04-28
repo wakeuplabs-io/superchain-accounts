@@ -37,15 +37,25 @@ export default $config({
       environment: {
         NODE_ENV: "production",
         DATABASE_URL: process.env.DATABASE_URL!,
-        BUNDLER_UNICHAIN_SEPOLIA: process.env.BUNDLER_UNICHAIN_SEPOLIA!,
-        BUNDLER_OPTIMISM_SEPOLIA: process.env.BUNDLER_OPTIMISM_SEPOLIA!,
-        BUNDLER_BASE_SEPOLIA: process.env.BUNDLER_BASE_SEPOLIA!,
-        RPC_BASE_SEPOLIA: process.env.RPC_BASE_SEPOLIA!,
-        RPC_OPTIMISM_SEPOLIA: process.env.RPC_OPTIMISM_SEPOLIA!,
-        RPC_UNICHAIN_SEPOLIA: process.env.RPC_UNICHAIN_SEPOLIA!,
-        ENTRYPOINT_UNICHAIN_SEPOLIA: process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
-        ENTRYPOINT_OPTIMISM_SEPOLIA: process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
-        ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
+        BUNDLER_UNICHAIN:
+          process.env.BUNDLER_UNICHAIN || process.env.BUNDLER_UNICHAIN_SEPOLIA!,
+        BUNDLER_OPTIMISM:
+          process.env.BUNDLER_OPTIMISM || process.env.BUNDLER_OPTIMISM_SEPOLIA!,
+        BUNDLER_BASE:
+          process.env.BUNDLER_BASE || process.env.BUNDLER_BASE_SEPOLIA!,
+        RPC_BASE: process.env.RPC_BASE || process.env.RPC_BASE_SEPOLIA!,
+        RPC_OPTIMISM:
+          process.env.RPC_OPTIMISM || process.env.RPC_OPTIMISM_SEPOLIA!,
+        RPC_UNICHAIN:
+          process.env.RPC_UNICHAIN || process.env.RPC_UNICHAIN_SEPOLIA!,
+        ENTRYPOINT_UNICHAIN:
+          process.env.ENTRYPOINT_UNICHAIN ||
+          process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
+        ENTRYPOINT_OPTIMISM:
+          process.env.ENTRYPOINT_OPTIMISM ||
+          process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
+        ENTRYPOINT_BASE:
+          process.env.ENTRYPOINT_BASE || process.env.ENTRYPOINT_BASE_SEPOLIA!,
         OWNER_PRIVATE_KEY: process.env.OWNER_PRIVATE_KEY!,
         SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
@@ -53,8 +63,10 @@ export default $config({
         MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
         PRISMA_QUERY_ENGINE_LIBRARY:
           "/var/task/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
-        AAVE_CONTRACT_ADDRESS_UNICHAIN: process.env.AAVE_CONTRACT_ADDRESS_UNICHAIN!,
-        AAVE_CONTRACT_ADDRESS_OPTIMISM: process.env.AAVE_CONTRACT_ADDRESS_OPTIMISM!,
+        AAVE_CONTRACT_ADDRESS_UNICHAIN:
+          process.env.AAVE_CONTRACT_ADDRESS_UNICHAIN!,
+        AAVE_CONTRACT_ADDRESS_OPTIMISM:
+          process.env.AAVE_CONTRACT_ADDRESS_OPTIMISM!,
         AAVE_CONTRACT_ADDRESS_BASE: process.env.AAVE_CONTRACT_ADDRESS_BASE!,
       },
       copyFiles: [
@@ -90,20 +102,33 @@ export default $config({
       domain: `${PROJECT_NAME}.wakeuplabs.link`,
       environment: {
         VITE_API_URL: api.url,
-        VITE_BUNDLER_UNICHAIN_SEPOLIA: process.env.BUNDLER_UNICHAIN_SEPOLIA!,
-        VITE_BUNDLER_OPTIMISM_SEPOLIA: process.env.BUNDLER_OPTIMISM_SEPOLIA!,
-        VITE_BUNDLER_BASE_SEPOLIA: process.env.BUNDLER_BASE_SEPOLIA!,
-        VITE_RPC_BASE_SEPOLIA: process.env.RPC_BASE_SEPOLIA!,
-        VITE_RPC_OPTIMISM_SEPOLIA: process.env.RPC_OPTIMISM_SEPOLIA!,
-        VITE_RPC_UNICHAIN_SEPOLIA: process.env.RPC_UNICHAIN_SEPOLIA!,
-        VITE_ENTRYPOINT_UNICHAIN_SEPOLIA:
+        VITE_BUNDLER_UNICHAIN:
+          process.env.BUNDLER_UNICHAIN || process.env.BUNDLER_UNICHAIN_SEPOLIA!,
+        VITE_BUNDLER_OPTIMISM:
+          process.env.BUNDLER_OPTIMISM || process.env.BUNDLER_OPTIMISM_SEPOLIA!,
+        VITE_BUNDLER_BASE:
+          process.env.BUNDLER_BASE || process.env.BUNDLER_BASE_SEPOLIA!,
+        VITE_RPC_BASE: process.env.RPC_BASE || process.env.RPC_BASE_SEPOLIA!,
+        VITE_RPC_OPTIMISM:
+          process.env.RPC_OPTIMISM || process.env.RPC_OPTIMISM_SEPOLIA!,
+        VITE_RPC_UNICHAIN:
+          process.env.RPC_UNICHAIN || process.env.RPC_UNICHAIN_SEPOLIA!,
+        VITE_ENTRYPOINT_UNICHAIN:
+          process.env.ENTRYPOINT_UNICHAIN ||
           process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
-        VITE_ENTRYPOINT_OPTIMISM_SEPOLIA:
+        VITE_ENTRYPOINT_OPTIMISM:
+          process.env.ENTRYPOINT_OPTIMISM ||
           process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
-        VITE_ENTRYPOINT_BASE_SEPOLIA: process.env.ENTRYPOINT_BASE_SEPOLIA!,
-        VITE_EXPLORER_BASE_SEPOLIA: process.env.EXPLORER_BASE_SEPOLIA!,
-        VITE_EXPLORER_OPTIMISM_SEPOLIA: process.env.EXPLORER_OPTIMISM_SEPOLIA!,
-        VITE_EXPLORER_UNICHAIN_SEPOLIA: process.env.EXPLORER_UNICHAIN_SEPOLIA!,
+        VITE_ENTRYPOINT_BASE:
+          process.env.ENTRYPOINT_BASE || process.env.ENTRYPOINT_BASE_SEPOLIA!,
+        VITE_EXPLORER_BASE:
+          process.env.EXPLORER_BASE || process.env.EXPLORER_BASE_SEPOLIA!,
+        VITE_EXPLORER_OPTIMISM:
+          process.env.EXPLORER_OPTIMISM ||
+          process.env.EXPLORER_OPTIMISM_SEPOLIA!,
+        VITE_EXPLORER_UNICHAIN:
+          process.env.EXPLORER_UNICHAIN ||
+          process.env.EXPLORER_UNICHAIN_SEPOLIA!,
         VITE_SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
         VITE_SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
