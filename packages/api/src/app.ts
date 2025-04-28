@@ -38,6 +38,8 @@ import { userRanks } from "./domain/users";
 import { buildRaffleRoutes } from "./routes/raffle-route";
 import { SuperchainRaffleService } from "./services/superchain-raffle";
 
+const env = envParsed();
+
 // instantiate services
 
 const clientFactory = new ClientFactory();
@@ -47,12 +49,12 @@ const bundlerFactory = new BundlerFactory(clientFactory);
 const transactionService = new TransactionService(db, bundlerFactory);
 
 const superchainPointsService = new SuperchainPointsService(
-  envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
+  env.SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
   clientFactory
 );
 
 const superchainBadgesService = new SuperchainBadgesService(
-  envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
+  env.SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
   clientFactory
 );
 
@@ -92,9 +94,9 @@ const badgesEventsService = new BadgeEventsService(
 );
 
 const superchainRaffleService = new SuperchainRaffleService(
-  envParsed().SUPERCHAIN_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
-  envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
-  envParsed().OWNER_PRIVATE_KEY as `0x${string}`,
+  env.SUPERCHAIN_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
+  env.SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
+  env.OWNER_PRIVATE_KEY as `0x${string}`,
   clientFactory
 );
 
@@ -133,9 +135,9 @@ app.use(errorMiddlewares.errorHandler);
 
 // start server
 
-if (envParsed().NODE_ENV === "development") {
-  app.listen(envParsed().PORT, () => {
-    console.log(`App Started at PORT=${envParsed().PORT}`);
+if (env.NODE_ENV === "development") {
+  app.listen(env.PORT, () => {
+    console.log(`App Started at PORT=${env.PORT}`);
   });
 }
 
