@@ -57,6 +57,9 @@ export const useSuperchainPoints = () => {
       queryClient.invalidateQueries({
         queryKey: ["superchainPoints", address ?? "0x0", chain.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["superchainProfile"],
+      });
     },
   });
 
