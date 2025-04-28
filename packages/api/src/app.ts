@@ -94,7 +94,7 @@ const badgesEventsService = new BadgeEventsService(
 );
 
 const superchainRaffleService = new SuperchainRaffleService(
-  env.SUPERCHAIN_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
+  env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS as `0x${string}`,
   env.SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
   env.OWNER_PRIVATE_KEY as `0x${string}`,
   clientFactory
