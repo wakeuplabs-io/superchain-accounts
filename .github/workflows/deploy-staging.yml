@@ -46,10 +46,10 @@ jobs:
         run: npm run build
 
       - name: Deploy
-        run: npx sst deploy --stage=staging
+        run: npm run deploy:app:staging
         env:
           PORT: 3000
-          NODE_ENV: production
+          NODE_ENV: development
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BUNDLER_UNICHAIN: ${{ secrets.BUNDLER_UNICHAIN || secrets.BUNDLER_UNICHAIN_SEPOLIA}}
           BUNDLER_OPTIMISM: ${{ secrets.BUNDLER_OPTIMISM || secrets.BUNDLER_OPTIMISM_SEPOLIA}}

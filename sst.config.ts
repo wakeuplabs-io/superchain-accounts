@@ -1,6 +1,10 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 const PROJECT_NAME = "superchain";
+const URL_PROJECT_NAME =
+  process.env.NODE_ENV === "production"
+    ? PROJECT_NAME
+    : `${PROJECT_NAME}-staging`;
 const CUSTOMER = "optimism";
 
 export default $config({
@@ -102,8 +106,9 @@ export default $config({
         command: "npm run build --workspace=ui",
         output: "packages/ui/dist",
       },
-      domain: `${PROJECT_NAME}.wakeuplabs.link`,
+      domain: `${URL_PROJECT_NAME}.wakeuplabs.link`,
       environment: {
+        NODE_ENV: process.env.NODE_ENV || "development",
         VITE_API_URL: api.url,
         VITE_BUNDLER_UNICHAIN:
           process.env.BUNDLER_UNICHAIN || process.env.BUNDLER_UNICHAIN_SEPOLIA!,
