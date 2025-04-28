@@ -3,6 +3,7 @@ import Torus, { TorusInpageProvider } from "@toruslabs/torus-embed";
 import { createContext, ReactNode, useCallback, useRef } from "react";
 import { Hex, hexToNumber } from "viem";
 import { ChainMetadata } from "@/config/chains";
+import { useWeb3 } from "./use-web3";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -26,6 +27,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { chain } = useWeb3();
   const torus = useRef(
     new Torus({
       buttonPosition: "bottom-right",
@@ -39,15 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         enableLogging: false,
         buildEnv: "production",
         network: {
-          host: "https://sepolia.optimism.io",
-          chainId: 11155420,
-          networkName: "Optimism Sepolia",
+          host: chain.rpcUrl,
+          chainId: chain.id,
+          networkName: chain.name,
         },
       });
     }
 
     return torus.current.isLoggedIn;
-  }, [torus.current]);
+  }, [torus.current, chain]);
 
   const login = useCallback(async () => {
     await torus.current.clearInit();
@@ -68,7 +70,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateProviderChain = async (chain: ChainMetadata) => {
-    if(hexToNumber((torus.current.provider.chainId ?? "0x") as Hex) === chain.id) {
+    if (
+      hexToNumber((torus.current.provider.chainId ?? "0x") as Hex) === chain.id
+    ) {
       return;
     }
 
@@ -87,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         getProvider,
-        updateProviderChain
+        updateProviderChain,
       }}
     >
       {children}
