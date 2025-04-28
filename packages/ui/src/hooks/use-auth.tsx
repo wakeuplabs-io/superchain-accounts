@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         enableLogging: false,
         buildEnv: "production",
         network: {
-          host: chain.rpcUrl,
+          host: chain.publicRpcUrl,
           chainId: chain.id,
           networkName: chain.name,
         },
@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     return torus.current.setProvider({
-      host: chain.rpcUrl,
+      host: chain.publicRpcUrl,
       chainId: chain.id,
       networkName: chain.name,
     });

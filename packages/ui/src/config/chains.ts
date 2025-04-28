@@ -33,6 +33,7 @@ export interface ChainMetadata {
   logo: string;
   nativeCurrency: Chain["nativeCurrency"];
   rpcUrl: string;
+  publicRpcUrl: string;
   entryPointAddress: Address;
   client: PublicClient;
   bundler: BundlerClient;
@@ -82,6 +83,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     name: CHAINS.optimism.name,
     logo: optimismChainLogo,
     rpcUrl: envParsed().RPC_OPTIMISM,
+    publicRpcUrl: CHAINS.optimism.rpcUrls.default.http[0],
     nativeCurrency: CHAINS.optimism.nativeCurrency,
     client: clients[CHAINS.optimism.id],
     bundler: bundlers[CHAINS.optimism.id],
@@ -94,6 +96,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     name: CHAINS.base.name,
     logo: baseChainLogo,
     rpcUrl: envParsed().RPC_BASE,
+    publicRpcUrl: CHAINS.base.rpcUrls.default.http[0],
     nativeCurrency: CHAINS.base.nativeCurrency,
     client: clients[CHAINS.base.id],
     bundler: bundlers[CHAINS.base.id],
@@ -106,6 +109,7 @@ export const supportedChains: Record<number, ChainMetadata> = {
     name: CHAINS.unichain.name,
     logo: unichainChainLogo,
     rpcUrl: envParsed().RPC_UNICHAIN,
+    publicRpcUrl: CHAINS.unichain.rpcUrls.default.http[0],
     nativeCurrency: CHAINS.unichain.nativeCurrency,
     client: clients[CHAINS.unichain.id],
     bundler: bundlers[CHAINS.unichain.id],
