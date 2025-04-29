@@ -83,7 +83,7 @@ const badgesEventsService = new BadgeEventsService(
   db,
   superchainBadgesService,
   [
-    new TransactionSentBadgeEventsHandler(db, [1, 5, 10, 25, 50, 100]),
+    new TransactionSentBadgeEventsHandler(db, [1, 3, 5, 10, 25, 50, 100]),
     new DaysActiveBadgeEventsHandler(db, [25, 50, 100]),
     new DefiInteractionsBadgeEventsHandler(db, [25, 50, 100]),
   ],
