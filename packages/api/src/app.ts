@@ -1,6 +1,6 @@
 import express from "express";
 import envParsed from "@/envParsed";
-import serverless from "serverless-http";
+// import serverless from "serverless-http";
 
 // middlewares
 import cors from "cors";
@@ -135,12 +135,17 @@ app.use(errorMiddlewares.errorHandler);
 
 // start server
 
-if (env.NODE_ENV === "development") {
-  app.listen(env.PORT, () => {
-    console.log(`App Started at PORT=${env.PORT}`);
-  });
-}
+// if (env.NODE_ENV === "development") {
+//   app.listen(env.PORT, () => {
+//     console.log(`App Started at PORT=${env.PORT}`);
+//   });
+// }
 
 // serverless handler
 
-export const handler = serverless(app);
+// export const handler = serverless(app);
+app.listen(env.PORT, () => {
+  console.log(`App Started at PORT=${env.PORT}`);
+});
+
+module.exports = app;
