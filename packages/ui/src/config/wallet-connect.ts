@@ -1,4 +1,7 @@
 export const SUPPORTED_CHAINS = [
+  "eip155:10",
+  "eip155:8453",
+  "eip155:130",
   "eip155:1301",
   "eip155:84532",
   "eip155:11155420",
