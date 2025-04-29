@@ -4,7 +4,7 @@
   "main": "dist/app.js",
   "scripts": {
     "prepare": "ts-patch install -s",
-    "build": "npx rimraf dist && tsc",
+    "build": "rimraf dist && tsc",
     "dev": "tsx watch src/app.ts",
     "start": "node dist/app.js",
     "format": "prettier --write \"src/**/*.ts\"",
