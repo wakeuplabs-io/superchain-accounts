@@ -3,8 +3,8 @@
 const PROJECT_NAME = "superchain";
 const DOMAIN_URL =
   process.env.NODE_ENV === "production"
-    ? `${PROJECT_NAME}.wakeuplabs.link`
-    : `${PROJECT_NAME}-staging.wakeuplabs.link`;
+    ? `${PROJECT_NAME}-sa.wakeuplabs.link`
+    : `${PROJECT_NAME}-sa-staging.wakeuplabs.link`;
 const CUSTOMER = "optimism";
 
 export default $config({
@@ -63,7 +63,8 @@ export default $config({
         OWNER_PRIVATE_KEY: process.env.OWNER_PRIVATE_KEY!,
         SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
-        SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS: process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
+        SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS:
+          process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
         CRONJOB_KEY: process.env.CRONJOB_KEY!,
         MULTICALL_CONTRACT_ADDRESS: process.env.MULTICALL_CONTRACT_ADDRESS!,
         PRISMA_QUERY_ENGINE_LIBRARY:
