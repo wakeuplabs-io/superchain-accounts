@@ -1,16 +1,9 @@
 name: Deploy Production
 
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      confirmation:
-#        description: 'Type "deploy to production" to confirm'
-#        required: true
-
 on:
   push:
     branches:
-      - chore/go-to-prod
+      - main
 
 jobs:
   deploy:

@@ -100,14 +100,7 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: "*",
-    credentials: false,
-  })
-);
+app.use(cors());
 app.use(express.json());
 
 // routes

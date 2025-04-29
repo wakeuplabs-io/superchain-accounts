@@ -36,12 +36,7 @@ export default $config({
     const api = new sst.aws.Function(`${PROJECT_NAME}-api`, {
       handler: "packages/api/src/app.handler",
       url: {
-        cors: {
-          allowOrigins: ["*"],
-          allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-          allowHeaders: ["*"],
-          allowCredentials: false,
-        },
+        cors: false,
       },
       environment: {
         NODE_ENV: "production",
