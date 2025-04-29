@@ -3,7 +3,7 @@
 const PROJECT_NAME = "superchain";
 const DOMAIN_URL =
   process.env.NODE_ENV === "production"
-    ? `${PROJECT_NAME}.wakeuplabs.io`
+    ? `${PROJECT_NAME}.wakeuplabs.link`
     : `${PROJECT_NAME}-staging.wakeuplabs.link`;
 const CUSTOMER = "optimism";
 
@@ -36,7 +36,12 @@ export default $config({
     const api = new sst.aws.Function(`${PROJECT_NAME}-api`, {
       handler: "packages/api/src/app.handler",
       url: {
-        cors: false,
+        cors: {
+          allowOrigins: ["*"],
+          allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+          allowHeaders: ["*"],
+          allowCredentials: false,
+        },
       },
       environment: {
         NODE_ENV: "production",
@@ -106,7 +111,7 @@ export default $config({
         command: "npm run build --workspace=ui",
         output: "packages/ui/dist",
       },
-      domain: `${DOMAIN_URL}`,
+      domain: DOMAIN_URL,
       environment: {
         NODE_ENV: process.env.NODE_ENV || "development",
         VITE_API_URL: api.url,
