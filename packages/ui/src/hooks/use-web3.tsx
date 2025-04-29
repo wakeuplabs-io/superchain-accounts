@@ -42,7 +42,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         chain,
         currentChainId,
         setCurrentChainId,
-        getChain
+        getChain,
       }}
     >
       {children}

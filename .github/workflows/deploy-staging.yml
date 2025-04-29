@@ -3,7 +3,7 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   deploy:
@@ -46,23 +46,23 @@ jobs:
         run: npm run build
 
       - name: Deploy
-        run: npx sst deploy --stage=staging
+        run: npm run deploy:app:staging
         env:
           PORT: 3000
-          NODE_ENV: production
+          NODE_ENV: development
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BUNDLER_UNICHAIN_SEPOLIA: ${{ secrets.BUNDLER_UNICHAIN_SEPOLIA}}
-          BUNDLER_OPTIMISM_SEPOLIA: ${{ secrets.BUNDLER_OPTIMISM_SEPOLIA}}
-          BUNDLER_BASE_SEPOLIA: ${{ secrets.BUNDLER_BASE_SEPOLIA}}
-          RPC_BASE_SEPOLIA: ${{ secrets.RPC_BASE_SEPOLIA}}
-          RPC_OPTIMISM_SEPOLIA: ${{ secrets.RPC_OPTIMISM_SEPOLIA}}
-          RPC_UNICHAIN_SEPOLIA: ${{ secrets.RPC_UNICHAIN_SEPOLIA}}
-          ENTRYPOINT_UNICHAIN_SEPOLIA: ${{ secrets.ENTRYPOINT_UNICHAIN_SEPOLIA }}
-          ENTRYPOINT_OPTIMISM_SEPOLIA: ${{ secrets.ENTRYPOINT_OPTIMISM_SEPOLIA }}
-          ENTRYPOINT_BASE_SEPOLIA: ${{ secrets.ENTRYPOINT_BASE_SEPOLIA }}
-          EXPLORER_BASE_SEPOLIA: ${{ secrets.EXPLORER_BASE_SEPOLIA }}
-          EXPLORER_OPTIMISM_SEPOLIA: ${{ secrets.EXPLORER_OPTIMISM_SEPOLIA }}
-          EXPLORER_UNICHAIN_SEPOLIA: ${{ secrets.EXPLORER_UNICHAIN_SEPOLIA }}
+          BUNDLER_UNICHAIN: ${{ secrets.BUNDLER_UNICHAIN || secrets.BUNDLER_UNICHAIN_SEPOLIA}}
+          BUNDLER_OPTIMISM: ${{ secrets.BUNDLER_OPTIMISM || secrets.BUNDLER_OPTIMISM_SEPOLIA}}
+          BUNDLER_BASE: ${{ secrets.BUNDLER_BASE || secrets.BUNDLER_BASE_SEPOLIA}}
+          RPC_BASE: ${{ secrets.RPC_BASE || secrets.RPC_BASE_SEPOLIA}}
+          RPC_OPTIMISM: ${{ secrets.RPC_OPTIMISM || secrets.RPC_OPTIMISM_SEPOLIA}}
+          RPC_UNICHAIN: ${{ secrets.RPC_UNICHAIN || secrets.RPC_UNICHAIN_SEPOLIA}}
+          ENTRYPOINT_UNICHAIN: ${{ secrets.ENTRYPOINT_UNICHAIN || secrets.ENTRYPOINT_UNICHAIN_SEPOLIA }}
+          ENTRYPOINT_OPTIMISM: ${{ secrets.ENTRYPOINT_OPTIMISM || secrets.ENTRYPOINT_OPTIMISM_SEPOLIA }}
+          ENTRYPOINT_BASE: ${{ secrets.ENTRYPOINT_BASE || secrets.ENTRYPOINT_BASE_SEPOLIA }}
+          EXPLORER_BASE: ${{ secrets.EXPLORER_BASE || secrets.EXPLORER_BASE_SEPOLIA }}
+          EXPLORER_OPTIMISM: ${{ secrets.EXPLORER_OPTIMISM || secrets.EXPLORER_OPTIMISM_SEPOLIA }}
+          EXPLORER_UNICHAIN: ${{ secrets.EXPLORER_UNICHAIN || secrets.EXPLORER_UNICHAIN_SEPOLIA }}
           OWNER_PRIVATE_KEY: ${{ secrets.OWNER_PRIVATE_KEY }}
           SUPERCHAIN_BADGES_ADDRESS: ${{ secrets.SUPERCHAIN_BADGES_ADDRESS }}
           SUPERCHAIN_POINTS_ADDRESS: ${{ secrets.SUPERCHAIN_POINTS_ADDRESS }}
@@ -73,6 +73,9 @@ jobs:
           AAVE_CONTRACT_ADDRESS_UNICHAIN: ${{ secrets.AAVE_CONTRACT_ADDRESS_UNICHAIN }}
           AAVE_CONTRACT_ADDRESS_OPTIMISM: ${{ secrets.AAVE_CONTRACT_ADDRESS_OPTIMISM }}
           AAVE_CONTRACT_ADDRESS_BASE: ${{ secrets.AAVE_CONTRACT_ADDRESS_BASE }}
+          UNICHAIN_CHAIN_ID: ${{ secrets.UNICHAIN_CHAIN_ID }}
+          BASE_CHAIN_ID: ${{ secrets.BASE_CHAIN_ID }}
+          OPTIMISM_CHAIN_ID: ${{ secrets.OPTIMISM_CHAIN_ID }}
 
       - name: Save Outputs
         id: save-outputs
