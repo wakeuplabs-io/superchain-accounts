@@ -16,13 +16,16 @@ export const AuthenticatedSidebarMenuButton: React.FC<
 > = ({ Icon, text, route, isActive = false }) => {
   return (
     <SidebarMenuButton size="lg" isActive={isActive} className="h-10" asChild>
-      <Link to={route} className="group">
+      <Link to={route} className={cn("group/auth-sidebar-button",{
+        "text-slate-400":!isActive,
+        "text-black [&>svg]:text-primary": isActive,
+      })}>
         <Icon
           size={20}
           strokeWidth={2}
-          className={cn("mr-2", isActive && "text-primary")}
+          className="mr-2 group-hover/auth-sidebar-button:text-primary"
         />
-        <span>{text}</span>
+        <span className="text-sm font-normal">{text}</span>
       </Link>
     </SidebarMenuButton>
   );

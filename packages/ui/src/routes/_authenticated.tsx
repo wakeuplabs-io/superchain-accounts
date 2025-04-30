@@ -5,7 +5,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { z } from "zod";
-import { LoaderCircle, ScrollText, User } from "lucide-react";
+import { Award, LoaderCircle, ScrollText } from "lucide-react";
 
 import {
   Sidebar,
@@ -88,18 +88,18 @@ function AuthenticatedLayout() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <AuthenticatedSidebarMenuButton
-                      Icon={User}
-                      text="Profile"
-                      route="/profile"
-                      isActive={routerState.location.pathname === "/profile"}
+                      Icon={ScrollText}
+                      text="My Wallet"
+                      route="/accounts"
+                      isActive={routerState.location.pathname === "/accounts"}
                     />
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <AuthenticatedSidebarMenuButton
-                      Icon={ScrollText}
-                      text="Accounts"
-                      route="/accounts"
-                      isActive={routerState.location.pathname === "/accounts"}
+                      Icon={Award}
+                      text="Points & Rewards"
+                      route="/profile"
+                      isActive={routerState.location.pathname === "/profile"}
                     />
                   </SidebarMenuItem>
                 </SidebarMenu>
