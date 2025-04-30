@@ -12,6 +12,6 @@ export const SUPPORTED_EVENTS = ["accountsChanged", "chainChanged"];
 export const WALLET_METADATA = {
   name: "Superchain Wallet",
   description: "Superchain Wallet",
-  url: "https://superchain.wakeuplabs.link",
-  icons: ["https://superchain.wakeuplabs.link/favicon.ico"],
+  url: "https://superchain-accounts-ui.vercel.app",
+  icons: ["https://superchain-accounts-ui.vercel.app/favicon.ico"],
 };
