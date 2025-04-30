@@ -12,9 +12,6 @@ export const SuperchainBadges: React.FC = () => {
   const { isPending, claim, isClaiming, badges } =
     useSuperchainBadges();
 
-
-    console.log('~ ' + badges);
-
   const onClickNftUrl = useCallback(
     (url: string) => {
       window.open(url, "_blank");
