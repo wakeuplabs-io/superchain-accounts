@@ -6,6 +6,7 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import superchainBadges from "@/config/abis/superchain-badges";
 import { AVAILABLE_BADGES } from "@/config/badges";
 import { Badge } from "@/config/badges";
+import axios from "axios";
 
 export type SuperchainBadge = Badge & {status: "pending" | "claimed" | "unclaimed"};
 
@@ -42,9 +43,34 @@ export const useSuperchainBadges = () => {
         ],
       });
 
+      const claimableIds = (claimable.result as bigint[]);
+      
+      const claimableMultiCall: {address: `0x${string}`, abi: any, functionName: string, args: any}[] = claimableIds.map((claimableId) => ({
+        address: envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
+        abi: superchainBadges,
+        functionName: "uri",
+        args: [claimableId],
+      }))
+
+      const [claimableMetadataResponse = { result: [] }] = await chain.client.multicall({
+        contracts: claimableMultiCall
+      });
+
+      const claimableMetadataUris = claimableMetadataResponse.result as string[]
+
+      const claimableImages = [] =  await Promise.all(
+        claimableMetadataUris.map(async(uri, index) => { 
+          return {
+            id: claimableIds[index],
+            imageUrl: (await axios.get(uri)).data.image
+          }
+        }
+      ))
+
       return AVAILABLE_BADGES[chain.id].map((badge, index) => {
         return {
           ...badge,
+          nftImageUrl: claimableImages[claimableIds.indexOf(badge.id)]?.imageUrl,
           status:
              (balances.result as bigint[])![index] > 0n
                ? "claimed"
