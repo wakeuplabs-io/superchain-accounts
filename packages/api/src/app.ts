@@ -82,14 +82,14 @@ const badgesEventsService = new BadgeEventsService(
   db,
   superchainBadgesService,
   [
-    new TransactionSentBadgeEventsHandler(db, [1, 3, 5, 10, 25, 50, 100]),
+    new TransactionSentBadgeEventsHandler(db, [1, 5, 25, 50, 100]),
     new DaysActiveBadgeEventsHandler(db, [25, 50, 100]),
     new DefiInteractionsBadgeEventsHandler(db, [25, 50, 100]),
   ],
   {
     [BadgeEventType.DaysActive]: { 25: 1, 50: 2, 100: 3 },
-    [BadgeEventType.TransactionsSent]: { 25: 4, 50: 5, 100: 6 },
-    [BadgeEventType.DefiInteractions]: { 25: 7, 50: 8, 100: 9 },
+    [BadgeEventType.TransactionsSent]: { 1: 4, 5: 5, 25: 6, 50: 7, 100: 8 },
+    [BadgeEventType.DefiInteractions]: { 25: 9, 50: 10, 100: 11 },
   }
 );
 
