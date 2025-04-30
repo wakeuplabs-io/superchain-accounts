@@ -114,7 +114,7 @@ export const SuperchainBadges: React.FC = () => {
                   <div className="font-semibold text-sm">{badge.name}</div>
                   <div className="text-xs">{badge.description}</div>
                   {badge.status === "claimed" && <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>}
-                  {badge.status === "claimed" && <div onClick={() => onClickNftUrl(badge.nftImageUrl)} className="w-fit text-sm text-blue-600 bg-blue-100 border border-blue-600 px-2 rounded">Claimed</div>}
+                  {badge.status === "claimed" && <div onClick={() => onClickNftUrl(badge.nftUrl)} className="w-fit text-sm text-blue-600 bg-blue-100 border border-blue-600 px-2 rounded">Claimed</div>}
                   {badge.status === "unclaimed" && (
                     <Button
                       onClick={() => onClaim(badge.id)}
