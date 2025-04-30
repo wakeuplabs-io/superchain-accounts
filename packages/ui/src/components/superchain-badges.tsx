@@ -103,21 +103,22 @@ export const SuperchainBadges: React.FC = () => {
                 )}
               >
                 <img src={badge.image} alt="" className="h-[38px] w-[38px]" />
-                <div className="space-y-1">
+                <div className="space-y-1 w-full">
                   <div className="font-semibold text-sm">{badge.name}</div>
                   <div className="text-xs">{badge.description}</div>
                   {badge.status === "claimed" && 
-                    (<>
-                        <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>
-                        <a
-                          href={badge.nftUrl}
-                          target="_blank"
-                          className="flex items-center gap-1 text-sm font-medium text-primary"
-                        >
-                          <span>View my NFT</span>
-                          <ArrowUpRight className="h-4 w-4" />
-                        </a>
-                      </>
+                    (<div className="flex flex-row flex-wrap items-center justify-between">
+                      <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>
+                      <a
+                        href={badge.nftUrl}
+                        className="flex items-center gap-1 text-xs font-medium text-primary"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <span>View</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    </div>
                     )
                   }
                   {badge.status === "unclaimed" && (
