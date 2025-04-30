@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import emptySvg from "@/assets/empty.svg";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogHeader, DialogTrigger } from "./ui/dialog";
 
 export const SuperchainBadges: React.FC = () => {
   const { isPending, claim, isClaiming, badges } =
@@ -111,27 +109,14 @@ export const SuperchainBadges: React.FC = () => {
                   {badge.status === "claimed" && 
                     (<>
                         <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>
-                        <Dialog>
-                            <DialogTrigger>
-                              <Button 
-                                className="flex items-center gap-1 text-sm font-medium text-primary"
-                                variant="link"
-                                >
-                                <span>View my NFT</span>
-                                <ArrowUpRight className="h-4 w-4" />
-                              </Button>
-                            </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>{badge.name}</DialogTitle>
-                            </DialogHeader>
-                            <div className="flex flex-col w-full items-center gap-12 justify-center pt-16 pb-8">
-                              <div className="relative">
-                                  <img src={badge.nftUrl}/>
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                        <a
+                          href={badge.nftUrl}
+                          target="_blank"
+                          className="flex items-center gap-1 text-sm font-medium text-primary"
+                        >
+                          <span>View my NFT</span>
+                          <ArrowUpRight className="h-4 w-4" />
+                        </a>
                       </>
                     )
                   }
