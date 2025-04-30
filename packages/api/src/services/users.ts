@@ -58,15 +58,18 @@ export class UsersService implements IUserService {
           LEFT JOIN "PointEvent" pe ON pe."user" = u.wallet AND pe.claimed = true
           GROUP BY u.wallet
         ),
-        ranked_users AS (
-          SELECT 
-            "user",
-            total_points,
-            ROW_NUMBER() OVER (ORDER BY total_points DESC) AS current
-          FROM user_points
-        ),
         total_users AS (
            SELECT COUNT(*) AS total FROM user_points
+        ),
+        ranked_users AS (
+          SELECT 
+            up."user",
+            up.total_points,
+            CASE total_points
+              when 0 then tu.total
+              else ROW_NUMBER() OVER (ORDER BY up.total_points DESC) 
+            END AS current
+          FROM user_points up, total_users tu
         )
         SELECT 
             ru."user",
