@@ -4,17 +4,30 @@ import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSuperchainBadges } from "@/hooks/use-superchain-badges";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import emptySvg from "@/assets/empty.svg";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import { DialogHeader } from "./ui/dialog";
 
 export const SuperchainBadges: React.FC = () => {
   const { isPending, claim, isClaiming, badges } =
     useSuperchainBadges();
 
   const onClickNftUrl = useCallback(
-    (url: string) => {
-      window.open(url, "_blank");
+    (url: string, tokenName: string) => {
+      <Dialog>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{tokenName}</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col w-full items-center gap-12 justify-center pt-16 pb-8">
+            <div className="relative">
+                <img src={url}/>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     },
     []
   );
@@ -114,7 +127,17 @@ export const SuperchainBadges: React.FC = () => {
                   <div className="font-semibold text-sm">{badge.name}</div>
                   <div className="text-xs">{badge.description}</div>
                   {badge.status === "claimed" && <div className="w-fit text-sm text-green-600 bg-green-100 border border-green-600 px-2 rounded">Claimed</div>}
-                  {badge.status === "claimed" && <div onClick={() => onClickNftUrl(badge.nftUrl)} className="w-fit text-sm text-blue-600 bg-blue-100 border border-blue-600 px-2 rounded">Claimed</div>}
+                  {badge.status === "claimed" && 
+                    (
+                      <a
+                        onClick={() => onClickNftUrl(badge.nftUrl, badge.name)}
+                        className="flex items-center gap-1 text-sm font-medium text-primary"
+                      >
+                        <span>View my NFT</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    )
+                  }
                   {badge.status === "unclaimed" && (
                     <Button
                       onClick={() => onClaim(badge.id)}
