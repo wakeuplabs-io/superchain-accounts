@@ -43,7 +43,7 @@ export const useSuperchainBadges = () => {
         ],
       });
 
-      const claimableIds = [] = (claimable.result as bigint[]);
+      const claimableIds = (claimable?.result as bigint[]) ?? [];
       
       const claimableMultiCall: {address: `0x${string}`, abi: any, functionName: string, args: any}[] = claimableIds.map((claimableId) => ({
         address: envParsed().SUPERCHAIN_BADGES_ADDRESS as `0x${string}`,
@@ -52,13 +52,15 @@ export const useSuperchainBadges = () => {
         args: [claimableId],
       }))
 
+      console.log('claimableMultiCall', claimableMultiCall);
+
       const [claimableMetadataResponse = { result: [] }] = await chain.client.multicall({
         contracts: claimableMultiCall
-      });
+      }) ?? [];
 
-      const claimableMetadataUris = [] = claimableMetadataResponse.result as string[]
+      const claimableMetadataUris = claimableMetadataResponse?.result as string[] ?? [];
 
-      const claimableImages = [] =  await Promise.all(
+      const claimableImages = await Promise.all(
         claimableMetadataUris.map(async(uri, index) => { 
           return {
             id: claimableIds[index],
