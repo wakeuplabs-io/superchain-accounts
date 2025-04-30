@@ -56,7 +56,7 @@ export const useSuperchainBadges = () => {
 
       console.log("~claimableMultiCall:", claimableMultiCall)
 
-      const [claimableMetadataResponse] = await chain.client.multicall({
+      const [claimableMetadataResponse = { result: [] }] = await chain.client.multicall({
         contracts: claimableMultiCall
       });
 
@@ -66,7 +66,7 @@ export const useSuperchainBadges = () => {
 
       console.log("~ claimableMetadataUris:", claimableMetadataUris)
 
-      const claimableImages =  await Promise.all(
+      const claimableImages = [] =  await Promise.all(
         claimableMetadataUris.map(async(uri, index) => { 
           return {
             id: claimableIds[index],
