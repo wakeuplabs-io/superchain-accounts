@@ -10,6 +10,8 @@ import { useWalletConnect } from "@/hooks/use-wallet-connect";
 import { DialogType } from "@/lib/wallet-connect";
 import { useState } from "react";
 import { hexToString } from "viem";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { ChevronsUpDown } from "lucide-react";
 
 interface RequestDialogProps {
   open: boolean;
@@ -23,6 +25,7 @@ export function RequestDialog({
   type,
 }: RequestDialogProps) {
   const [isAccepting, setIsAccepting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     data,
@@ -76,11 +79,27 @@ export function RequestDialog({
           )}
 
           {type === "eth_sendTransaction" && (
-            <div className="border rounded-lg p-3 ">
-              <pre className="whitespace-pre-wrap break-words">
-                {JSON.stringify(data.requestEvent?.params, null, 2)}
-              </pre>
-            </div>
+            <Collapsible
+              open={isOpen}
+              onOpenChange={setIsOpen}
+              className="w-full space-y-2"
+            >
+              <div className="flex items-center gap-2">
+                <h3>Transaction Details</h3>
+                <CollapsibleTrigger asChild>
+                  <Button variant="link" size="sm" className="w-9 p-0">
+                    <ChevronsUpDown className="h-4 w-4" />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent className="space-y-2">
+                <div className="border rounded-lg p-3 max-h-[500px] overflow-y-auto">
+                  <pre className="whitespace-pre-wrap break-words">
+                    {JSON.stringify(data.requestEvent?.params, null, 2)}
+                  </pre>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           )}
         </div>
 
