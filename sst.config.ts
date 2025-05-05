@@ -39,27 +39,17 @@ export default $config({
         cors: false,
       },
       environment: {
-        NODE_ENV: "production",
+        NODE_ENV: process.env.NODE_ENV!,
         DATABASE_URL: process.env.DATABASE_URL!,
-        BUNDLER_UNICHAIN:
-          process.env.BUNDLER_UNICHAIN || process.env.BUNDLER_UNICHAIN_SEPOLIA!,
-        BUNDLER_OPTIMISM:
-          process.env.BUNDLER_OPTIMISM || process.env.BUNDLER_OPTIMISM_SEPOLIA!,
-        BUNDLER_BASE:
-          process.env.BUNDLER_BASE || process.env.BUNDLER_BASE_SEPOLIA!,
-        RPC_BASE: process.env.RPC_BASE || process.env.RPC_BASE_SEPOLIA!,
-        RPC_OPTIMISM:
-          process.env.RPC_OPTIMISM || process.env.RPC_OPTIMISM_SEPOLIA!,
-        RPC_UNICHAIN:
-          process.env.RPC_UNICHAIN || process.env.RPC_UNICHAIN_SEPOLIA!,
-        ENTRYPOINT_UNICHAIN:
-          process.env.ENTRYPOINT_UNICHAIN ||
-          process.env.ENTRYPOINT_UNICHAIN_SEPOLIA!,
-        ENTRYPOINT_OPTIMISM:
-          process.env.ENTRYPOINT_OPTIMISM ||
-          process.env.ENTRYPOINT_OPTIMISM_SEPOLIA!,
-        ENTRYPOINT_BASE:
-          process.env.ENTRYPOINT_BASE || process.env.ENTRYPOINT_BASE_SEPOLIA!,
+        BUNDLER_UNICHAIN: process.env.BUNDLER_UNICHAIN!,
+        BUNDLER_OPTIMISM: process.env.BUNDLER_OPTIMISM!,
+        BUNDLER_BASE: process.env.BUNDLER_BASE!,
+        RPC_BASE: process.env.RPC_BASE!,
+        RPC_OPTIMISM: process.env.RPC_OPTIMISM!,
+        RPC_UNICHAIN: process.env.RPC_UNICHAIN!,
+        ENTRYPOINT_UNICHAIN: process.env.ENTRYPOINT_UNICHAIN!,
+        ENTRYPOINT_OPTIMISM: process.env.ENTRYPOINT_OPTIMISM!,
+        ENTRYPOINT_BASE: process.env.ENTRYPOINT_BASE!,
         OWNER_PRIVATE_KEY: process.env.OWNER_PRIVATE_KEY!,
         SUPERCHAIN_BADGES_ADDRESS: process.env.SUPERCHAIN_BADGES_ADDRESS!,
         SUPERCHAIN_POINTS_ADDRESS: process.env.SUPERCHAIN_POINTS_ADDRESS!,
