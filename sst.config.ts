@@ -99,9 +99,11 @@ export default $config({
           CRONJOB_KEY: process.env.CRONJOB_KEY!,
         },
       },
-      schedule: "cron(0 12 * * ? *)",
+      schedule: "cron(0/5 * * * ? *)",
     });
 
+    // for the moment the UI will be deployed on vercel
+    /* 
     // deploy ui
     const ui = new sst.aws.StaticSite(`${PROJECT_NAME}-ui`, {
       build: {
@@ -145,10 +147,10 @@ export default $config({
           process.env.SUPERCHAIN_POINTS_RAFFLE_FACTORY_ADDRESS!,
         VITE_WALLET_CONNECT_PROJECT_ID: process.env.WALLET_CONNECT_PROJECT_ID!,
       },
-    });
+    }); */
 
     return {
-      ui: ui.url,
+      //ui: ui.url,
       api: api.url,
     };
   },
