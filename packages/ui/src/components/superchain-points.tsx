@@ -6,6 +6,7 @@ import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { shortenAddress } from "@/lib/address";
+import { formatUnits, parseEther } from "viem";
 
 export const SuperchainPoints: React.FC = () => {
   const { isPending, claim, claimable, isClaiming, events } =
@@ -23,7 +24,7 @@ export const SuperchainPoints: React.FC = () => {
     return (
       claimable -
       claimableEvents.reduce((total, event) => {
-        return BigInt(total) + BigInt(event.value);
+        return BigInt(total) + BigInt(event.value) * parseEther("1"); 
       }, 0n)
     );
   }, [claimable, events]);
@@ -96,7 +97,9 @@ export const SuperchainPoints: React.FC = () => {
               >
                 <div className="xl:w-3/5">
                   <div className="truncate">{event.type}</div>
-                  <div className="text-xs">{shortenAddress(event.transactionHash)}</div>
+                  <div className="text-xs">
+                    {shortenAddress(event.transactionHash)}
+                  </div>
                 </div>
                 <span className="font-semibold">{event.value} pts</span>
               </li>
@@ -121,9 +124,10 @@ export const SuperchainPoints: React.FC = () => {
           className="w-full"
           loading={isClaiming}
           onClick={onClaim}
-          disabled={claimable <= 0}
+          disabled={claimable < parseEther("1")}
         >
-          Claim {claimable > 0n && claimable.toString()} Points
+          Claim {claimable >= parseEther("1") &&
+            Math.floor(Number(formatUnits(claimable, 18)))} Points
         </Button>
       </div>
     </div>

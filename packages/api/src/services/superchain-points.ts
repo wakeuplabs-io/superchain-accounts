@@ -19,11 +19,14 @@ export class SuperchainPointsService implements ISuperchainPointsService {
       OWNER_PRIVATE_KEY
     );
 
+    // add 18 decimals to points
+    const finalAmounts = amounts.map((amount) => amount * 1_000_000_000_000_000_000n);
+
     const tx = await client.writeContract({
       address: this.address,
       abi: superchainPointsAbi,
       functionName: "addClaimable",
-      args: [addresses, amounts],
+      args: [addresses, finalAmounts],
       chain: client.chain,
       account: client.account!,
     });
