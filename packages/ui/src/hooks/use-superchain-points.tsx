@@ -22,19 +22,28 @@ export const useSuperchainPoints = () => {
     enabled: address != zeroAddress,
     queryKey: ["superchainPoints", address ?? "0x0", chain.id],
     queryFn: async () => {
-      const points = await chain.client.readContract({
+      const balanceOfBody = {
         address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
         abi: superchainPoints,
         functionName: "balanceOf",
         args: [address],
-      });
+      };
+      console.log("balanceOfBody!!!", JSON.stringify(balanceOfBody));
+      const points = await chain.client.readContract(balanceOfBody);
+      console.log("points!!!", points);
 
-      const claimable = await chain.client.readContract({
+      const getClaimableBody = {
         address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
         abi: superchainPoints,
         functionName: "getClaimable",
         args: [address],
-      });
+      };
+
+      console.log("getClaimableBody!!!", JSON.stringify(getClaimableBody));
+
+      const claimable = await chain.client.readContract(getClaimableBody);
+
+      console.log("claimable!!!", claimable);
 
       const events = await pointsService.getUserPoints(
         address,
@@ -49,38 +58,44 @@ export const useSuperchainPoints = () => {
     },
   });
 
-  const { mutateAsync: claimPoints, isPending: isClaimingPoints } = useMutation({
-    mutationFn: async () => {
-      return sendTransaction({
-        to: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
-        value: 0n,
-        data: encodeFunctionData({
-          abi: superchainPoints,
-          functionName: "claim",
-          args: [],
-        }),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["superchainPoints", address ?? "0x0", chain.id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["superchainProfile"],
-      });
-    },
-  });
-
-  const {mutateAsync: setPointClaimed, isPending: isSettingPointsClaimed } = useMutation({
-    mutationFn: async (request: ClaimPointsBody) => {
-      return pointsService.claim(request);
+  const { mutateAsync: claimPoints, isPending: isClaimingPoints } = useMutation(
+    {
+      mutationFn: async () => {
+        return sendTransaction({
+          to: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
+          value: 0n,
+          data: encodeFunctionData({
+            abi: superchainPoints,
+            functionName: "claim",
+            args: [],
+          }),
+        });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["superchainPoints", address ?? "0x0", chain.id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["superchainProfile"],
+        });
+      },
     }
-  });
+  );
+
+  const { mutateAsync: setPointClaimed, isPending: isSettingPointsClaimed } =
+    useMutation({
+      mutationFn: async (request: ClaimPointsBody) => {
+        return pointsService.claim(request);
+      },
+    });
 
   const claim = async (points: SuperchainPointEvent[]) => {
-    return claimPoints()
-      .then(() => setPointClaimed(points.map((point) => point.id)));
+    return claimPoints().then(() =>
+      setPointClaimed(points.map((point) => point.id))
+    );
   };
+
+  console.log("data!!!", JSON.stringify(data));
 
   return {
     isPending: isStatePending || data === undefined,

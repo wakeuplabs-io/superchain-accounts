@@ -12,6 +12,12 @@ export const SuperchainPoints: React.FC = () => {
   const { isPending, claim, claimable, isClaiming, events } =
     useSuperchainPoints();
 
+  console.log("events!!!", events);
+  console.log("claimable!!!", claimable);
+  console.log("isClaiming!!!", isClaiming);
+  console.log("isPending!!!", isPending);
+  console.log("claim!!!", claim);
+
   const claimableEvents = useMemo(() => {
     return events.filter((event) => event.minted == true);
   }, [events]);
@@ -24,7 +30,7 @@ export const SuperchainPoints: React.FC = () => {
     return (
       claimable -
       claimableEvents.reduce((total, event) => {
-        return BigInt(total) + BigInt(event.value) * parseEther("1"); 
+        return BigInt(total) + BigInt(event.value) * parseEther("1");
       }, 0n)
     );
   }, [claimable, events]);
@@ -126,8 +132,10 @@ export const SuperchainPoints: React.FC = () => {
           onClick={onClaim}
           disabled={claimable < parseEther("1")}
         >
-          Claim {claimable >= parseEther("1") &&
-            Math.floor(Number(formatUnits(claimable, 18)))} Points
+          Claim{" "}
+          {claimable >= parseEther("1") &&
+            Math.floor(Number(formatUnits(claimable, 18)))}{" "}
+          Points
         </Button>
       </div>
     </div>

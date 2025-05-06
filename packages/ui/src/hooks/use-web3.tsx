@@ -26,6 +26,7 @@ export function useWeb3() {
 }
 
 export function Web3Provider({ children }: { children: ReactNode }) {
+  console.log("DEFAULT_CHAIN_ID", DEFAULT_CHAIN_ID);
   const [currentChainId, setCurrentChainId] = useState(DEFAULT_CHAIN_ID);
 
   const chain = useMemo(() => {
