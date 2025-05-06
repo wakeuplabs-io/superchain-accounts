@@ -6,7 +6,6 @@ import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { shortenAddress } from "@/lib/address";
-import { formatUnits } from "viem";
 
 export const SuperchainPoints: React.FC = () => {
   const { isPending, claim, claimable, isClaiming, events } =
@@ -97,9 +96,7 @@ export const SuperchainPoints: React.FC = () => {
               >
                 <div className="xl:w-3/5">
                   <div className="truncate">{event.type}</div>
-                  <div className="text-xs">
-                    {shortenAddress(event.transactionHash)}
-                  </div>
+                  <div className="text-xs">{shortenAddress(event.transactionHash)}</div>
                 </div>
                 <span className="font-semibold">{event.value} pts</span>
               </li>
@@ -126,7 +123,7 @@ export const SuperchainPoints: React.FC = () => {
           onClick={onClaim}
           disabled={claimable <= 0}
         >
-          Claim {claimable > 0n && formatUnits(claimable, 18)} Points
+          Claim {claimable > 0n && claimable.toString()} Points
         </Button>
       </div>
     </div>
