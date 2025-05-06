@@ -24,7 +24,7 @@ export const SuperchainPoints: React.FC = () => {
     return (
       claimable -
       claimableEvents.reduce((total, event) => {
-        return BigInt(total) + BigInt(event.value);
+        return BigInt(total) + BigInt(event.value) * parseEther("1"); 
       }, 0n)
     );
   }, [claimable, events]);
@@ -126,10 +126,8 @@ export const SuperchainPoints: React.FC = () => {
           onClick={onClaim}
           disabled={claimable < parseEther("1")}
         >
-          Claim
-          {claimable >= parseEther("1") &&
-            Math.floor(Number(formatUnits(claimable, 18)))}
-          Points
+          Claim {claimable >= parseEther("1") &&
+            Math.floor(Number(formatUnits(claimable, 18)))} Points
         </Button>
       </div>
     </div>

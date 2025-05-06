@@ -2,7 +2,6 @@ import { OWNER_PRIVATE_KEY } from "@/config/blockchain";
 import { IClientFactory } from "./client-factory";
 import superchainPointsAbi from "@/config/abis/superchain-points";
 import { ISuperchainPointsService } from "@/domain/points";
-import { formatUnits } from "viem";
 
 export class SuperchainPointsService implements ISuperchainPointsService {
   constructor(
@@ -20,7 +19,8 @@ export class SuperchainPointsService implements ISuperchainPointsService {
       OWNER_PRIVATE_KEY
     );
 
-    const finalAmounts = amounts.map((amount) => formatUnits(amount, 18));
+    // add 18 decimals to points
+    const finalAmounts = amounts.map((amount) => amount * 1_000_000_000_000_000_000n);
 
     const tx = await client.writeContract({
       address: this.address,

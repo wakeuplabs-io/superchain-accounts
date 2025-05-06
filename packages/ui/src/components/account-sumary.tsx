@@ -5,7 +5,7 @@ import { formatUnits } from "viem";
 
 export const AccountSummary: React.FC = () => {
   const { isPending: isProfilePending, profile } = useSuperchainProfile();
-  const { isPending: isPointsPending, claimable } = useSuperchainPoints();
+  const { points, isPending: isPointsPending } = useSuperchainPoints();
 
   return (
     <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
@@ -37,7 +37,7 @@ export const AccountSummary: React.FC = () => {
           ) : (
             <>
               <div className="text-center font-medium lg:text-2xl lg:font-semibold">
-                {Math.floor(Number(formatUnits(claimable, 18))) ?? 0}
+                {Math.floor(Number(formatUnits(points, 18))) ?? 0}
               </div>
               <div className="text-center text-xs lg:font-medium">
                 SC Points

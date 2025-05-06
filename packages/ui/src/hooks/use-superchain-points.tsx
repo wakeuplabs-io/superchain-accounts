@@ -22,6 +22,13 @@ export const useSuperchainPoints = () => {
     enabled: address != zeroAddress,
     queryKey: ["superchainPoints", address ?? "0x0", chain.id],
     queryFn: async () => {
+      const points = await chain.client.readContract({
+        address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
+        abi: superchainPoints,
+        functionName: "balanceOf",
+        args: [address],
+      });
+
       const claimable = await chain.client.readContract({
         address: envParsed().SUPERCHAIN_POINTS_ADDRESS as `0x${string}`,
         abi: superchainPoints,
@@ -35,6 +42,7 @@ export const useSuperchainPoints = () => {
       );
 
       return {
+        points: (points as bigint) ?? 0n,
         claimable: (claimable as bigint) ?? 0n,
         events,
       };
@@ -79,6 +87,7 @@ export const useSuperchainPoints = () => {
     claimable: data?.claimable ?? 0n,
     events: data?.events ?? [],
     isClaiming: isClaimingPoints || isSettingPointsClaimed,
+    points: data?.points ?? 0n,
     claim,
   };
 };
