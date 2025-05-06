@@ -1,8 +1,11 @@
+import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { Skeleton } from "./ui/skeleton";
 import { useSuperchainProfile } from "@/hooks/use-superchain-profile";
+import { formatUnits } from "viem";
 
 export const AccountSummary: React.FC = () => {
   const { isPending: isProfilePending, profile } = useSuperchainProfile();
+  const { isPending: isPointsPending, claimable } = useSuperchainPoints();
 
   return (
     <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
@@ -19,7 +22,9 @@ export const AccountSummary: React.FC = () => {
             </h1>
             <div>
               <span className="text-base font-medium">Position:</span>
-              <span className="text-base font-semibold ml-2">{profile.position.current}/{profile.position.total}</span>
+              <span className="text-base font-semibold ml-2">
+                {profile.position.current}/{profile.position.total}
+              </span>
             </div>
           </>
         )}
@@ -27,12 +32,12 @@ export const AccountSummary: React.FC = () => {
 
       <div className="lg:border-l">
         <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
-          {isProfilePending ? (
+          {isPointsPending ? (
             <Skeleton className="h-10 w-16 mx-auto" />
           ) : (
             <>
               <div className="text-center font-medium lg:text-2xl lg:font-semibold">
-                {profile.points ?? 0}
+                {Math.floor(Number(formatUnits(claimable, 18))) ?? 0}
               </div>
               <div className="text-center text-xs lg:font-medium">
                 SC Points
