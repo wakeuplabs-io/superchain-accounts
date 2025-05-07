@@ -16,6 +16,19 @@ export const AccountSummary: React.FC = () => {
   const nextRank = userRanks.find(
     (rank) => rank.minPoints > superchainPoints
   )?.rank;
+  console.log("Next Rank", nextRank);
+
+  const pointsToNextRank =
+    superchainRank?.maxPoints !== undefined
+      ? superchainRank.maxPoints - superchainPoints
+      : undefined;
+  console.log("Points to next rank", pointsToNextRank);
+
+  const progressQuantity = superchainRank?.maxPoints
+    ? (superchainPoints / superchainRank.maxPoints) * 100
+    : 100;
+
+  console.log("progressQuantity", progressQuantity);
 
   return (
     <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
@@ -32,16 +45,10 @@ export const AccountSummary: React.FC = () => {
             </h1>
             <div>
               <RankProgressIndicator
-                pointsToNextRank={
-                  superchainRank?.maxPoints !== undefined
-                    ? superchainRank.maxPoints - superchainPoints
-                    : undefined
-                }
+                pointsToNextRank={pointsToNextRank}
                 currentRank={profile.rank as RankType}
                 nextRank={nextRank}
-                progressQuantity={
-                  (superchainPoints / (superchainRank?.maxPoints ?? 1)) * 100
-                }
+                progressQuantity={progressQuantity}
               />
             </div>
             <div>
