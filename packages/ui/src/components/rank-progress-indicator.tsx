@@ -19,6 +19,24 @@ const rankColors: Record<RankType, string> = {
   "Superchain Phoenix": "#04FF75",
 };
 
+export const userRanks = [
+  {
+    rank: "Superchain Sparrow",
+    minPoints: 0,
+    maxPoints: 1000,
+  },
+  {
+    rank: "Superchain Panther",
+    minPoints: 1001,
+    maxPoints: 10000,
+  },
+  {
+    rank: "Superchain Phoenix",
+    minPoints: 10001,
+    maxPoints: undefined,
+  },
+] as const;
+
 export default function RankProgressIndicator({
   pointsToNextRank,
   currentRank,
@@ -29,43 +47,45 @@ export default function RankProgressIndicator({
   // Get the color for the current rank
   const currentRankColor = rankColors[currentRank];
 
+  // For highest rank, set progress to 100%
+  const isHighestRank = currentRank === "Superchain Phoenix" && !nextRank;
+  const effectiveProgress = isHighestRank ? 100 : progressQuantity;
+
   return (
-    <div
-      className={`relative flex items-center w-full max-w-3xl max-h-[19px] bg-muted rounded-full px-1 py-1 ${className}`}
-    >
-      {/* Background progress bar (if progressQuantity is provided) */}
-      {progressQuantity !== undefined && progressQuantity > 0 && (
+    <div className={`flex flex-col gap-2 w-full max-w-3xl ${className}`}>
+      {/* Progress bar container */}
+      <div className="relative flex items-center w-full h-[19px] bg-muted rounded-full">
+        {/* Background progress bar */}
+        {(effectiveProgress > 0 || isHighestRank) && (
+          <div
+            className="absolute left-0 top-0 h-full rounded-full z-0"
+            style={{
+              width: `${Math.min(Math.max(effectiveProgress, 0), 100)}%`,
+              backgroundColor: currentRankColor,
+            }}
+          />
+        )}
+
+        {/* Rank indicator circle with dynamic color */}
         <div
-          className="absolute left-0 top-0 h-full rounded-full z-0"
-          style={{
-            width: `${Math.min(Math.max(progressQuantity, 0), 100)}%`,
-            backgroundColor: currentRankColor,
-          }}
-        />
-      )}
+          className="h-[19px] w-[19px] rounded-full flex-shrink-0 z-10 relative ml-0"
+          style={{ backgroundColor: currentRankColor }}
+        ></div>
+      </div>
 
-      {/* Rank indicator circle with dynamic color - positioned above progress bar */}
-      <div
-        className="h-8 w-8 rounded-full flex-shrink-0 z-10 max-h-[19px] relative"
-        style={{ backgroundColor: currentRankColor }}
-      ></div>
-
-      {/* Progress text - positioned above progress bar */}
-      {nextRank && pointsToNextRank && (
-        <div className="flex-1 text-center z-10 relative">
-          <p className="text-[#7a879a] text-sm font-medium">
-            {pointsToNextRank} points to become{" "}
-            {nextRank.charAt(0).toUpperCase() + nextRank.slice(1)}
-          </p>
-        </div>
-      )}
-      {!nextRank && currentRank && currentRank === "Superchain Phoenix" && (
-        <div className="flex-1 text-center z-10 relative">
-          <p className="text-[#7a879a] text-sm font-medium">
-            You have reached the highest rank
-          </p>
-        </div>
-      )}
+      {/* Text below the progress bar */}
+      <div className="text-left text-sm text-muted-foreground">
+        {isHighestRank ? (
+          <p>Congrats! You've reached the highest Rank.</p>
+        ) : (
+          nextRank &&
+          pointsToNextRank && (
+            <p>
+              {pointsToNextRank} points to become {nextRank}
+            </p>
+          )
+        )}
+      </div>
     </div>
   );
 }
