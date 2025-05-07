@@ -48,15 +48,23 @@ export const AccountSummary: React.FC = () => {
               nextRank={nextRank}
               progressQuantity={progressQuantity}
             />
-
-            <div>
-              <span className="text-base font-medium">Position:</span>
-              <span className="text-base font-semibold ml-2">
-                {profile.position.current}/{profile.position.total}
-              </span>
-            </div>
           </>
         )}
+      </div>
+
+      <div className="ml-auto">
+        <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
+          {isPointsPending ? (
+            <Skeleton className="h-10 w-16 mx-auto" />
+          ) : (
+            <>
+              <div className="text-center font-medium lg:text-2xl lg:font-semibold">
+                {profile.position.current}/{profile.position.total}
+              </div>
+              <div className="text-center text-xs lg:font-medium">Position</div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="lg:border-l">
