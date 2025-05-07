@@ -51,26 +51,35 @@ export default function RankProgressIndicator({
   const isHighestRank = currentRank === "Superchain Phoenix" && !nextRank;
   const effectiveProgress = isHighestRank ? 100 : progressQuantity;
 
+  // Ensure minimum width for the progress bar to prevent circle cutoff
+  const minProgressWidth = 1; // Same as circle diameter
+  const calculatedWidth = Math.max(
+    minProgressWidth,
+    (Math.min(Math.max(effectiveProgress, 0), 100) / 100) * 100
+  );
+
   return (
     <div className={`flex flex-col gap-2 w-full max-w-3xl ${className}`}>
       {/* Progress bar container */}
-      <div className="relative flex items-center w-full h-[19px] bg-muted rounded-full">
-        {/* Background progress bar */}
+      <div className="relative flex items-center w-full h-[19px] bg-muted rounded-full overflow-hidden">
+        {/* Circle background to ensure it's always visible */}
+        <div
+          className="absolute left-0 top-0 h-full w-[19px] z-0 rounded-full"
+          style={{ backgroundColor: currentRankColor }}
+        ></div>
+
+        {/* Background progress bar - separate from the circle */}
         {(effectiveProgress > 0 || isHighestRank) && (
           <div
-            className="absolute left-0 top-0 h-full rounded-full z-0"
+            className="absolute left-0 top-0 h-full z-0"
             style={{
-              width: `${Math.min(Math.max(effectiveProgress, 0), 100)}%`,
+              width: `${calculatedWidth}%`,
               backgroundColor: currentRankColor,
+              borderRadius:
+                effectiveProgress > 5 ? "9999px" : "9999px 0 0 9999px", // Only round both corners if progress is significant
             }}
           />
         )}
-
-        {/* Rank indicator circle with dynamic color */}
-        <div
-          className="h-[19px] w-[19px] rounded-full flex-shrink-0 z-10 relative ml-0"
-          style={{ backgroundColor: currentRankColor }}
-        ></div>
       </div>
 
       {/* Text below the progress bar */}

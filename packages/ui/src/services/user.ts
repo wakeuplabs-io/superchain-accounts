@@ -9,24 +9,6 @@ import {
 } from "schemas";
 import { Address } from "viem";
 
-export const userRanks = [
-  {
-    rank: "Superchain Sparrow",
-    minPoints: 0,
-    maxPoints: 1000,
-  },
-  {
-    rank: "Superchain Panther",
-    minPoints: 1001,
-    maxPoints: 10000,
-  },
-  {
-    rank: "Superchain Phoenix",
-    minPoints: 10001,
-    maxPoints: undefined,
-  },
-] as const;
-
 export class UserService {
   constructor(private readonly axios: Axios) {}
 

@@ -2,8 +2,10 @@ import { useSuperchainPoints } from "@/hooks/use-superchain-points";
 import { Skeleton } from "./ui/skeleton";
 import { useSuperchainProfile } from "@/hooks/use-superchain-profile";
 import { formatUnits } from "viem";
-import RankProgressIndicator, { RankType } from "./rank-progress-indicator";
-import { userRanks } from "@/services/user";
+import RankProgressIndicator, {
+  RankType,
+  userRanks,
+} from "./rank-progress-indicator";
 
 export const AccountSummary: React.FC = () => {
   const { isPending: isProfilePending, profile } = useSuperchainProfile();
@@ -16,19 +18,15 @@ export const AccountSummary: React.FC = () => {
   const nextRank = userRanks.find(
     (rank) => rank.minPoints > superchainPoints
   )?.rank;
-  console.log("Next Rank", nextRank);
 
   const pointsToNextRank =
     superchainRank?.maxPoints !== undefined
       ? superchainRank.maxPoints - superchainPoints
       : undefined;
-  console.log("Points to next rank", pointsToNextRank);
 
   const progressQuantity = superchainRank?.maxPoints
     ? (superchainPoints / superchainRank.maxPoints) * 100
     : 100;
-
-  console.log("progressQuantity", progressQuantity);
 
   return (
     <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
