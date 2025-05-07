@@ -41,14 +41,14 @@ export const AccountSummary: React.FC = () => {
             <h1 className="font-semibold text-2xl text-center lg:text-left">
               {profile.rank}
             </h1>
-            <div>
-              <RankProgressIndicator
-                pointsToNextRank={pointsToNextRank}
-                currentRank={profile.rank as RankType}
-                nextRank={nextRank}
-                progressQuantity={progressQuantity}
-              />
-            </div>
+
+            <RankProgressIndicator
+              pointsToNextRank={pointsToNextRank}
+              currentRank={profile.rank as RankType}
+              nextRank={nextRank}
+              progressQuantity={progressQuantity}
+            />
+
             <div>
               <span className="text-base font-medium">Position:</span>
               <span className="text-base font-semibold ml-2">
