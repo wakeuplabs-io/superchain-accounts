@@ -29,7 +29,7 @@ export const AccountSummary: React.FC = () => {
     : 100;
 
   return (
-    <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-center">
+    <div className="bg-white border rounded-lg p-8 lg:pr-0 gap-8 flex flex-col lg:flex-row lg:justify-between lg:items-start">
       <div className="flex flex-col w-full lg:max-w-[390px] gap-3">
         {isProfilePending ? (
           <>
@@ -52,8 +52,8 @@ export const AccountSummary: React.FC = () => {
         )}
       </div>
 
-      <div className="ml-auto">
-        <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
+      <div className="w-full lg:ml-auto flex justify-between lg:justify-start lg:w-auto">
+        <div className="w-1/2 lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center relative">
           {isPointsPending ? (
             <Skeleton className="h-10 w-16 mx-auto" />
           ) : (
@@ -64,11 +64,10 @@ export const AccountSummary: React.FC = () => {
               <div className="text-center text-xs lg:font-medium">Position</div>
             </>
           )}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[80%] w-[1px] bg-border hidden sm:block"></div>
         </div>
-      </div>
 
-      <div className="lg:border-l">
-        <div className="lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
+        <div className="w-1/2 lg:w-52 lg:py-6 lg:space-y-2 flex flex-col justify-center">
           {isPointsPending ? (
             <Skeleton className="h-10 w-16 mx-auto" />
           ) : (
