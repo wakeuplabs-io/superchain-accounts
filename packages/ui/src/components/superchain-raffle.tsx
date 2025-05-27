@@ -12,6 +12,7 @@ import { useCountdown } from "@/hooks/use-countdown";
 import { useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import emptySvg from "@/assets/empty.svg";
+import { formatEther } from "viem";
 
 export const SuperchainRaffle: React.FC = () => {
   const { isPending, claimTickets, isClaiming, currentRaffle } =
@@ -105,7 +106,7 @@ export const SuperchainRaffle: React.FC = () => {
               <span className="text-xs">Jackpot</span>
             </div>
 
-            <span>+{currentRaffle.jackpot.toString()} SCP</span>
+            <span>+{formatEther(currentRaffle.jackpot)} SCP</span>
           </div>
 
           {/* Tickets count */}
