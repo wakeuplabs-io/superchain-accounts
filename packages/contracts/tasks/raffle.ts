@@ -51,8 +51,9 @@ task("start-raffle", "Starts a raffle")
 
       // Create raffle
       console.log("Creating raffle...");
-      const tx = await raffleFactory.createRaffle();
-      console.log("Raffle created with tx: ", tx.hash);
+      const txCreate = await raffleFactory.createRaffle();
+      await txCreate.wait();
+      console.log("Raffle created with tx: ", txCreate.hash);
 
       // Instantiate raffle
       const raffleAddress = await raffleFactory.currentRaffle();
@@ -63,8 +64,12 @@ task("start-raffle", "Starts a raffle")
 
       // approve
       console.log("Approving raffle...");
-      await token.approve(raffleAddress, hre.ethers.MaxUint256);
-      console.log("Approved");
+      const txApprove = await token.approve(
+        raffleAddress,
+        hre.ethers.MaxUint256
+      );
+      await txApprove.wait();
+      console.log("Approved with tx: ", txApprove.hash);
 
       // Create raffle seed
       const seed = hre.ethers.hexlify(hre.ethers.randomBytes(32));
@@ -80,7 +85,7 @@ task("start-raffle", "Starts a raffle")
             [signer.address, seed]
           )
         ),
-        revealAfter,
+        BigInt(revealAfter),
         BigInt(taskArguments.jackpot),
         taskArguments.badges.split(",").map(BigInt),
         taskArguments.allocations.split(",").map(BigInt)
