@@ -1,3 +1,4 @@
+import { parseEther } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment, TaskArguments } from "hardhat/types";
 
@@ -38,15 +39,13 @@ task("start-raffle", "Starts a raffle")
 
       // Get reveal date
       const revealAfter = new Date(taskArguments.revealDate).getTime() / 1000;
+      const jackpot = parseEther(taskArguments.jackpot);
 
       // Mint points for raffle
       console.log(
-        `Minting ${taskArguments.jackpot} points to ${signer.address} for raffle deposit...`
+        `Minting ${jackpot.toString()} wei points to ${signer.address} for raffle deposit...`
       );
-      const txMint = await token.mint(
-        signer.address,
-        BigInt(taskArguments.jackpot)
-      );
+      const txMint = await token.mint(signer.address, jackpot);
       console.log(`Points minted with tx: ${txMint.hash}`);
 
       // Create raffle
@@ -86,7 +85,7 @@ task("start-raffle", "Starts a raffle")
           )
         ),
         BigInt(revealAfter),
-        BigInt(taskArguments.jackpot),
+        jackpot,
         taskArguments.badges.split(",").map(BigInt),
         taskArguments.allocations.split(",").map(BigInt)
       );

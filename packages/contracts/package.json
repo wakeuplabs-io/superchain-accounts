@@ -14,6 +14,7 @@
     "wipe:superchain-badges:optimism-sepolia": "npx hardhat ignition wipe chain-11155420 SuperchainBadgesModule#SuperchainBadges",
     "deploy:superchain-points-raffle-factory:optimism-sepolia": "npx hardhat ignition deploy ./ignition/modules/SuperchainPointsRaffleFactory.ts --parameters ignition/parameters/optimism-sepolia.json --strategy create2 --network optimism-sepolia --verify",
     "wipe:superchain-points-raffle-factory:optimism-sepolia": "npx hardhat ignition wipe chain-11155420 SuperchainPointsRaffleFactoryModule#SuperchainPointsRaffleFactory",
+    "wipe:superchain-points-raffle-factory:optimism-mainnet": "npx hardhat ignition wipe chain-10 SuperchainPointsRaffleFactoryModule#SuperchainPointsRaffleFactory",
     "deploy:superchain-points:optimism-mainnet": "npx hardhat ignition deploy ./ignition/modules/SuperchainPoints.ts --parameters ignition/parameters/optimism.json --network optimism --strategy create2 --verify",
     "deploy:superchain-badges:optimism-mainnet": "npx hardhat ignition deploy ./ignition/modules/SuperchainBadges.ts --parameters ignition/parameters/optimism.json --network optimism --strategy create2 --verify",
     "deploy:superchain-points-raffle-factory:optimism-mainnet": "npx hardhat ignition deploy ./ignition/modules/SuperchainPointsRaffleFactory.ts --parameters ignition/parameters/optimism.json --strategy create2 --network optimism --verify",
