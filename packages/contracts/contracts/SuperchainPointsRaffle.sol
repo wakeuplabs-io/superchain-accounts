@@ -22,7 +22,7 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
     uint256 internal jackpot;
     address internal winner = address(0);
 
-    uint256 internal ticketCount;
+    uint256 internal ticketCount = 0;
     mapping(uint256 => address) internal tickets;
     mapping(address => uint256) internal ticketsClaimed;
 
@@ -108,7 +108,9 @@ contract SuperchainPointsRaffle is ISuperchainPointsRaffle, Ownable {
             keccak256(abi.encodePacked(_seed, blockhash(storedBlockNumber)))
         );
         winner = tickets[random % ticketCount];
-        if (winner == address(0)) {
+        if (winner == address(0) && ticketCount == 0) {
+            winner = owner();
+        } else if (winner == address(0)) {
             revert TicketNotFound();
         }
 
